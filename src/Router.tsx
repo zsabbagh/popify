@@ -1,21 +1,38 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPresenter from "./presenters/loginPresenter";
 import loginUrl from "./spotifyAuthorization";
+import SpotifyResponseHandler from "./utils/SpotifyResponseHandler";
+import { observer } from "mobx-react-lite";
+
+interface Props {
+  model: any; // Todo fix ts model
+}
 
 //TODO add type to props when needed.
-const Router = (props: any) => {
+export default observer(function Router(props: Props) {
+  console.log("user", props.model.user);
   return (
-    <BrowserRouter>
-      <Routes>
+    <>
+      {props.model.user ? (
+        <div>{`Current username: ${
+          props.model.user["display_name"] || "none"
+        }`}</div>
+      ) : (
+        <></>
+      )}
+      <BrowserRouter>
+        <Routes>
           <Route index element={<a href={loginUrl}>login</a>} />
           <Route path="/statistics" element={<>Statistics here</>} />
           <Route path="/quiz" element={<>Quizzes here</>} />
-          <Route path="/login" element={<LoginPresenter/>} />
+          <Route path="/login" element={<LoginPresenter />} />
+          <Route
+            path="/spotifyResponse"
+            element={<SpotifyResponseHandler model={props.model} />}
+          />
           <Route path="*" element={<>404, page not found!</>} />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
-};
-
-
-export default Router;
+});
