@@ -3,9 +3,10 @@ import LoginPresenter from "./presenters/loginPresenter";
 import loginUrl from "./spotifyAuthorization";
 import SpotifyResponseHandler from "./utils/SpotifyResponseHandler";
 import { observer } from "mobx-react-lite";
+import { Model } from "./interfaces";
 
 interface Props {
-  model: any; // Todo fix ts model
+  model: Model;
 }
 
 //TODO add type to props when needed.
@@ -14,10 +15,12 @@ export default observer(function Router(props: Props) {
   return (
     <>
       {props.model.user ? (
+        <>
         <div>{`Current username: ${
-          props.model.user["display_name"] || "none"
+          props.model.user.external_urls.spotify
         }`}</div>
-      ) : (
+        <img src={props.model.user.images[0].url}></img>
+      </>) : (
         <></>
       )}
       <BrowserRouter>

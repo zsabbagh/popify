@@ -1,16 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import Router from "./Router"
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import Router from './Router';
+import './index.css';
 import model from './Model';
-import { observable, configure } from "mobx";
-configure({ enforceActions: "never", });  // we don't use Mobx actions
-const reactiveModel= observable(model);
+import { observable, configure } from 'mobx';
+configure({ enforceActions: 'never' }); // we don't use Mobx actions
+const reactiveModel = observable(model);
 
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
   <React.StrictMode>
