@@ -3,20 +3,35 @@ import LoginView from '../views/loginView';
 import { useLocation } from 'react-router-dom';
 import { fetchUsername } from '../spotifyFetcher';
 import { useEffect, useState } from 'react';
+import UserModel from '../interfaces';
+import { set } from 'mobx';
 
 
 export default
 observer (
-    function Login(props) {
+    function Login(props: {model: UserModel}) {
         const location = useLocation(); // token is in the url as popify.com/login#access_token=...
         const accessToken:string = new URLSearchParams(location.hash).get("#access_token") || "";
 
         const [name, setName] = useState("");
-        useEffect(() => {
-            if (accessToken) {
-                fetchUsername(accessToken).then(setName);
-            }
-        }, [accessToken]);
+
+        function loginACB(username: string) {
+            setName(username);
+            props.model.setUserName(username);
+            props.model.setLoggedIn(true);
+            props.model.setAccessToken(accessToken);
+        }
+
+        function logoutACB() {
+            setName("");
+            props.model.setUserName(null);
+            props.model.setLoggedIn(false);
+            props.model.setAccessToken(null);
+        }
+
+        if (accessToken) {
+            fetchUsername(accessToken).then(loginACB);
+        }
 
         return <LoginView name={name} />;
     }
