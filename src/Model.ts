@@ -7,5 +7,6 @@ import { Model } from "./interfaces";
 
 export default {
   userAuthToken: undefined,
-  user: undefined
+  user: undefined,
+  pages: ["Statistics", "Quiz"]
 } as Model;

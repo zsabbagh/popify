@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { Link } from 'react-router-dom';
 
 function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: boolean; loginUrl: string }) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -36,46 +37,44 @@ function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: bool
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Popify
-          </Typography>
-
+          <Link to="/">
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              Popify
+            </Typography>
+          </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {props.pages.map((page) => (
-              <Button
+              <Link
                 key={page}
+                to={'/' + page.toLowerCase()} // Update to attribute to 'to' for React Router
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-                href={"/" + page.toLowerCase()}
               >
-                {page}
-              </Button>
+                <Button sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>{page}</Button>
+              </Link>
             ))}
           </Box>
 
           <Button
-                key="login"
-                onClick={handleCloseNavMenu}
-                href={props.loggedIn ? "/" : props.loginUrl}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {props.loggedIn ? "Logout" : "Login"}
+            key="login"
+            onClick={handleCloseNavMenu}
+            href={props.loggedIn ? '/' : props.loginUrl}
+            sx={{ my: 2, color: 'white', display: 'block' }}
+          >
+            {props.loggedIn ? 'Logout' : 'Login'}
           </Button>
-
         </Toolbar>
       </Container>
     </AppBar>

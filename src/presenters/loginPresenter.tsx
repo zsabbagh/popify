@@ -3,14 +3,14 @@ import LoginView from '../views/loginView';
 import { useLocation } from 'react-router-dom';
 import { fetchUsername } from '../spotifyFetcher';
 import { useEffect, useState } from 'react';
-import UserModel from '../interfaces';
+import {User} from '../interfaces';
 import { set } from 'mobx';
 
 
 export default
 observer (
-    function Login(props: {model: UserModel}) {
-        const location = useLocation(); // token is in the url as popify.com/login#access_token=...
+    function Login(props: {model: User}) {
+        /*const location = useLocation(); // token is in the url as popify.com/login#access_token=...
         const accessToken:string = new URLSearchParams(location.hash).get("#access_token") || "";
 
         const [name, setName] = useState("");
@@ -31,8 +31,8 @@ observer (
 
         if (accessToken) {
             fetchUsername(accessToken).then(loginACB);
-        }
+        }*/
 
-        return <LoginView name={name} />;
+        return <LoginView name={"test name"} />;
     }
 );
