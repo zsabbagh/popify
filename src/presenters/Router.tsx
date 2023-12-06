@@ -3,8 +3,9 @@ import LoginPresenter from './LoginPresenter';
 import loginUrl from '../spotifyAuthorization';
 import SpotifyResponseHandler from '../utils/SpotifyResponseHandler';
 import { observer } from 'mobx-react-lite';
-import { Model } from '../interfaces';
 import Topbar from './TopbarPresenter';
+import Statistics from './statisticsPresenter';
+import { Model } from '../interfaces';
 
 
 interface Props {
@@ -20,8 +21,8 @@ export default observer(function Router(props: Props) {
     <>
       {props.model.user ? (
         <>
-          <div>{`Current username: ${props.model.user.external_urls.spotify}`}</div>
-          <img src={props.model.user.images[0].url}></img>
+          <div>{`Current username: ${props.model.user.display_name}`}</div>
+          <img src={props.model.user.images[0]?.url}></img>
         </>
       ) : (
         <></>
@@ -30,7 +31,7 @@ export default observer(function Router(props: Props) {
       <Topbar pages={pages} settings={settings} model={props.model} loginUrl={loginUrl} />
         <Routes>
           <Route index element={<a href={loginUrl}>login</a>} />
-          <Route path="/statistics" element={<>Statistics here</>} />
+          <Route path="/statistics" element={<Statistics model={props.model}/>} />
           <Route path="/quiz" element={<>Quizzes here</>} />
           <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
           <Route path="*" element={<>404, page not found!</>} />
