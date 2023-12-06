@@ -4,6 +4,10 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.19",
+    "@mui/material": "^5.14.20",
     "firebase": "^9.17.1",
     "mobx": "^6.8.0",
     "mobx-react-lite": "^3.4.2",

@@ -9,10 +9,13 @@ const reactiveModel = observable(model);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
+const pages = ["Statistics", "Quiz"];
+const settings = ["Logout"];
+
 root.render(
   <React.StrictMode>
-    <>top</>
-    <br />
-    <Router model={reactiveModel} />
+    <Topbar pages={pages} settings={settings} model={reactiveModel} loginUrl={loginUrl}/>
+    <Router userModel={reactiveModel}/>
   </React.StrictMode>
 );
+

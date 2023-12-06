@@ -1,6 +1,9 @@
+import { spotifyClientId } from "./config";
+
 const authEndpoint = "https://accounts.spotify.com/authorize";
-const clientId = "fe87968fdf7444beb2212a7e1bace2b6";
+const clientId = "c3cf6e3ce94d45a49e7dc365c55fa68e";
 const redirectUri = "http://localhost:3000/spotifyResponse";
+
 
 const scopes = [
   "user-read-currently-playing",
@@ -11,7 +14,7 @@ const scopes = [
 ];
 
 const loginUrl = `${authEndpoint}
-?client_id=${clientId}
+?client_id=${spotifyClientId}
 &redirect_uri=${redirectUri}
 &scope=${scopes.join("%20")}
 &response_type=token
