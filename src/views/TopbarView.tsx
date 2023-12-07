@@ -14,24 +14,14 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
 
-function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: boolean; loginUrl: string }) {
+function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: boolean; loginUrl: string; handleLoginLogout: Function }) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+  const handleLoginLogout = () => {
+    props.handleLoginLogout();
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
   return (
     <AppBar position="static">
@@ -60,7 +50,6 @@ function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: bool
               <Link
                 key={page}
                 to={'/' + page.toLowerCase()} // Update to attribute to 'to' for React Router
-                onClick={handleCloseNavMenu}
               >
                 <Button sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>{page}</Button>
               </Link>
@@ -69,8 +58,7 @@ function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: bool
 
           <Button
             key="login"
-            onClick={handleCloseNavMenu}
-            href={props.loggedIn ? '/' : props.loginUrl}
+            onClick={handleLoginLogout}
             sx={{ my: 2, color: 'white', display: 'block' }}
           >
             {props.loggedIn ? 'Logout' : 'Login'}

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import Router from './presenters/Router';
 import './index.css';
 import model from './models/Model';
 import { observable, configure } from 'mobx';
 import OnLoadPresenter from './presenters/OnLoadPresenter';
+import { fetchUser } from './spotifyFetcher';
 
 configure({ enforceActions: 'never' }); // we don't use Mobx actions
 const reactiveModel = observable(model);
@@ -17,3 +18,19 @@ root.render(
     <Router model={reactiveModel} />
   </React.StrictMode>
 );
+
+const attemptAutoLogin = () => {
+  const token = localStorage.getItem('spotifyAuthToken');
+
+  if (token) {
+    console.log('auiwnd');
+
+    reactiveModel.userAuthToken = token;
+    console.log('model', reactiveModel);
+
+    fetchUser(token).then((user) => {
+      reactiveModel.user = user;
+    });
+  }
+};
+attemptAutoLogin();

@@ -7,13 +7,12 @@ import Topbar from './TopbarPresenter';
 import Statistics from './StatisticsPresenter';
 import { Model } from '../interfaces';
 
-
 interface Props {
   model: Model;
 }
 
-const pages = ["Statistics", "Quiz"];
-const settings = ["Logout"];
+const pages = ['Statistics', 'Quiz'];
+const settings = ['Logout'];
 
 export default observer(function Router(props: Props) {
   console.log('user', props.model.user);
@@ -28,10 +27,10 @@ export default observer(function Router(props: Props) {
         <></>
       )}
       <BrowserRouter>
-      <Topbar pages={pages} settings={settings} model={props.model} loginUrl={loginUrl} />
+        <Topbar pages={pages} settings={settings} model={props.model} />
         <Routes>
           <Route index element={<a href={loginUrl}>login</a>} />
-          <Route path="/statistics" element={<Statistics model={props.model}/>} />
+          <Route path="/statistics" element={<Statistics model={props.model} />} />
           <Route path="/quiz" element={<>Quizzes here</>} />
           <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
           <Route path="*" element={<>404, page not found!</>} />
