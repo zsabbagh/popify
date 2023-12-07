@@ -1,4 +1,4 @@
-import UserModel from "../interfaces";
+//import UserModel from "../interfaces";
 
 export default {
     loggedIn: false as boolean,
@@ -16,4 +16,4 @@ export default {
     setAccessToken(accessToken: string): void {
         this.accessToken = accessToken;
     },
-} as UserModel;
+}

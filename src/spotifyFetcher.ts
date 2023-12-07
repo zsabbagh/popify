@@ -19,4 +19,19 @@ function fetchUser(accessToken: string) {
 }
 
 
-export {fetchUsername, fetchUser};
+// function to fetch top tracks from spotify api
+function fetchTopItems(accessToken: string,
+            type: string = "artists", 
+            limit: number = 5,
+            offset: number = 0) {
+  if (type !== "artists" && type !== "tracks") {
+    throw new Error("Invalid type! Expected 'artists' or 'tracks'");
+  }
+  const endpoint = `https://api.spotify.com/v1/me/top/${type}?limit=${limit}&offset=${offset}`;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(endpoint, { headers })
+    .then((res) => res.json())
+    .then((data) => data.items);
+}
+
+export {fetchUsername, fetchUser, fetchTopItems};
