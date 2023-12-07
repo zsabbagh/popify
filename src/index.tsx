@@ -4,18 +4,15 @@ import Router from './Router';
 import './index.css';
 import model from './Model';
 import { observable, configure } from 'mobx';
+import OnLoadPresenter from './presenters/OnLoadPresenter';
 configure({ enforceActions: 'never' }); // we don't use Mobx actions
 const reactiveModel = observable(model);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-const pages = ["Statistics", "Quiz"];
-const settings = ["Logout"];
-
 root.render(
   <React.StrictMode>
-    <Topbar pages={pages} settings={settings} model={reactiveModel} loginUrl={loginUrl}/>
-    <Router userModel={reactiveModel}/>
+  <OnLoadPresenter />
+    <Router model={reactiveModel} />
   </React.StrictMode>
 );
-
