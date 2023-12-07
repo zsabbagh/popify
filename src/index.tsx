@@ -4,7 +4,8 @@ import Router from './presenters/Router';
 import './index.css';
 import model from './models/Model';
 import { observable, configure } from 'mobx';
-import loginUrl from "./spotifyAuthorization";
+import OnLoadPresenter from './presenters/OnLoadPresenter';
+
 configure({ enforceActions: 'never' }); // we don't use Mobx actions
 const reactiveModel = observable(model);
 
@@ -12,7 +13,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
-    <Router model={reactiveModel}/>
+    <OnLoadPresenter />
+    <Router model={reactiveModel} />
   </React.StrictMode>
 );
-
