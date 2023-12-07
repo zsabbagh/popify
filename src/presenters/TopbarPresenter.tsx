@@ -16,6 +16,7 @@ export default observer(function Topbar(props: Props) {
       props.model.user = undefined;
       props.model.userAuthToken = undefined;
     } else {
+      localStorage.setItem('lastKnownPathBeforeLogin', window.location.pathname);
       window.location.href = loginUrl;
     }
   };

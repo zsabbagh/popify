@@ -13,13 +13,15 @@ export default observer(function SpotifyResponseHandler(props: Props) {
   const navigate = useNavigate();
   const location = useLocation(); // token is in the url as popify.com/login#access_token=...
   const accessToken: string = new URLSearchParams(location.hash).get('#access_token') || '';
+  const path = localStorage.getItem('lastKnownPathBeforeLogin');
+  localStorage.removeItem('lastKnownPathBeforeLogin');
 
   localStorage.setItem('spotifyAuthToken', accessToken);
   props.model.userAuthToken = accessToken;
   useEffect(() => {
     fetchUser(accessToken).then((user) => {
       props.model.user = user;
-      navigate('/');
+      navigate(path || '/');
     });
   }, []);
 
