@@ -7,41 +7,6 @@ import { set } from 'mobx';
 import StatisticsView from '../views/statisticsView';
 import { fetchTopItems } from '../spotifyFetcher';
 
-// --- mock data ---
-
-var nrItems = 0;
-function genMock(name: string) {
-    nrItems++;
-    return {
-        id: nrItems.toString() as string,
-        name: name as string,
-        type: "artist" as string,
-        popularity: nrItems as number,
-        uri: "spotify:artist:1" as string,
-        images: [
-            {
-                height: 1 as number,
-                url: "https://i.scdn.co/image/ab67616d0000b273e1e7f9c3f4a0b4c4f3f8f3f8" as string,
-                width: 1 as number
-            }
-        ],
-        external_urls: {
-            spotify: "https://open.spotify.com/artist/1" as string,
-        },
-    }
-}
-const mockArtists = ["Prince", "Fleetwood Mac", "Something Else"]
-const topItemsMock = {
-    limit: 20 as number,
-    next: null as string | null,
-    offset: 0 as number,
-    previous: null as string | null,
-    total: 2 as number,
-    items: mockArtists.map(genMock) as Array<any>,
-}
-
-// --- end mock data ---
-
 export default
 observer (
     function Statistics(props: {model: any}) {
@@ -49,30 +14,51 @@ observer (
         const navigate = useNavigate();
         if (!props.model.accessToken) {
             // navigate to login
+            // TODO: add notification that you need to login
             navigate("/");
         }
 
         const accessToken = props.model.accessToken || "";
         const [items, setItems] = useState([]);
+        const [limit, setLimit] = useState(5);
 
-        console.log(items)
+        async function onLimitChangeACB(limit: number) {
+            setLimit(limit);
+            if (limit > items.length) {
+                // we only need to fetch more items if the limit
+                // is higher than the number of items we already have
+                const offset = items.length;
+                const newLimit = limit - items.length;
+                fetchTopItems(accessToken, "artists", newLimit, offset)
+                    .then((newItems) => { 
+                        setItems(items.concat(newItems)); 
+                    })
+            }
+        }
 
-        function onItemSelectedACB(item: any) {
+        /* fetch items when loading! */
+        useEffect(() => { fetchTopItems(accessToken, "artists", limit)
+            .then((items) => { 
+                setItems(items); 
+            })
+        }, []);
+
+        async function onItemSelectedACB(item: any) {
             // TODO: implement
-            console.log("onItemSelectedACB!", item);
+            console.log("onItemSelected not implemented!", item);
         }
 
 
         if (!props?.model?.user) {
             // set location to login
             // redirect to login
-
             return <></>
         }
 
         return <StatisticsView user={props.model.user}
-                            topItems={items}
+                            topItems={items.slice(0, limit)}
                             onItemSelected={onItemSelectedACB}
+                            onLimitChange={onLimitChangeACB}
                 />;
     }
 );

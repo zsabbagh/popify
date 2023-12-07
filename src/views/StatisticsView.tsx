@@ -1,5 +1,6 @@
 // components
 import {
+    Avatar,
     Box,
     Button,
     Card,
@@ -8,16 +9,22 @@ import {
     CardMedia,
     Container,
     Grid,
+    Slider,
     Typography,
 } from '@mui/material';
 // icons
 import {
     RadioButtonChecked,
+    CheckBox,
     Favorite,
 } from '@mui/icons-material';
 import { User } from '../interfaces';
+import { blueGrey, deepOrange } from '@mui/material/colors';
 
-const border = '1px solid black';
+const DEBUG = {
+    border: '1px solid red',
+};
+const none = '';
 const theme = {
     spacing: 8,
 };
@@ -25,11 +32,12 @@ const theme = {
 function StatisticsView(props: {
     user: User | undefined,
     topItems: any, // TODO: type this
+    onLimitChange: (limit: number) => void,
     onItemSelected: (item: any) => void,
 }) {
 
     function generateGridItems() {
-        const items: Array<any> | undefined = props?.topItems?.items;
+        const items: Array<any> | undefined = props?.topItems;
         if (!items) {
             return <></>;
         }
@@ -47,25 +55,51 @@ function StatisticsView(props: {
                 props.onItemSelected(item);
             }
             return (
-                <Grid key={item.id} item xs={3}>
-                    <Card sx={{ maxWidth: 345 }}>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            image={item.images[0]?.url}
-                        />
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                            {item.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                            {item.type}
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small" onClick={onItemSelectedACB}><Favorite/></Button>
-                        </CardActions>
-                    </Card>
+                <Grid key={item.id} item xs={4} xl={2}
+                    sx={{
+                        alignContent: 'center',
+                    }}>
+                    <Box
+                        sx={{
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Card sx={{ maxWidth: 345, borderRadius: '20px' }}>
+                            <CardMedia
+                                component="img"
+                                height="140"
+                                image={item.images[0]?.url}
+                            />
+                            <CardContent sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                            }}>
+                                <Box sx={{
+                                    width: '80%',
+                                }}>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                    {item.name}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                    {item.type}
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    display: 'flex',
+                                    justifyContent: 'right',
+                                    width: '50%' }}>
+                                    <Avatar sx={{ 
+                                        bgcolor: blueGrey[200],
+                                    }}>
+                                        {index + 1}
+                                    </Avatar>
+                                </Box>
+                            </CardContent>
+                            <CardActions>
+                                <Button size="small" onClick={onItemSelectedACB}>Select</Button>
+                            </CardActions>
+                        </Card>
+                    </Box>
                 </Grid>
             );
         });
@@ -73,8 +107,16 @@ function StatisticsView(props: {
 
     const items: Array<any> | undefined = props?.topItems?.items;
 
+    async function onLimitChangeACB(event: any) {
+        props.onLimitChange(event.target.value);
+    }
+
     return (
-        <Container sx={{marginTop: '80px'}}>
+        <Container sx={{marginTop: '80px',
+            position: 'relative',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
             <Box>
                 <Typography sx={{
                         mr: 2,
@@ -85,11 +127,25 @@ function StatisticsView(props: {
                         color: 'inherit',
                         textDecoration: 'none',
                     }}>
-                    Statistics for { props.user?.display_name }
+                    Top Items for { props.user?.display_name }
                 </Typography>
             </Box>
-            <Grid container spacing={12}
-                sx={{position: 'absolute'}}>
+            <Slider
+                aria-label="Limit"
+                defaultValue={5}
+                valueLabelDisplay="auto"
+                step={1}
+                marks
+                min={1}
+                name="Limit"
+                max={50}
+                onChange={onLimitChangeACB}
+                />
+            <Grid container spacing={4}
+                sx={{position: 'absolute',
+                    marginTop: '25px',
+                    width: '90%',
+                    }}>
                 {generateGridItems()}
             </Grid>
         </Container>
