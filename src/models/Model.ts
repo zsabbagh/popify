@@ -8,5 +8,5 @@ import { Model } from "../interfaces";
 export default {
   userAuthToken: undefined,
   user: undefined,
-  pages: ["Statistics", "Quiz"]
+  pages: ["Statistics", "Quiz", "Recommendations"]
 } as Model;
