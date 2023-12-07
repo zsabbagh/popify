@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import TopbarView from '../views/topbarView';
+import TopbarView from '../views/TopbarView';
 import {Model} from '../interfaces';
 
 interface Props {

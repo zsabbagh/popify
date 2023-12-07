@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import LoginView from '../views/loginView';
+import LoginView from '../views/LoginView';
 import { useLocation } from 'react-router-dom';
 import { fetchUsername } from '../spotifyFetcher';
 import { useEffect, useState } from 'react';
