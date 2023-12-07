@@ -21,7 +21,9 @@ root.render(
 
 const attemptAutoLogin = () => {
   const token = localStorage.getItem('spotifyAuthToken');
+
   if (token) {
+    reactiveModel.userAuthToken = token;
     fetchUser(token).then((user) => {
       reactiveModel.user = user;
     });
