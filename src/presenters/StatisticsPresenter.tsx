@@ -4,7 +4,7 @@ import { fetchUsername } from '../spotifyFetcher';
 import { useEffect, useState } from 'react';
 import { User, Model } from '../interfaces';
 import { set } from 'mobx';
-import StatisticsView from '../views/statisticsView';
+import StatisticsView from '../views/StatisticsView';
 import { fetchTopItems } from '../spotifyFetcher';
 
 export default

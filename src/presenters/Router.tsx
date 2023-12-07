@@ -4,7 +4,7 @@ import loginUrl from '../spotifyAuthorization';
 import SpotifyResponseHandler from '../utils/SpotifyResponseHandler';
 import { observer } from 'mobx-react-lite';
 import Topbar from './TopbarPresenter';
-import Statistics from './statisticsPresenter';
+import Statistics from './StatisticsPresenter';
 import { Model } from '../interfaces';
 
 

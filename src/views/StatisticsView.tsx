@@ -64,7 +64,12 @@ function StatisticsView(props: {
                             justifyContent: 'center',
                         }}
                     >
-                        <Card sx={{ maxWidth: 345, borderRadius: '20px' }}>
+                        <Card sx={{
+                            maxWidth: 345, 
+                            borderRadius: '20px', 
+                            ':hover': {
+                                boxShadow: '0 0 11px rgba(33,33,33,.2)',
+                            }, }}>
                             <CardMedia
                                 component="img"
                                 height="140"
@@ -87,16 +92,34 @@ function StatisticsView(props: {
                                 <Box sx={{ 
                                     display: 'flex',
                                     justifyContent: 'right',
+                                    alignItems: 'center',
                                     width: '50%' }}>
+                                    nr
                                     <Avatar sx={{ 
                                         bgcolor: blueGrey[200],
+                                        marginLeft: '10px',
                                     }}>
                                         {index + 1}
                                     </Avatar>
                                 </Box>
                             </CardContent>
-                            <CardActions>
+                            <CardActions
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                }}>
                                 <Button size="small" onClick={onItemSelectedACB}>Select</Button>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'right',
+                                    marginLeft: 'auto',
+                                    alignItems: 'center',
+                                    width: '50%',
+                                }}
+                                >
+                                    Popularity:
+                                    <Avatar sx={{bgcolor: 'transparent', color: 'black'}}>{item.popularity}</Avatar>
+                                </Box>
                             </CardActions>
                         </Card>
                     </Box>
