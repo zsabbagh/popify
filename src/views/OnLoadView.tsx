@@ -16,12 +16,12 @@ const OnLoadView = (props: Props) => {
         height: '100vh',
         position: 'fixed',
         backgroundColor: '#333',
+        zIndex: 9999,
       }}
     >
-      <img className='pulse' style={{width: "200px", height: "200px"}} src='logo.svg'></img>
+      <img className="pulse" style={{ width: '200px', height: '200px' }} src="logo.svg"></img>
     </div>
   );
-
   return (
     <Fade timeout={props.fadeInTime} appear={false} in={!props.transition}>
       {icon}
