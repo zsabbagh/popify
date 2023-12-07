@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import Router from './presenters/Router';
 import './index.css';
@@ -23,7 +23,11 @@ const attemptAutoLogin = () => {
   const token = localStorage.getItem('spotifyAuthToken');
 
   if (token) {
+    console.log('auiwnd');
+
     reactiveModel.userAuthToken = token;
+    console.log('model', reactiveModel);
+
     fetchUser(token).then((user) => {
       reactiveModel.user = user;
     });

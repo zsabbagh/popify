@@ -3,9 +3,10 @@ import { useLocation } from 'react-router-dom';
 import { fetchUser } from '../spotifyFetcher';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Model } from '../interfaces';
 
 interface Props {
-  model: any;
+  model: Model;
 }
 
 export default observer(function SpotifyResponseHandler(props: Props) {
@@ -14,8 +15,7 @@ export default observer(function SpotifyResponseHandler(props: Props) {
   const accessToken: string = new URLSearchParams(location.hash).get('#access_token') || '';
 
   localStorage.setItem('spotifyAuthToken', accessToken);
-
-  props.model.accessToken = accessToken;
+  props.model.userAuthToken = accessToken;
   useEffect(() => {
     fetchUser(accessToken).then((user) => {
       props.model.user = user;
