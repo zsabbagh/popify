@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPresenter from './presenters/loginPresenter';
-import loginUrl from './spotifyAuthorization';
-import SpotifyResponseHandler from './utils/SpotifyResponseHandler';
+import LoginPresenter from './LoginPresenter';
+import loginUrl from '../spotifyAuthorization';
+import SpotifyResponseHandler from '../utils/SpotifyResponseHandler';
 import { observer } from 'mobx-react-lite';
-import { Model } from './interfaces';
-import Topbar from './presenters/topbarPresenter';
+import { Model } from '../interfaces';
+import Topbar from './TopbarPresenter';
 
 
 interface Props {
