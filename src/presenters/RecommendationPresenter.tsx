@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchRecommendations, fetchTopItems } from '../spotifyFetcher';
 import { set } from 'mobx';
+import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 
 import UserState, { User, Model } from '../interfaces';
 
@@ -25,8 +26,8 @@ observer (
         const [items, setItems] = useState([]);
         const [seedArtists, setSeedArtists] = useState<string[]>([]);
         const [seedTracks, setSeedTracks] = useState<string[]>([]);
-        const [topArtists, setTopArtists] = useState<string[]>([]);
-        const [topTracks, setTopTracks] = useState<string[]>([]);
+        const [topArtists, setTopArtists] = useState<SpotifyArtist[]>([]);
+        const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
         //const [timeRange, setTimeRange] = useState<string>("medium_term");
 
         function onArtistSelectedACB(id: string, name:string) {
@@ -61,17 +62,13 @@ observer (
         }
 
         function getTopArtistsACB() {
-            fetchTopItems(accessToken, "artists", numTopItems)
-            .then((items) => { 
-                setTopArtists(items); 
-            })
+            const items = props.model?.user?.top?.short_term?.artists || [];
+            setTopArtists(items?.slice(0, numTopItems));
         }
 
         function getTopTracksACB() {
-            fetchTopItems(accessToken, "tracks", numTopItems)
-            .then((items) => { 
-                setTopTracks(items); 
-            })
+            const items = props.model?.user?.top?.short_term?.tracks || [];
+            setTopTracks(items?.slice(0, numTopItems));
         }
 
         // get seed artists
@@ -85,6 +82,14 @@ observer (
         // useEffect(getRecommendationsACB, [seedArtists, seedTracks]); // update recommendations when seed artists or tracks change, too many requests
 
 
-        return <RecommendationsView topArtists={topArtists} topTracks={topTracks} recommendations={items} onGetRecommendations={getRecommendationsACB} onArtistSelected={onArtistSelectedACB} onTrackSelected={onTrackSelectedACB} seedTracks={seedTracks} seedArtists={seedArtists}/>;
+        return <RecommendationsView
+            topArtists={topArtists}
+            topTracks={topTracks} 
+            recommendations={items}
+            onGetRecommendations={getRecommendationsACB} 
+            onArtistSelected={onArtistSelectedACB}
+            onTrackSelected={onTrackSelectedACB}
+            seedTracks={seedTracks}
+            seedArtists={seedArtists}/>;
     }
 );

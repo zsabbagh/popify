@@ -24,24 +24,25 @@ function fetchUser(accessToken: string) {
       }
     })
     .then((data) => {
-      return data;
+      return {
+        ...data,
+        top: {}
+      }
     });
 }
 
 // function to fetch top tracks from spotify api
 function fetchTopItems(accessToken: string,
             type: string = "artists", 
-            limit: number = 5,
-            offset: number = 0,
+            limit: number = 50,
             timeRange: string = "short_term") {
   if (type !== "artists" && type !== "tracks") {
     throw new Error("Invalid type! Expected 'artists' or 'tracks'");
   }
-  const endpoint = `https://api.spotify.com/v1/me/top/${type}?limit=${limit}&offset=${offset}&time_range=${timeRange}`;
+  const endpoint = `https://api.spotify.com/v1/me/top/${type}?time_range=${timeRange}&limit=${limit}`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, { headers })
-    .then((res) => res.json())
-    .then((data) => data.items);
+    .then((res) => res.json());
 }
 
 function fetchRecommendations(accessToken: string,

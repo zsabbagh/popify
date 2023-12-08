@@ -50,7 +50,6 @@ export default
 function StatisticsView(props: {
     location: string,
     onLocationChange: (location: string) => void,
-    user: User | undefined,
     topItems: any, // TODO: type this
     limit: number,
     onLimitChange: (limit: number) => void,
