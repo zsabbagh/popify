@@ -2,8 +2,8 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsername } from '../spotifyFetcher';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { User, Model } from '../interfaces';
+import UserState, { User, Model } from '../interfaces';
+
 import { set } from 'mobx';
 import StatisticsView from '../views/StatisticsView';
 import { fetchTopItems } from '../spotifyFetcher';
@@ -12,8 +12,7 @@ interface TopData {
     artists: Array<any>,
     tracks: Array<any>,
 }
-
-export default observer(function Statistics(props: { model: Model }) {
+export default observer(function Statistics(props: { model: UserState }) {
   // this assumes that a UserModel is given...
   const navigate = useNavigate();
   useEffect(() => {

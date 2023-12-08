@@ -15,22 +15,15 @@ const pages = ['Statistics', 'Quiz'];
 const settings = ['Logout'];
 
 export default observer(function Router(props: Props) {
-  console.log('user', props.model.user);
+  props.model.loginUser();
+  console.log('user', props.model.userState);
   return (
     <>
-      {props.model.user ? (
-        <>
-          <div>{`Current username: ${props.model.user.display_name}`}</div>
-          <img src={props.model.user.images[0]?.url}></img>
-        </>
-      ) : (
-        <></>
-      )}
       <BrowserRouter>
         <Topbar pages={pages} settings={settings} model={props.model} />
         <Routes>
           <Route index element={<a href={loginUrl}>login</a>} />
-          <Route path="/statistics*" element={<Statistics model={props.model} />} />
+          <Route path="/statistics" element={<Statistics model={props.model.userState} />} />
           <Route path="/quiz" element={<>Quizzes here</>} />
           <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
           <Route path="*" element={<>404, page not found!</>} />
