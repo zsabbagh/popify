@@ -29,7 +29,7 @@ observer (
         function onArtistSelectedACB(id: string, name:string) {
             console.log("artist selected", name);
             if (seedArtists.includes(id)) {
-                setSeedArtists(seedArtists.filter((id) => id != id));
+                setSeedArtists(seedArtists.filter((listid) => listid != id));
             } else {
                 setSeedArtists(seedArtists.concat(id));
             }
@@ -39,15 +39,15 @@ observer (
         function onTrackSelectedACB(id: string, name:string) {
             console.log("track selected", name);
             if (seedTracks.includes(id)) {
-                setSeedTracks(seedTracks.filter((id) => id != id));
+                setSeedTracks(seedTracks.filter((listid) => listid != id));
             } else {
                 setSeedTracks(seedTracks.concat(id));
             }
             console.log("seed tracks", seedTracks);
         }
         
-        const numRecommendations = 20;
-        const numTopItems = 20;
+        const numRecommendations = 10;
+        const numTopItems = 10;
 
         function getRecommendationsACB() {
             const seedGenres = seedArtists.length == 0  && seedTracks.length == 0 ?  ["pop"] : [];
@@ -79,8 +79,9 @@ observer (
         }
 
         useEffect(onLoadACB, []);
-        useEffect(getRecommendationsACB, [seedArtists, seedTracks]); // update recommendations when seed artists or tracks change
+        // useEffect(getRecommendationsACB, [seedArtists, seedTracks]); // update recommendations when seed artists or tracks change, too many requests
 
-        return <RecommendationsView topArtists={topArtists} topTracks={topTracks} recommendations={items} onArtistSelected={onArtistSelectedACB} onTrackSelected={onTrackSelectedACB}/>;
+
+        return <RecommendationsView topArtists={topArtists} topTracks={topTracks} recommendations={items} onGetRecommendations={getRecommendationsACB} onArtistSelected={onArtistSelectedACB} onTrackSelected={onTrackSelectedACB} seedTracks={seedTracks} seedArtists={seedArtists}/>;
     }
 );
