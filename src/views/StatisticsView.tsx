@@ -1,4 +1,5 @@
 // components
+import * as React from 'react';
 import {
     Avatar,
     Box,
@@ -8,18 +9,28 @@ import {
     CardContent,
     CardMedia,
     Container,
+    FormControl,
     Grid,
+    InputLabel,
+    MenuItem,
+    Select,
     Slider,
+    Tab,
+    Tabs,
     Typography,
 } from '@mui/material';
 // icons
 import {
+    Album,
+    Person,
+    AutoStories,
     RadioButtonChecked,
     CheckBox,
     Favorite,
 } from '@mui/icons-material';
 import { User } from '../interfaces';
 import { blueGrey, deepOrange } from '@mui/material/colors';
+import ItemCard from '../components/ItemCard';
 
 const DEBUG = {
     border: '1px solid red',
@@ -28,11 +39,23 @@ const none = '';
 const theme = {
     spacing: 8,
 };
+const boxShadow = {
+    ':hover': {
+        boxShadow: '0 0 20px rgba(33,33,33,.2)',
+        transition: 'box-shadow 0.3s ease-in-out',
+    },
+}
 
+export default
 function StatisticsView(props: {
+    location: string,
+    onLocationChange: (location: string) => void,
     user: User | undefined,
     topItems: any, // TODO: type this
+    limit: number,
     onLimitChange: (limit: number) => void,
+    timeRange: string,
+    onTimeRangeChange: (timeRange: string) => void,
     onItemSelected: (item: any) => void,
 }) {
 
@@ -64,64 +87,7 @@ function StatisticsView(props: {
                             justifyContent: 'center',
                         }}
                     >
-                        <Card sx={{
-                            maxWidth: 345, 
-                            borderRadius: '20px', 
-                            ':hover': {
-                                boxShadow: '0 0 11px rgba(33,33,33,.2)',
-                            }, }}>
-                            <CardMedia
-                                component="img"
-                                height="140"
-                                image={item.images[0]?.url}
-                            />
-                            <CardContent sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                            }}>
-                                <Box sx={{
-                                    width: '80%',
-                                }}>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                    {item.name}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                    {item.type}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ 
-                                    display: 'flex',
-                                    justifyContent: 'right',
-                                    alignItems: 'center',
-                                    width: '50%' }}>
-                                    nr
-                                    <Avatar sx={{ 
-                                        bgcolor: blueGrey[200],
-                                        marginLeft: '10px',
-                                    }}>
-                                        {index + 1}
-                                    </Avatar>
-                                </Box>
-                            </CardContent>
-                            <CardActions
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                }}>
-                                <Button size="small" onClick={onItemSelectedACB}>Select</Button>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'right',
-                                    marginLeft: 'auto',
-                                    alignItems: 'center',
-                                    width: '50%',
-                                }}
-                                >
-                                    Popularity:
-                                    <Avatar sx={{bgcolor: 'transparent', color: 'black'}}>{item.popularity}</Avatar>
-                                </Box>
-                            </CardActions>
-                        </Card>
+                        <ItemCard item={item} index={index} onItemSelected={onItemSelectedACB} />
                     </Box>
                 </Grid>
             );
@@ -129,10 +95,7 @@ function StatisticsView(props: {
     }
 
     const items: Array<any> | undefined = props?.topItems?.items;
-
-    async function onLimitChangeACB(event: any) {
-        props.onLimitChange(event.target.value);
-    }
+    const [dropdownOpened, setDropdownOpened] = React.useState(false);
 
     return (
         <Container sx={{marginTop: '80px',
@@ -140,30 +103,94 @@ function StatisticsView(props: {
             justifyContent: 'center',
             alignItems: 'center',
         }}>
-            <Box>
-                <Typography sx={{
-                        mr: 2,
-                        display: { xs: 'none', md: 'flex' },
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginBottom: '20px',
+            }}>
+                <Tabs
+                    value={props.location}
+                    onChange={(event: any, value: any) => props.onLocationChange(value)}
+                    textColor="secondary"
+                    indicatorColor="secondary"
+                    aria-label="secondary tabs example"
+                >
+                    <Tab icon={<Person/>} value="artists" label="Artists" sx={boxShadow}/>
+                    <Tab icon={<Album/>} value="tracks" label="Tracks" sx={boxShadow}/>
+                    <Tab icon={<AutoStories/>} value="genres" label="Genres" sx={boxShadow}/>
+                </Tabs>
+            </div>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '20px',
+                marginBottom: '20px',
+            }}>
+                <div style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '50%',
+                }}>
+                    <Typography id="discrete-slider" gutterBottom>
+                        Limit
+                    </Typography>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}>
-                    Top Items for { props.user?.display_name }
-                </Typography>
-            </Box>
-            <Slider
-                aria-label="Limit"
-                defaultValue={5}
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={1}
-                name="Limit"
-                max={50}
-                onChange={onLimitChangeACB}
-                />
+                        <Avatar sx={{
+                            bgcolor: 'transparent',
+                            border: '1px solid black',
+                            marginRight: '10px',
+                            color: 'black'}}>
+                            {props.limit}
+                        </Avatar>
+                        <Slider
+                            aria-label="Limit"
+                            defaultValue={props.limit}
+                            valueLabelDisplay="auto"
+                            step={1}
+                            marks
+                            min={1}
+                            name="Limit"
+                            max={50}
+                            onChange={(event: any, value: any) => props.onLimitChange(value) }
+                            />
+                    </div>
+                </div>
+                <div style={{
+                    width: '80%',
+                    marginRight: '20px',
+                }}>
+                    <Button sx={{ display: 'block', mt: 2 }} onClick={() => setDropdownOpened(!dropdownOpened)}>
+                    Select Time Range
+                    </Button>
+                    <FormControl sx={{ m: 1, minWidth: 250 }}>
+                    <InputLabel id="demo-controlled-open-select-label">Time Range</InputLabel>
+                    <Select
+                        labelId="demo-controlled-open-select-label"
+                        id="demo-controlled-open-select"
+                        open={dropdownOpened}
+                        onClose={() => setDropdownOpened(false)}
+                        onOpen={() => setDropdownOpened(true)}
+                        value={props.timeRange}
+                        label="Time Range"
+                        onChange={(event: any) => props.onTimeRangeChange(event.target.value)}
+                    >
+                        <MenuItem value={'short_term'}>4 weeks</MenuItem>
+                        <MenuItem value={'medium_term'}>6 months</MenuItem>
+                        <MenuItem value={'long_term'}>Several years</MenuItem>
+                    </Select>
+                    </FormControl>
+                </div>
+            </div>
             <Grid container spacing={4}
                 sx={{position: 'absolute',
                     marginTop: '25px',
@@ -174,5 +201,3 @@ function StatisticsView(props: {
         </Container>
     );
 }
-
-export default StatisticsView;
