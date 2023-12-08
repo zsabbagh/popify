@@ -11,20 +11,26 @@ import {
     Container,
     FormControl,
     Grid,
-    MenuItem,
     InputLabel,
+    MenuItem,
     Select,
     Slider,
+    Tab,
+    Tabs,
     Typography,
 } from '@mui/material';
 // icons
 import {
+    Album,
+    Person,
+    AutoStories,
     RadioButtonChecked,
     CheckBox,
     Favorite,
 } from '@mui/icons-material';
 import { User } from '../interfaces';
 import { blueGrey, deepOrange } from '@mui/material/colors';
+import ItemCard from '../components/ItemCard';
 
 const DEBUG = {
     border: '1px solid red',
@@ -36,35 +42,16 @@ const theme = {
 
 export default
 function StatisticsView(props: {
+    location: string,
+    onLocationChange: (location: string) => void,
     user: User | undefined,
     topItems: any, // TODO: type this
+    limit: number,
     onLimitChange: (limit: number) => void,
-    onItemSelected: (item: any) => void,
+    timeRange: string,
     onTimeRangeChange: (timeRange: string) => void,
+    onItemSelected: (item: any) => void,
 }) {
-
-    // component states
-    const [limit, setLimit] = React.useState(props?.topItems?.items?.length || 5);
-    const [open, setOpen] = React.useState(false);
-    const [timeRange, setTimeRange] = React.useState('short_term');
-
-    // handles the time limit slider
-    async function onLimitChangeACB(event: any) {
-        setLimit(event.target.value);
-        props.onLimitChange(event.target.value);
-    }
-
-    async function onTimeRangeOpenedACB() {
-        setOpen(true);
-    }
-    async function onTimeRangeClosedACB() {
-        setOpen(false);
-    }
-    // the user has selected a new time range
-    async function onTimeRangeChangedACB(event: any) {
-        setTimeRange(event.target.value);
-        props.onTimeRangeChange(event.target.value);
-    }
 
     function generateGridItems() {
         const items: Array<any> | undefined = props?.topItems;
@@ -94,74 +81,15 @@ function StatisticsView(props: {
                             justifyContent: 'center',
                         }}
                     >
-                        <Card sx={{
-                            maxWidth: 345, 
-                            borderRadius: '20px', 
-                            ':hover': {
-                                boxShadow: '0 0 11px rgba(33,33,33,.2)',
-                            }, }}>
-                            <CardMedia
-                                component="img"
-                                height="140"
-                                image={item.images[0]?.url}
-                            />
-                            <CardContent sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                            }}>
-                                <Box sx={{
-                                    width: '80%',
-                                }}>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                    {item.name}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                    {item.type}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ 
-                                    display: 'flex',
-                                    justifyContent: 'right',
-                                    alignItems: 'center',
-                                    width: '50%' }}>
-                                    nr
-                                    <Avatar sx={{ 
-                                        bgcolor: blueGrey[200],
-                                        marginLeft: '10px',
-                                    }}>
-                                        {index + 1}
-                                    </Avatar>
-                                </Box>
-                            </CardContent>
-                            <CardActions
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                }}>
-                                <Button size="small" onClick={onItemSelectedACB}>Show More</Button>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'right',
-                                    marginLeft: 'auto',
-                                    alignItems: 'center',
-                                    width: '50%',
-                                }}
-                                >
-                                    Popularity:
-                                    <Avatar sx={{bgcolor: 'transparent', color: 'black'}}>{item.popularity}</Avatar>
-                                </Box>
-                            </CardActions>
-                        </Card>
+                        <ItemCard item={item} index={index} onItemSelected={onItemSelectedACB} />
                     </Box>
                 </Grid>
             );
         });
     }
 
-      
-
     const items: Array<any> | undefined = props?.topItems?.items;
-
+    const [dropdownOpened, setDropdownOpened] = React.useState(false);
 
     return (
         <Container sx={{marginTop: '80px',
@@ -169,51 +97,93 @@ function StatisticsView(props: {
             justifyContent: 'center',
             alignItems: 'center',
         }}>
-            <div>
-                <Typography sx={{
-                        mr: 2,
-                        display: { xs: 'none', md: 'flex' },
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
-                    }}>
-                    Top Items for { props.user?.display_name }
-                </Typography>
-            </div>
-            <Slider
-                aria-label="Limit"
-                defaultValue={limit}
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={1}
-                name="Limit"
-                max={50}
-                onChange={onLimitChangeACB}
-                />
-            <div>
-                <Button sx={{ display: 'block', mt: 2 }} onClick={onTimeRangeOpenedACB}>
-                Select Time Range
-                </Button>
-                <FormControl sx={{ m: 1, minWidth: 250 }}>
-                <InputLabel id="demo-controlled-open-select-label">Age</InputLabel>
-                <Select
-                    labelId="demo-controlled-open-select-label"
-                    id="demo-controlled-open-select"
-                    open={open}
-                    onClose={onTimeRangeClosedACB}
-                    onOpen={onTimeRangeOpenedACB}
-                    value={timeRange}
-                    label="Time Range"
-                    onChange={onTimeRangeChangedACB}
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginBottom: '20px',
+            }}>
+                <Tabs
+                    value={props.location}
+                    onChange={(event: any, value: any) => props.onLocationChange(value)}
+                    textColor="secondary"
+                    indicatorColor="secondary"
+                    aria-label="secondary tabs example"
                 >
-                    <MenuItem value={'short_term'}>4 weeks</MenuItem>
-                    <MenuItem value={'medium_term'}>6 months</MenuItem>
-                    <MenuItem value={'long_term'}>Several years</MenuItem>
-                </Select>
-                </FormControl>
+                    <Tab icon={<Person/>} value="artists" label="Artists" />
+                    <Tab icon={<Album/>} value="tracks" label="Tracks" />
+                    <Tab icon={<AutoStories/>} value="genres" label="Genres"/>
+                </Tabs>
+            </div>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '20px',
+                marginBottom: '20px',
+            }}>
+                <div style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '50%',
+                }}>
+                    <Typography id="discrete-slider" gutterBottom>
+                        Limit
+                    </Typography>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <Avatar sx={{
+                            bgcolor: 'transparent',
+                            border: '1px solid black',
+                            marginRight: '10px',
+                            color: 'black'}}>
+                            {props.limit}
+                        </Avatar>
+                        <Slider
+                            aria-label="Limit"
+                            defaultValue={props.limit}
+                            valueLabelDisplay="auto"
+                            step={1}
+                            marks
+                            min={1}
+                            name="Limit"
+                            max={50}
+                            onChange={(event: any, value: any) => props.onLimitChange(value) }
+                            />
+                    </div>
+                </div>
+                <div style={{
+                    width: '80%',
+                    marginRight: '20px',
+                }}>
+                    <Button sx={{ display: 'block', mt: 2 }} onClick={() => setDropdownOpened(!dropdownOpened)}>
+                    Select Time Range
+                    </Button>
+                    <FormControl sx={{ m: 1, minWidth: 250 }}>
+                    <InputLabel id="demo-controlled-open-select-label">Time Range</InputLabel>
+                    <Select
+                        labelId="demo-controlled-open-select-label"
+                        id="demo-controlled-open-select"
+                        open={dropdownOpened}
+                        onClose={() => setDropdownOpened(false)}
+                        onOpen={() => setDropdownOpened(true)}
+                        value={props.timeRange}
+                        label="Time Range"
+                        onChange={(event: any) => props.onTimeRangeChange(event.target.value)}
+                    >
+                        <MenuItem value={'short_term'}>4 weeks</MenuItem>
+                        <MenuItem value={'medium_term'}>6 months</MenuItem>
+                        <MenuItem value={'long_term'}>Several years</MenuItem>
+                    </Select>
+                    </FormControl>
+                </div>
             </div>
             <Grid container spacing={4}
                 sx={{position: 'absolute',
