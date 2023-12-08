@@ -2,6 +2,15 @@ import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Typogra
 import { blueGrey } from "@mui/material/colors";
 import { Album, Groups } from "@mui/icons-material";
 
+const pastelColors = [
+    'rgba(255, 99, 71, 0.2)', // red
+    'rgba(255, 165, 0, 0.2)', // orange
+    'rgba(255, 215, 0, 0.2)', // yellow
+    'rgba(255, 255, 0, 0.2)', // now greenish
+    'rgba(173, 255, 47, 0.2)',
+    'rgba(154, 205, 50, 0.2)',
+    'rgba(0, 255, 127, 0.2)',
+]
 
 export default
 function ItemCard(props: { item: any; index: number; onItemSelected: Function }) {
@@ -45,18 +54,21 @@ function ItemCard(props: { item: any; index: number; onItemSelected: Function })
     return (
         <Card sx={{
             maxWidth: 345, 
+            background: image ? 'transparent' : 'linear-gradient(45deg, #FF7599 10%, #FF8E53 90%)',
             borderRadius: '20px', 
             height: '95%',
             width: '95%',
             ':hover': {
-                boxShadow: '0 0 20px rgba(33,33,33,.4)',
+                boxShadow: '0 0 40px rgba(33,33,33,.4)',
                 transition: 'all .5s ease-in-out',
             }, }}>
-            <CardMedia
-                component="img"
-                height="140"
-                image={image}
-            />
+            {
+                image ?
+                <CardMedia component="img" height="140" image={image}/>
+                :
+                <CardMedia>
+                </CardMedia>
+            }
             <CardContent sx={{
                 display: 'flex',
                 flexDirection: 'row',

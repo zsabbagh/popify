@@ -39,6 +39,12 @@ const none = '';
 const theme = {
     spacing: 8,
 };
+const boxShadow = {
+    ':hover': {
+        boxShadow: '0 0 20px rgba(33,33,33,.2)',
+        transition: 'box-shadow 0.3s ease-in-out',
+    },
+}
 
 export default
 function StatisticsView(props: {
@@ -112,9 +118,9 @@ function StatisticsView(props: {
                     indicatorColor="secondary"
                     aria-label="secondary tabs example"
                 >
-                    <Tab icon={<Person/>} value="artists" label="Artists" />
-                    <Tab icon={<Album/>} value="tracks" label="Tracks" />
-                    <Tab icon={<AutoStories/>} value="genres" label="Genres"/>
+                    <Tab icon={<Person/>} value="artists" label="Artists" sx={boxShadow}/>
+                    <Tab icon={<Album/>} value="tracks" label="Tracks" sx={boxShadow}/>
+                    <Tab icon={<AutoStories/>} value="genres" label="Genres" sx={boxShadow}/>
                 </Tabs>
             </div>
             <div style={{
