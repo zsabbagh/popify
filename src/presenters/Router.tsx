@@ -7,7 +7,6 @@ import Statistics from './StatisticsPresenter';
 import Recommendations from './RecommendationPresenter';
 import { Model } from '../interfaces';
 
-
 interface Props {
   model: Model;
 }
@@ -27,10 +26,11 @@ export default observer(function Router(props: Props) {
         <></>
       )}
       <BrowserRouter>
+
       <Topbar pages={props.model.pages} settings={settings} model={props.model} loginUrl={loginUrl} />
         <Routes>
           <Route index element={<a href={loginUrl}>login</a>} />
-          <Route path="/statistics" element={<Statistics model={props.model}/>} />
+          <Route path="/statistics*" element={<Statistics model={props.model} />} />
           <Route path="/quiz" element={<>Quizzes here</>} />
           <Route path="/recommendations" element={<Recommendations model={props.model}/>} />
           <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
