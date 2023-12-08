@@ -44,4 +44,27 @@ function fetchTopItems(accessToken: string,
     .then((data) => data.items);
 }
 
-export { fetchUsername, fetchUser, fetchTopItems };
+function fetchRecommendations(accessToken: string,
+    limit: number = 5,
+    seedArtists: string[] = [],
+    seedTracks: string[] = [],
+    seedGenres: string[] = []) {
+      let endpoint = `https://api.spotify.com/v1/recommendations?limit=${limit}`;
+
+      if (seedArtists.length > 0) {
+        endpoint = endpoint.concat(`&seed_artists=${seedArtists.join(",")}`);
+      }
+      if (seedTracks.length > 0) {
+        endpoint = endpoint.concat(`&seed_tracks=${seedTracks.join(",")}`);
+      }
+      if (seedGenres.length > 0) {
+        endpoint = endpoint.concat(`&seed_genres=${seedGenres.join(",")}`);
+      }
+
+      const headers = { Authorization: `Bearer ${accessToken}` };
+      return fetch(endpoint, { headers })
+        .then((res) => res.json())
+        .then((data) => data.tracks);
+    }
+
+export {fetchUsername, fetchUser, fetchTopItems, fetchRecommendations};

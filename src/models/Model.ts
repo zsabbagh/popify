@@ -40,5 +40,5 @@ export default {
     this.userState.user = undefined;
     this.userState.userAuthToken = undefined;
   },
-  pages: ['Statistics', 'Quiz'],
+  pages: ['Statistics', 'Quiz', 'Recommendations'],
 } as Model;
