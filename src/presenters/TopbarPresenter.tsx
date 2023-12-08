@@ -11,10 +11,8 @@ interface Props {
 
 export default observer(function Topbar(props: Props) {
   const handleLoginLogout = () => {
-    if (!!props.model.user) {
-      localStorage.removeItem('spotifyAuthToken');
-      props.model.user = undefined;
-      props.model.userAuthToken = undefined;
+    if (!!props.model.userState.user) {
+        props.model.logoutUser();
     } else {
       localStorage.setItem('lastKnownPathBeforeLogin', window.location.pathname);
       window.location.href = loginUrl;
@@ -24,7 +22,7 @@ export default observer(function Topbar(props: Props) {
     <TopbarView
       pages={props.pages}
       settings={props.settings}
-      loggedIn={!!props.model.user}
+      loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
       handleLoginLogout={handleLoginLogout}
     />

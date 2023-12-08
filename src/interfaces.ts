@@ -19,7 +19,15 @@ export interface User {
 
 
 export interface Model {
+  userState: UserState;
+  loginUser(userAuthToken?: string): void;
+  logoutUser(): void;
+}
+
+interface UserState {
   userAuthToken?: string;
   user?: User;
-  pages: string[];
+  errorMessage: string | null;
 }
+
+export default UserState;

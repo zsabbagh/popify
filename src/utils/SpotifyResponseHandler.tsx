@@ -17,13 +17,8 @@ export default observer(function SpotifyResponseHandler(props: Props) {
   localStorage.removeItem('lastKnownPathBeforeLogin');
 
   localStorage.setItem('spotifyAuthToken', accessToken);
-  props.model.userAuthToken = accessToken;
-  useEffect(() => {
-    fetchUser(accessToken).then((user) => {
-      props.model.user = user;
-      navigate(path || '/');
-    });
-  }, []);
+  props.model.loginUser(accessToken);
+  navigate(path || '/');
 
   return <>Handling authentication...</>;
 });
