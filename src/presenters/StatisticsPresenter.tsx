@@ -21,6 +21,7 @@ export default observer(function Statistics(props: { model: Model }) {
   const accessToken = props.model.userAuthToken || '';
   const [items, setItems] = useState([]);
   const [limit, setLimit] = useState(5);
+  const [timeRange, setTimeRange] = useState('short_term');
 
   async function onLimitChangeACB(limit: number) {
     setLimit(limit);
@@ -35,12 +36,31 @@ export default observer(function Statistics(props: { model: Model }) {
     }
   }
 
-  /* fetch items when loading! */
+  // time range changes
+  async function onTimeRangeChangeACB(newTimeRange: string) {
+    console.log('time range changed from, ', timeRange, ' to ', newTimeRange);
+    setTimeRange(newTimeRange);
+  }
+
+  /* when limit changes, only fetch necessary items */
   useEffect(() => {
-    fetchTopItems(accessToken, 'artists', limit).then((items) => {
-      setItems(items);
+    if (limit > items.length) {
+      // we only need to fetch more items if the limit
+      // is higher than the number of items we already have
+      const offset = items.length;
+      const newLimit = limit - items.length;
+      fetchTopItems(accessToken, 'artists', newLimit, offset, timeRange).then((newItems) => {
+        setItems(items.concat(newItems));
+      });
+    }
+  }, [limit]);
+
+  // when time range changes, fetch new items always
+  useEffect(() => {
+    fetchTopItems(accessToken, 'artists', limit, 0, timeRange).then((newItems) => {
+      setItems(newItems);
     });
-  }, []);
+  }, [timeRange]);
 
   async function onItemSelectedACB(item: any) {
     // TODO: implement
@@ -59,6 +79,7 @@ export default observer(function Statistics(props: { model: Model }) {
       topItems={items.slice(0, limit)}
       onItemSelected={onItemSelectedACB}
       onLimitChange={onLimitChangeACB}
+      onTimeRangeChange={onTimeRangeChangeACB}
     />
   );
 });

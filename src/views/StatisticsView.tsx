@@ -1,4 +1,5 @@
 // components
+import * as React from 'react';
 import {
     Avatar,
     Box,
@@ -8,7 +9,11 @@ import {
     CardContent,
     CardMedia,
     Container,
+    FormControl,
     Grid,
+    MenuItem,
+    InputLabel,
+    Select,
     Slider,
     Typography,
 } from '@mui/material';
@@ -29,12 +34,37 @@ const theme = {
     spacing: 8,
 };
 
+export default
 function StatisticsView(props: {
     user: User | undefined,
     topItems: any, // TODO: type this
     onLimitChange: (limit: number) => void,
     onItemSelected: (item: any) => void,
+    onTimeRangeChange: (timeRange: string) => void,
 }) {
+
+    // component states
+    const [limit, setLimit] = React.useState(props?.topItems?.items?.length || 5);
+    const [open, setOpen] = React.useState(false);
+    const [timeRange, setTimeRange] = React.useState('short_term');
+
+    // handles the time limit slider
+    async function onLimitChangeACB(event: any) {
+        setLimit(event.target.value);
+        props.onLimitChange(event.target.value);
+    }
+
+    async function onTimeRangeOpenedACB() {
+        setOpen(true);
+    }
+    async function onTimeRangeClosedACB() {
+        setOpen(false);
+    }
+    // the user has selected a new time range
+    async function onTimeRangeChangedACB(event: any) {
+        setTimeRange(event.target.value);
+        props.onTimeRangeChange(event.target.value);
+    }
 
     function generateGridItems() {
         const items: Array<any> | undefined = props?.topItems;
@@ -108,7 +138,7 @@ function StatisticsView(props: {
                                     display: 'flex',
                                     flexDirection: 'row',
                                 }}>
-                                <Button size="small" onClick={onItemSelectedACB}>Select</Button>
+                                <Button size="small" onClick={onItemSelectedACB}>Show More</Button>
                                 <Box sx={{
                                     display: 'flex',
                                     justifyContent: 'right',
@@ -128,11 +158,10 @@ function StatisticsView(props: {
         });
     }
 
+      
+
     const items: Array<any> | undefined = props?.topItems?.items;
 
-    async function onLimitChangeACB(event: any) {
-        props.onLimitChange(event.target.value);
-    }
 
     return (
         <Container sx={{marginTop: '80px',
@@ -140,7 +169,7 @@ function StatisticsView(props: {
             justifyContent: 'center',
             alignItems: 'center',
         }}>
-            <Box>
+            <div>
                 <Typography sx={{
                         mr: 2,
                         display: { xs: 'none', md: 'flex' },
@@ -152,10 +181,10 @@ function StatisticsView(props: {
                     }}>
                     Top Items for { props.user?.display_name }
                 </Typography>
-            </Box>
+            </div>
             <Slider
                 aria-label="Limit"
-                defaultValue={5}
+                defaultValue={limit}
                 valueLabelDisplay="auto"
                 step={1}
                 marks
@@ -164,6 +193,28 @@ function StatisticsView(props: {
                 max={50}
                 onChange={onLimitChangeACB}
                 />
+            <div>
+                <Button sx={{ display: 'block', mt: 2 }} onClick={onTimeRangeOpenedACB}>
+                Select Time Range
+                </Button>
+                <FormControl sx={{ m: 1, minWidth: 250 }}>
+                <InputLabel id="demo-controlled-open-select-label">Age</InputLabel>
+                <Select
+                    labelId="demo-controlled-open-select-label"
+                    id="demo-controlled-open-select"
+                    open={open}
+                    onClose={onTimeRangeClosedACB}
+                    onOpen={onTimeRangeOpenedACB}
+                    value={timeRange}
+                    label="Time Range"
+                    onChange={onTimeRangeChangedACB}
+                >
+                    <MenuItem value={'short_term'}>4 weeks</MenuItem>
+                    <MenuItem value={'medium_term'}>6 months</MenuItem>
+                    <MenuItem value={'long_term'}>Several years</MenuItem>
+                </Select>
+                </FormControl>
+            </div>
             <Grid container spacing={4}
                 sx={{position: 'absolute',
                     marginTop: '25px',
@@ -174,5 +225,3 @@ function StatisticsView(props: {
         </Container>
     );
 }
-
-export default StatisticsView;
