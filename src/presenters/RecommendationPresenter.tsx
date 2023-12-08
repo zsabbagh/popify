@@ -9,16 +9,18 @@ import { set } from 'mobx';
 
 export default
 observer (
-        function Recommendations(props: {model: any}) {
+        function Recommendations(props: {model: Model}) {
             // this assumes that a UserModel is given...
             const navigate = useNavigate();
-        if (!props.model.accessToken) {
-            // navigate to login
-            // TODO: add notification that you need to login
-            navigate("/");
-        }
+            useEffect(() => {
+              if (!props.model.userAuthToken) {
+                // navigate to login
+                // TODO: add notification that you need to login
+                navigate('/');
+              }
+            }, []);
 
-        const accessToken = props.model.accessToken || "";
+        const accessToken = props.model.userAuthToken || "";
         const [items, setItems] = useState([]);
         const [seedArtists, setSeedArtists] = useState<string[]>([]);
         const [seedTracks, setSeedTracks] = useState<string[]>([]);
