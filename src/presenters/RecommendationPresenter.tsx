@@ -76,7 +76,6 @@ observer (
         function onLoadACB() {
             getTopArtistsACB();
             getTopTracksACB();
-            getRecommendationsACB();
         }
 
         useEffect(onLoadACB, []);

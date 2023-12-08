@@ -1,6 +1,10 @@
 function RecommendationsView(props: {recommendations: string[]; topArtists: string[]; topTracks: string[]; onArtistSelected: (id: string, name: string) => void; onTrackSelected: (id: string, name: string) => void}) {
     function recommendationACB(recommendation: any) {
-        return <li>{recommendation.name}</li>;
+        return (
+        <div>
+            {recommendation.artists[0].name} - {recommendation.name}
+        </div>
+        );
     }
     function trackACB(track: any) {
         return (
@@ -32,9 +36,10 @@ function RecommendationsView(props: {recommendations: string[]; topArtists: stri
                 {props.topTracks?.map(trackACB)}
             </fieldset>
 
-            <ul>
+            <fieldset>
+                <legend>Recommendations:</legend>
                 {props.recommendations?.map(recommendationACB)}
-            </ul>   
+            </fieldset>  
         </>    
     );
 }
