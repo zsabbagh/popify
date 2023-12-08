@@ -1,6 +1,14 @@
 import { Avatar, Button, Checkbox, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { SpotifyArtist, SpotifyTrack } from '../interfaces';
 
-function RecommendationsView(props: {recommendations: string[]; topArtists: string[]; topTracks: string[]; onGetRecommendations: () => void; onArtistSelected: (id: string, name: string) => void; onTrackSelected: (id: string, name: string) => void; seedArtists: string[]; seedTracks: string[];}) {
+function RecommendationsView(props: {recommendations: string[];
+                                    topArtists: SpotifyArtist[];
+                                    topTracks: SpotifyTrack[];
+                                    onGetRecommendations: () => void;
+                                    onArtistSelected: (id: string, name: string) => void;
+                                    onTrackSelected: (id: string, name: string) => void;
+                                    seedArtists: string[];
+                                    seedTracks: string[];}) {
     function trackACB(track: any) {
         return (
             <ListItem sx={{ height: 60 }}>
