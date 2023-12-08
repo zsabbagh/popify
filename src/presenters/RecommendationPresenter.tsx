@@ -1,15 +1,16 @@
 import { observer } from 'mobx-react-lite';
 import RecommendationsView from '../views/RecommendationView';
-import {Model} from '../interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchRecommendations, fetchTopItems } from '../spotifyFetcher';
 import { set } from 'mobx';
 
+import UserState, { User, Model } from '../interfaces';
+
 
 export default
 observer (
-        function Recommendations(props: {model: Model}) {
+        function Recommendations(props: {model: UserState}) {
             // this assumes that a UserModel is given...
             const navigate = useNavigate();
             useEffect(() => {

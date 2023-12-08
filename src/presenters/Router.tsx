@@ -25,7 +25,7 @@ export default observer(function Router(props: Props) {
           <Route index element={<a href={loginUrl}>login</a>} />
           <Route path="/statistics" element={<Statistics model={props.model.userState} />} />
           <Route path="/quiz" element={<>Quizzes here</>} />
-          <Route path="/recommendations" element={<Recommendations model={props.model}/>} />
+          <Route path="/recommendations" element={<Recommendations model={props.model.userState}/>} />
           <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
           <Route path="*" element={<>404, page not found!</>} />
         </Routes>

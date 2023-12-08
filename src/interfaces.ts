@@ -22,6 +22,7 @@ export interface Model {
   userState: UserState;
   loginUser(userAuthToken?: string): void;
   logoutUser(): void;
+  pages: string[];
 }
 
 interface UserState {
