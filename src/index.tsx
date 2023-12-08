@@ -19,7 +19,8 @@ root.render(
   </React.StrictMode>
 );
 
-const attemptAutoLogin = () => {
+
+/*const attemptAutoLogin = () => {
   const token = localStorage.getItem('spotifyAuthToken');
 
   if (token) {
@@ -34,3 +35,5 @@ const attemptAutoLogin = () => {
   }
 };
 attemptAutoLogin();
+TODO
+*/ 

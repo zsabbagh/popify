@@ -19,21 +19,15 @@ export interface User {
 
 
 export interface Model {
+  userState: UserState;
+  loginUser(userAuthToken?: string): void;
+  logoutUser(): void;
+}
+
+interface UserState {
   userAuthToken?: string;
   user?: User;
-}
-/*
-interface UserModel {
-    loggedIn: boolean;
-    username: string | null;
-    accessToken: string | null;
-
-    setLoggedIn(loggedIn: boolean) : void;
-
-    setUserName(username: string | null) : void;
-
-    setAccessToken(accessToken: string | null) : void;
+  errorMessage: string | null;
 }
 
-export default UserModel;
-*/
+export default UserState;
