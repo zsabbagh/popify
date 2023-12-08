@@ -18,7 +18,11 @@ export default observer(function SpotifyResponseHandler(props: Props) {
 
   localStorage.setItem('spotifyAuthToken', accessToken);
   props.model.loginUser(accessToken);
-  navigate(path || '/');
+  console.log('path', path);
+
+  useEffect(() => {
+    navigate(path || '/');
+  }, []);
 
   return <>Handling authentication...</>;
 });
