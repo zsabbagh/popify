@@ -34,8 +34,8 @@ quizzes given an artist, album, genre, or playlist.
 
     > models
         Model.ts
-        UserModels.ts
     > presenters
+        OnLoadPresenter.tsx - Handles an animation when site first loads
         LoginPresenter.tsx - login
         QuizResultsPresenter.tsx - winners and such
         QuizzesPresenter.tsx - frontpage and selection
@@ -47,6 +47,7 @@ quizzes given an artist, album, genre, or playlist.
     > utils
         SpotifyResponseHandler.tsx
     > views
+        OnLoadView.tsx - Displays animation
         LoginView.tsx - displays login
         QuizResultsView.tsx - displaying winners and such
         QuizzesView.tsx - frontpage and selection
