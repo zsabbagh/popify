@@ -34,21 +34,15 @@ export default observer(function Statistics(props: { model: Model }) {
 
   function calculateTopGenres() {
     const items = topData.artists;
-    console.log('calculating genres from artists: ', items)
     if (!items) {
         return;
     }
     let genres = new Map<string, any>();
     for (const item of items) {
-        console.log("processing item: ", item)
         const itemGenres = item?.genres || [];
         for (const genre of itemGenres) {
-            console.log("processing genre: ", genre)
             if (genres.has(genre)) {
-                genres.set(
-                    genre,
-                    genres.get(genre).popularity + 1
-                );
+                genres.get(genre).popularity++;
             } else {
                 genres.set(genre, {
                     id: genre?.id || genre,
@@ -64,7 +58,6 @@ export default observer(function Statistics(props: { model: Model }) {
         .from(genres.values())
         .sort((a, b) => b.popularity - a.popularity);
     setTopGenres(newGenres);
-    console.log("got genres: ", genres);
   }
 
   /* returns the current item list based on locations */
