@@ -9,16 +9,16 @@ import { fetchTopItems } from '../spotifyFetcher';
 
 export default
 observer (
-    function Statistics(props: {model: Model}) {
+    function Statistics(props: {model: any}) {
         // this assumes that a UserModel is given...
         const navigate = useNavigate();
-        if (!props.model.userAuthToken) {
+        if (!props.model.accessToken) {
             // navigate to login
             // TODO: add notification that you need to login
             navigate("/");
         }
 
-        const accessToken = props.model.userAuthToken || "";
+        const accessToken = props.model.accessToken || "";
         const [items, setItems] = useState([]);
         const [limit, setLimit] = useState(5);
 
