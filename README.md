@@ -22,44 +22,51 @@ quizzes given an artist, album, genre, or playlist.
     - Topbar
     - Working router
     - Deployed
+    - Statistics presenter/view
+    - Persist user authentication through refresh
+    - Fetch top items from Spotify API
 
 ## What is planned to be done
 
     - Recommendation page: recommendations based on the users listens
-    - Statistics page: presenting top listens for the user
-    - Quiz pages
+    - Statistics page: improve it and build upon it
+    - Quiz pages: quiz creation etc
     - Firebase integration
 
 ## Project file structure
 
-    > models
-        Model.ts
-    > presenters
-        OnLoadPresenter.tsx - Handles an animation when site first loads
-        LoginPresenter.tsx - login
-        QuizResultsPresenter.tsx - winners and such
-        QuizzesPresenter.tsx - frontpage and selection
-        QuizzingPresenter.tsx - handling quizzes
-        RecommendationPresenter.tsx - recommendations
-        Router.tsx
-        StatisticsPresenter.tsx - handling statistics
-        TopbarPresenter.tsx - topbar selection
-    > utils
-        SpotifyResponseHandler.tsx
-    > views
-        OnLoadView.tsx - Displays animation
-        LoginView.tsx - displays login
-        QuizResultsView.tsx - displaying winners and such
-        QuizzesView.tsx - frontpage and selection
-        QuizzingView.tsx - displaying the playing
-        RecommendationView.tsx - displays recommendations
-        StatisticsView.tsx - presenting statistics
-        TopbarView.tsx - topbar display
-    index.css
-    interfaces.ts - type definitions
-    react-app-env.d.ts 
-    spotifyAuthorization.ts
-    spotifyFetcher.ts
+```
+> models
+    Model.ts - the main model
+> handlers
+    SpotifyResponseHandler.tsx - handles Spotify responses
+> presenters
+    OnLoadPresenter.tsx - Handles an animation when site first loads
+    LoginPresenter.tsx - login
+    QuizResultsPresenter.tsx - winners and such
+    QuizzesPresenter.tsx - frontpage and selection
+    QuizzingPresenter.tsx - handling quizzes
+    RecommendationPresenter.tsx - recommendations
+    Router.tsx - the router
+    StatisticsPresenter.tsx - handling statistics (top items)
+    TopbarPresenter.tsx - topbar selection
+> utils
+    spotifyAuthorization.ts - handles authorisation to Spotify
+    spotifyFetcher.ts - fetches data from Spotify's Web API
+    tools.ts - includes various tools (for now computations of genres)
+> views
+    OnLoadView.tsx - Displays animation
+    LoginView.tsx - displays login
+    QuizResultsView.tsx - displaying winners and such
+    QuizzesView.tsx - frontpage and selection
+    QuizzingView.tsx - displaying the playing
+    RecommendationView.tsx - displays recommendations
+    StatisticsView.tsx - presenting statistics
+    TopbarView.tsx - topbar display
+index.css
+interfaces.ts - type definitions for Typescript support
+react-app-env.d.ts 
+```
 
 ## Available Scripts
 

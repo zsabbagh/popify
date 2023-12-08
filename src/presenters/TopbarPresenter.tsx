@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import TopbarView from '../views/TopbarView';
 import { Model } from '../interfaces';
-import loginUrl from '../spotifyAuthorization';
+import loginUrl from '../utils/spotifyAuthorization';
 
 interface Props {
   model: Model;

@@ -3,7 +3,7 @@
 */
 
 import { Model } from '../interfaces';
-import { fetchUser, fetchTopItems } from '../spotifyFetcher';
+import { fetchUser, fetchTopItems } from '../utils/spotifyFetcher';
 
 export default {
   userState: {

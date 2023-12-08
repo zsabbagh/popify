@@ -5,7 +5,7 @@ import './index.css';
 import model from './models/Model';
 import { observable, configure } from 'mobx';
 import OnLoadPresenter from './presenters/OnLoadPresenter';
-import { fetchUser } from './spotifyFetcher';
+import { fetchUser } from './utils/spotifyFetcher';
 
 configure({ enforceActions: 'never' }); // we don't use Mobx actions
 const reactiveModel = observable(model);

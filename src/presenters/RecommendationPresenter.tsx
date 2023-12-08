@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import RecommendationsView from '../views/RecommendationView';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchRecommendations, fetchTopItems } from '../spotifyFetcher';
+import { fetchRecommendations, fetchTopItems } from '../utils/spotifyFetcher';
 import { set } from 'mobx';
 import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 

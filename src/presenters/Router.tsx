@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import loginUrl from '../spotifyAuthorization';
+import loginUrl from '../utils/spotifyAuthorization';
 import SpotifyResponseHandler from '../handlers/SpotifyResponseHandler';
 import { observer } from 'mobx-react-lite';
 import Topbar from './TopbarPresenter';
