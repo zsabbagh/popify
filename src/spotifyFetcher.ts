@@ -23,11 +23,12 @@ function fetchUser(accessToken: string) {
 function fetchTopItems(accessToken: string,
             type: string = "artists", 
             limit: number = 5,
-            offset: number = 0) {
+            offset: number = 0,
+            timeRange: string = "short_term") {
   if (type !== "artists" && type !== "tracks") {
     throw new Error("Invalid type! Expected 'artists' or 'tracks'");
   }
-  const endpoint = `https://api.spotify.com/v1/me/top/${type}?limit=${limit}&offset=${offset}`;
+  const endpoint = `https://api.spotify.com/v1/me/top/${type}?limit=${limit}&offset=${offset}&time_range=${timeRange}`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, { headers })
     .then((res) => res.json())
