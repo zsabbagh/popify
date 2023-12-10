@@ -1,15 +1,19 @@
 import { Avatar, Button, Checkbox, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import { SpotifyArtist, SpotifyTrack } from '../interfaces';
+import ExportDialog from '../components/ExportDialog';
 
-function RecommendationsView(props: {recommendations: string[];
+function RecommendationsView(props: {recommendations: SpotifyTrack[];
                                     topArtists: SpotifyArtist[];
                                     topTracks: SpotifyTrack[];
                                     onGetRecommendations: () => void;
                                     onArtistSelected: (id: string, name: string) => void;
                                     onTrackSelected: (id: string, name: string) => void;
                                     seedArtists: string[];
-                                    seedTracks: string[];}) {
-    function trackACB(track: any) {
+                                    seedTracks: string[];
+                                    userPlaylists: {name: string, id: string}[];
+                                    onExport: (newPlaylist: boolean, playlistIdentifier: string) => void;}) {
+
+    function trackACB(track: SpotifyTrack) {
         return (
             <ListItem sx={{ height: 60 }}>
                 <ListItemAvatar>
@@ -25,7 +29,7 @@ function RecommendationsView(props: {recommendations: string[];
         );
     }
 
-    function recommendationACB(track: any) {
+    function recommendationACB(track: SpotifyTrack) {
         return (
             <ListItem sx={{ height: 60 }}>
                 <ListItemAvatar>
@@ -40,7 +44,7 @@ function RecommendationsView(props: {recommendations: string[];
         );
     }
 
-    function artistACB(artist: any) {
+    function artistACB(artist: SpotifyArtist) {
         return (
             <ListItem sx={{ height: 60 }}>
                 <ListItemAvatar>
@@ -84,8 +88,11 @@ function RecommendationsView(props: {recommendations: string[];
                         {props.recommendations?.map(recommendationACB)}
                     </List> 
                 </Grid>
-                <Grid item xs={0}>
+                <Grid item xs={4}>
                     <Button variant="contained" onClick={props.onGetRecommendations}>Get Recommendations!</Button>
+                </Grid>
+                <Grid item xs={0}>
+                    <ExportDialog playlists={props.userPlaylists} onExport={props.onExport}/>
                 </Grid>
             </Grid>
         </>    
