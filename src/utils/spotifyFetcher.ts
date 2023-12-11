@@ -68,4 +68,46 @@ function fetchRecommendations(accessToken: string,
         .then((data) => data.tracks);
     }
 
-export {fetchUsername, fetchUser, fetchTopItems, fetchRecommendations};
+function createPlaylist(accessToken: string, userId: string, playlistName: string) {
+  const endpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(endpoint, {
+    method: "POST",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: playlistName
+    })
+  })
+    .then((res) => res.json())
+    .then((data) => data.id);
+}
+
+function addTracksToPlaylist(accessToken: string, playlistId: string, trackUris: string[]) {
+  const endpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(endpoint, {
+    method: "POST",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      uris: trackUris
+    })
+  })
+    .then((res) => res.json());
+}
+
+function fetchCurrentUserPlaylists(accessToken: string) {
+  const endpoint = `https://api.spotify.com/v1/me/playlists`;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(endpoint, { headers })
+    .then((res) => res.json())
+    .then((data) => data.items);
+
+}
+
+export {fetchUsername, fetchUser, fetchTopItems, fetchRecommendations, createPlaylist, addTracksToPlaylist, fetchCurrentUserPlaylists};

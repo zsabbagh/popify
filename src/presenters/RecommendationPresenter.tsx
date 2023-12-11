@@ -2,9 +2,9 @@ import { observer } from 'mobx-react-lite';
 import RecommendationsView from '../views/RecommendationView';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchRecommendations, fetchTopItems } from '../utils/spotifyFetcher';
+import { fetchRecommendations, fetchTopItems, createPlaylist, addTracksToPlaylist, fetchCurrentUserPlaylists } from '../utils/spotifyFetcher';
 import { set } from 'mobx';
-import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
+import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack, SpotifyItem } from '../interfaces';
 
 import UserState, { User, Model } from '../interfaces';
 
@@ -23,12 +23,30 @@ observer (
             }, []);
 
         const accessToken = props.model.userAuthToken || "";
-        const [items, setItems] = useState([]);
+        const [items, setItems] = useState<SpotifyTrack[]>([]);
         const [seedArtists, setSeedArtists] = useState<string[]>([]);
         const [seedTracks, setSeedTracks] = useState<string[]>([]);
         const [topArtists, setTopArtists] = useState<SpotifyArtist[]>([]);
         const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
-        //const [timeRange, setTimeRange] = useState<string>("medium_term");
+        const [userPlaylists, setUserPlaylists] = useState<{name: string, id: string}[]>([]);
+
+        const onExportACB = (newPlaylist: boolean, playlistIdentifier: string) => {
+            console.log("exporting", newPlaylist, playlistIdentifier);
+            if (newPlaylist) {
+                // create new playlist
+                let id = props?.model?.user?.id;
+                if (!id) {
+                    return;
+                }
+                createPlaylist(accessToken, id, playlistIdentifier).then((playlistId) => {
+                    addTracksToPlaylist(accessToken, playlistId, items.map((item) => item.uri));
+                });
+            }
+            else {
+                // add to existing playlist
+                addTracksToPlaylist(accessToken, playlistIdentifier, items.map((item) => item.uri));
+            }
+        }
 
         function onArtistSelectedACB(id: string, name:string) {
             console.log("artist selected", name);
@@ -71,11 +89,18 @@ observer (
             setTopTracks(items?.slice(0, numTopItems));
         }
 
+        function getUserPlaylistsACB() {
+            fetchCurrentUserPlaylists(accessToken).then((playlists) => {
+                setUserPlaylists(playlists);
+            });
+        }
+
         // get seed artists
         // Fetch items on load
         function onLoadACB() {
             getTopArtistsACB();
             getTopTracksACB();
+            getUserPlaylistsACB();
         }
 
         useEffect(onLoadACB, []);
@@ -90,6 +115,8 @@ observer (
             onArtistSelected={onArtistSelectedACB}
             onTrackSelected={onTrackSelectedACB}
             seedTracks={seedTracks}
-            seedArtists={seedArtists}/>;
+            seedArtists={seedArtists}
+            onExport={onExportACB}
+            userPlaylists={userPlaylists}/>;
     }
 );
