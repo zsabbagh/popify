@@ -46,7 +46,7 @@ export default observer(function Statistics(props: { model: Model }) {
 
   useEffect(() => {
     updateTopData(timeRange);
-  });
+  }, []);
 
   /* returns the current item list based on locations */
   function getItemList(otherLocation?: string | undefined) {
