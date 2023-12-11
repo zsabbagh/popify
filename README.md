@@ -2,6 +2,14 @@
 
 https://popify.se/
 
+## Information of usage
+
+To access the application, it is required to request access
+from any of us developing it.
+Currently, the application is in "development" phase with regards to Spotify,
+so one might only add a user to the app manually.
+As such, the email associated with the Spotify account is needed.
+
 ## Short description of your project
 
 The app builds on the Spotify API and gives statistical 
