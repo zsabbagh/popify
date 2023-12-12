@@ -20,7 +20,6 @@ export default observer(function Statistics(props: { model: Model }) {
   }, []);
 
   const user: User = props.model.userState.user || {} as User;
-  const [limit, setLimit] = useState(5);
   const [timeRange, setTimeRange] = useState('short_term');
   const [location, setLocation] = useState('artists');
   const [topGenres, setTopGenres] = useState<Array<any>>([]);
@@ -30,7 +29,7 @@ export default observer(function Statistics(props: { model: Model }) {
     tracks: [] as Array<SpotifyTrack>,
   });
 
-  function updateTopData(timeRange: string) {
+  function updateTopData() {
     if (!user?.top) {
       return
     }
@@ -45,7 +44,8 @@ export default observer(function Statistics(props: { model: Model }) {
   }
 
   useEffect(() => {
-    updateTopData(timeRange);
+    props.model.getUserTopItems(timeRange);
+    updateTopData();
   }, []);
 
   /* returns the current item list based on locations */
@@ -64,7 +64,7 @@ export default observer(function Statistics(props: { model: Model }) {
   // when time range changes, fetch new items always
   useEffect(() => {
     props.model.getUserTopItems(timeRange);
-    updateTopData(timeRange);
+    updateTopData();
   }, [timeRange]);
 
   async function onItemSelectedACB(item: any) {
@@ -81,9 +81,7 @@ export default observer(function Statistics(props: { model: Model }) {
     <StatisticsView
       location={location}
       onLocationChange={onLocationChangeACB}
-      topItems={getItemList()?.slice(0, limit)}
-      limit={limit}
-      onLimitChange={(limit: number) => setLimit(limit)}
+      topItems={getItemList()}
       timeRange={timeRange}
       onTimeRangeChange={(timeRange: string) => setTimeRange(timeRange)}
       onItemSelected={onItemSelectedACB}

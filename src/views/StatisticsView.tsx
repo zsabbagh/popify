@@ -13,6 +13,7 @@ import {
     Grid,
     InputLabel,
     MenuItem,
+    Pagination,
     Select,
     Slider,
     Tab,
@@ -51,31 +52,40 @@ function StatisticsView(props: {
     location: string,
     onLocationChange: (location: string) => void,
     topItems: any, // TODO: type this
-    limit: number,
-    onLimitChange: (limit: number) => void,
     timeRange: string,
     onTimeRangeChange: (timeRange: string) => void,
     onItemSelected: (item: any) => void,
 }) {
 
+    const items: Array<any> | undefined = props?.topItems;
+    const [dropdownOpened, setDropdownOpened] = React.useState(false);
+
+    const [currentPage, setCurrentPage] = React.useState(1);
+    // presents 9 items per page
+    const itemsPerPage = 9;
+    const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
+    
+    function getPageSlice() {
+        if (!items) {
+            return [];
+        }
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        return items.slice(start, end);
+    }
+
     function generateGridItems() {
-        const items: Array<any> | undefined = props?.topItems;
+        const items = getPageSlice();
         if (!items) {
             return <></>;
         }
-        const itemStyle = {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100px',
-            height: '100px',
-            margin: '10px',
-        };
+        let opacity = 0.5;
         return items.map((item: any, index: number) => {
+            index = index + (currentPage - 1) * itemsPerPage;
             async function onItemSelectedACB() {
                 props.onItemSelected(item);
             }
+            // delay for animation
             return (
                 <Grid key={item.id} item xs={4} xl={2}
                     sx={{
@@ -93,8 +103,11 @@ function StatisticsView(props: {
         });
     }
 
-    const items: Array<any> | undefined = props?.topItems?.items;
-    const [dropdownOpened, setDropdownOpened] = React.useState(false);
+
+    function onPageChangeACB(event: any, value: any) {
+        setCurrentPage(value);
+        console.log("page changed to ", value);
+    }
 
     return (
         <Container sx={{marginTop: '80px',
@@ -113,8 +126,8 @@ function StatisticsView(props: {
                 <Tabs
                     value={props.location}
                     onChange={(event: any, value: any) => props.onLocationChange(value)}
-                    textColor="secondary"
-                    indicatorColor="secondary"
+                    textColor="primary"
+                    indicatorColor="primary"
                     aria-label="secondary tabs example"
                 >
                     <Tab icon={<Person/>} value="artists" label="Artists" sx={boxShadow}/>
@@ -130,40 +143,6 @@ function StatisticsView(props: {
                 marginTop: '20px',
                 marginBottom: '20px',
             }}>
-                <div style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '50%',
-                }}>
-                    <Typography id="discrete-slider" gutterBottom>
-                        Limit
-                    </Typography>
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}>
-                        <Avatar sx={{
-                            bgcolor: 'transparent',
-                            border: '1px solid black',
-                            marginRight: '10px',
-                            color: 'black'}}>
-                            {props.limit}
-                        </Avatar>
-                        <Slider
-                            aria-label="Limit"
-                            defaultValue={props.limit}
-                            valueLabelDisplay="auto"
-                            step={1}
-                            marks
-                            min={1}
-                            name="Limit"
-                            max={50}
-                            onChange={(event: any, value: any) => props.onLimitChange(value) }
-                            />
-                    </div>
-                </div>
                 <div style={{
                     width: '80%',
                     marginRight: '20px',
@@ -190,10 +169,23 @@ function StatisticsView(props: {
                     </FormControl>
                 </div>
             </div>
+            <Pagination count={maxPages}
+                defaultPage={1}
+                siblingCount={2}
+                onChange={onPageChangeACB}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: '20px',
+                }}
+            />
             <Grid container spacing={4}
-                sx={{position: 'absolute',
+                sx={{position: 'relative',
                     marginTop: '25px',
-                    width: '90%',
+                    martinBottom: '25px',
+                    display: 'flex',
+                    justifyContent: 'center',
                     }}>
                 {generateGridItems()}
             </Grid>
