@@ -13,11 +13,9 @@ export default observer(function SpotifyResponseHandler(props: Props) {
   const location = useLocation(); // token is in the url as popify.com/login#access_token=...
   const accessToken: string = new URLSearchParams(location.hash).get('#access_token') || '';
   const path = localStorage.getItem('lastKnownPathBeforeLogin');
-  localStorage.removeItem('lastKnownPathBeforeLogin');
 
   localStorage.setItem('spotifyAuthToken', accessToken);
   props.model.loginUser(accessToken);
-  console.log('path', path);
 
   useEffect(() => {
     navigate(path || '/');

@@ -19,7 +19,7 @@ const OnLoadView = (props: Props) => {
         zIndex: 9999,
       }}
     >
-      <img className="pulse" style={{ width: '200px', height: '200px' }} src="logo.svg"></img>
+      <img className="pulse" style={{ width: '200px', height: '200px' }} src="/logo.svg"></img>
     </div>
   );
   return (

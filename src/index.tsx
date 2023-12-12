@@ -19,23 +19,3 @@ root.render(
     <Router model={reactiveModel} />
   </React.StrictMode>
 );
-
-
-
-/*const attemptAutoLogin = () => {
-  const token = localStorage.getItem('spotifyAuthToken');
-
-  if (token) {
-    console.log('auiwnd');
-
-    reactiveModel.userAuthToken = token;
-    console.log('model', reactiveModel);
-
-    fetchUser(token).then((user) => {
-      reactiveModel.user = user;
-    });
-  }
-};
-attemptAutoLogin();
-TODO
-*/ 

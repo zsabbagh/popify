@@ -4,7 +4,7 @@
 
 import { Model } from '../interfaces';
 import { getOrRegisterUser } from '../utils/firebase';
-import { fetchUser, fetchTopItems } from '../utils/spotifyFetcher';
+import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
 
 export default {
   userState: {
@@ -42,7 +42,6 @@ export default {
     }
   },
   async loginUser(token?: string ) {
-    console.log("Started login");
     
     if(!token){
       const cachedToken = localStorage.getItem('spotifyAuthToken');
@@ -50,7 +49,6 @@ export default {
       else return;
     }
     this.userState.userAuthToken = token;
-    console.log("Token", token);
     
     try {
       const user = await fetchUser(token);
@@ -72,4 +70,16 @@ export default {
     this.userState.userAuthToken = undefined;
   },
   pages: ['Statistics', 'Quiz', 'Recommendations'],
+  artists: [],
+  async addArtist(id: string){
+    if(this.hasAuthToken()){
+      try {
+        const artist = await fetchArtist(this.userState.userAuthToken!, id);
+        this.artists.push(artist);
+      } catch (error) {
+        //TODO handle
+      }
+
+    }
+  }
 } as Model;

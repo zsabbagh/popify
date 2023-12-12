@@ -1,4 +1,4 @@
-import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from "../interfaces";
+import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '../interfaces';
 
 // function to fetch username from spotify api
 function fetchUsername(accessToken: string) {
@@ -6,83 +6,105 @@ function fetchUsername(accessToken: string) {
   return fetch('https://api.spotify.com/v1/me', { headers })
     .then((res) => res.json())
     .then((data) => {
-      console.log('User', data);
+      //('User', data);
 
       return data.display_name;
     });
 }
 
-// function to fetch username from spotify api
+// function to fetch artist from spotify api
+function fetchArtist(accessToken: string, artistId: string): Promise<SpotifyArtist> {
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(`https://api.spotify.com/v1/artists/${artistId}`, { headers })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else if (res.status === 401) {
+        localStorage.removeItem('spotifyAuthToken');
+        throw new Error('Auth token expired');
+      } else {
+        throw new Error('An error has occured');
+      }
+    })
+    .then((data) => {
+      return data;
+    });
+}
+
+// function to fetch user from spotify api
 function fetchUser(accessToken: string) {
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch('https://api.spotify.com/v1/me', { headers })
     .then((res) => {
       if (res.ok) {
         return res.json();
-      } else if(res.status === 401){
-        localStorage.removeItem("spotifyAuthToken");
-        throw new Error("Auth token expired");
+      } else if (res.status === 401) {
+        localStorage.removeItem('spotifyAuthToken');
+        throw new Error('Auth token expired');
       } else {
-        throw new Error("An error has occured");
+        throw new Error('An error has occured');
       }
     })
     .then((data) => {
       return {
         ...data,
-        top: {}
-      }
+        top: {},
+      };
     });
 }
 
 // function to fetch top tracks from spotify api
-function fetchTopItems(accessToken: string,
-            type: string = "artists", 
-            limit: number = 50,
-            timeRange: string = "short_term") {
-  if (type !== "artists" && type !== "tracks") {
+function fetchTopItems(
+  accessToken: string,
+  type: string = 'artists',
+  limit: number = 50,
+  timeRange: string = 'short_term'
+) {
+  if (type !== 'artists' && type !== 'tracks') {
     throw new Error("Invalid type! Expected 'artists' or 'tracks'");
   }
   const endpoint = `https://api.spotify.com/v1/me/top/${type}?time_range=${timeRange}&limit=${limit}`;
   const headers = { Authorization: `Bearer ${accessToken}` };
-  return fetch(endpoint, { headers })
-    .then((res) => res.json());
+  return fetch(endpoint, { headers }).then((res) => res.json());
 }
 
-function fetchRecommendations(accessToken: string,
-    limit: number = 5,
-    seedArtists: string[] = [],
-    seedTracks: string[] = [],
-    seedGenres: string[] = []) {
-      let endpoint = `https://api.spotify.com/v1/recommendations?limit=${limit}`;
+function fetchRecommendations(
+  accessToken: string,
+  limit: number = 5,
+  seedArtists: string[] = [],
+  seedTracks: string[] = [],
+  seedGenres: string[] = []
+) {
+  let endpoint = `https://api.spotify.com/v1/recommendations?limit=${limit}`;
 
-      if (seedArtists.length > 0) {
-        endpoint = endpoint.concat(`&seed_artists=${seedArtists.join(",")}`);
-      }
-      if (seedTracks.length > 0) {
-        endpoint = endpoint.concat(`&seed_tracks=${seedTracks.join(",")}`);
-      }
-      if (seedGenres.length > 0) {
-        endpoint = endpoint.concat(`&seed_genres=${seedGenres.join(",")}`);
-      }
+  if (seedArtists.length > 0) {
+    endpoint = endpoint.concat(`&seed_artists=${seedArtists.join(',')}`);
+  }
+  if (seedTracks.length > 0) {
+    endpoint = endpoint.concat(`&seed_tracks=${seedTracks.join(',')}`);
+  }
+  if (seedGenres.length > 0) {
+    endpoint = endpoint.concat(`&seed_genres=${seedGenres.join(',')}`);
+  }
 
-      const headers = { Authorization: `Bearer ${accessToken}` };
-      return fetch(endpoint, { headers })
-        .then((res) => res.json())
-        .then((data) => data.tracks);
-    }
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(endpoint, { headers })
+    .then((res) => res.json())
+    .then((data) => data.tracks);
+}
 
 function createPlaylist(accessToken: string, userId: string, playlistName: string) {
   const endpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       ...headers,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      name: playlistName
-    })
+      name: playlistName,
+    }),
   })
     .then((res) => res.json())
     .then((data) => data.id);
@@ -92,16 +114,15 @@ function addTracksToPlaylist(accessToken: string, playlistId: string, trackUris:
   const endpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       ...headers,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      uris: trackUris
-    })
-  })
-    .then((res) => res.json());
+      uris: trackUris,
+    }),
+  }).then((res) => res.json());
 }
 
 function fetchCurrentUserPlaylists(accessToken: string) {
@@ -110,14 +131,30 @@ function fetchCurrentUserPlaylists(accessToken: string) {
   return fetch(endpoint, { headers })
     .then((res) => res.json())
     .then((data) => data.items);
-
 }
 
-function search(accessToken: string, query: string, limit: number = 50): Promise<{tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}> {
+function search(
+  accessToken: string,
+  query: string,
+  limit: number = 50
+): Promise<{
+  tracks: { items: SpotifyTrack[] };
+  artists: { items: SpotifyArtist[] };
+  albums: { items: SpotifyAlbum[] };
+}> {
   const endpoint = `https://api.spotify.com/v1/search?q=${query}&type=album,track,artist&limit=${limit}`;
   const headers = { Authorization: `Bearer ${accessToken}` };
-  return fetch(endpoint, { headers })
-    .then((res) => res.json())
+  return fetch(endpoint, { headers }).then((res) => res.json());
 }
 
-export {fetchUsername, fetchUser, fetchTopItems, fetchRecommendations, createPlaylist, addTracksToPlaylist, fetchCurrentUserPlaylists, search};
+export {
+  fetchUsername,
+  fetchUser,
+  fetchTopItems,
+  fetchRecommendations,
+  createPlaylist,
+  addTracksToPlaylist,
+  fetchCurrentUserPlaylists,
+  search,
+  fetchArtist,
+};

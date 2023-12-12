@@ -21,6 +21,8 @@ export default observer(function Topbar(props: Props) {
     if (!!props.model.userState.user) {
         props.model.logoutUser();
     } else {
+      console.log("path", window.location.pathname);
+      
       localStorage.setItem('lastKnownPathBeforeLogin', window.location.pathname);
       window.location.href = loginUrl;
     }

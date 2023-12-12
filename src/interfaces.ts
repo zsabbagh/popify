@@ -78,6 +78,8 @@ export interface Model {
   hasAuthToken(): boolean;
   loginUser(userAuthToken?: string): void;
   logoutUser(): void;
+  addArtist(id: string): void;
+  artists: SpotifyArtist[];
   pages: string[];
 }
 
