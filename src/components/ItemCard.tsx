@@ -13,7 +13,7 @@ const pastelColors = [
 ]
 
 export default
-function ItemCard(props: { item: any; index: number; onItemSelected: Function }) {
+function ItemCard(props: { item: any; index: number; onItemSelected: Function, transition?: boolean}) {
     const type = props?.item?.type || undefined;
     const index = props.index;
     const item = props.item;
@@ -33,28 +33,44 @@ function ItemCard(props: { item: any; index: number; onItemSelected: Function })
             .map((artist: any) => artist?.name || '')
             .filter((artist: any) => (artist?.length > 0))
             .join(', ');
+        const boxStyling = {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+        }
+        const fontStyling = {
+            fontSize: '0.8rem',
+            color: blueGrey[400],
+        };
+        const avatarStyling = {
+            color: blueGrey[200],
+            marginRight: '10px',
+            marginBottom: '7px',
+        };
         return (
-            <div>
-                <div>
-                    <Album/>
-                    <Typography gutterBottom variant="body2" component="div">
+            <div style={{ marginTop: '10px' }}>
+                <Box sx={boxStyling}>
+                    <Album sx={avatarStyling}/>
+                    <Typography gutterBottom variant="body2" component="div" sx={fontStyling}>
                         {album}
                     </Typography>
-                </div>
-                <div>
-                    <Groups/>
-                    <Typography variant="body2" color="text.secondary">
+                </Box>
+                <Box sx={boxStyling}>
+                    <Groups sx={avatarStyling}/>
+                    <Typography variant="body2" color="text.secondary" sx={fontStyling}>
                         {artistNames}
                     </Typography>
-                </div>
+                </Box>
             </div>
         )
     }
 
     return (
         <Card sx={{
+            float: 'left',
+            position: 'relative',
             maxWidth: 345, 
-            background: image ? 'transparent' : 'linear-gradient(45deg, #FF7599 10%, #FF8E53 90%)',
+            background: image ? 'transparent' : 'linear-gradient(45deg, #EBF3F8 10%, #DEF2F3 90%)',
             borderRadius: '20px', 
             height: '95%',
             width: '95%',
@@ -64,7 +80,13 @@ function ItemCard(props: { item: any; index: number; onItemSelected: Function })
             }, }}>
             {
                 image ?
-                <CardMedia component="img" height="140" image={image}/>
+                <CardMedia component="img" height="140" width="140" image={image}
+                    sx={{
+                        maskImage: 'linear-gradient(to top, transparent 0%, black 30%)',
+                        objectFit: 'cover',
+                        zIndex: 1,
+                    }}
+                />
                 :
                 <CardMedia>
                 </CardMedia>
@@ -72,17 +94,27 @@ function ItemCard(props: { item: any; index: number; onItemSelected: Function })
             <CardContent sx={{
                 display: 'flex',
                 flexDirection: 'row',
+                zIndex: 2,
             }}>
                 <Box sx={{
                     width: '80%',
                 }}>
-                    <Typography gutterBottom variant="h5" component="div">
+                    <Typography gutterBottom variant="h5" component="div"
+                        sx={{
+                            fontSize: '1.2rem',
+                        }}
+                    >
                     {name}
                     </Typography>
-                    {showTrackInfo()}
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary"
+                        sx={{
+                            marginTop: '2px',
+                            color: blueGrey[200],
+                            fontStyle: 'italic',
+                        }}>
                     {type}
                     </Typography>
+                    {showTrackInfo()}
                 </Box>
                 <Box sx={{ 
                     display: 'flex',
