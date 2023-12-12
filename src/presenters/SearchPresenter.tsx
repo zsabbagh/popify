@@ -14,6 +14,9 @@ export default observer(function Search(props: { model: Model }) {
     const [artists, setArtists] = useState<SpotifyArtist[]>([]);
     const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
     const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
+    const [page, setPage] = useState(1);
+    const [items, setItems] = useState<SpotifyItem[]>([]);
+    const [searchTab, setSearchTab] = useState("artists");
     
     const handleSearchResults = (result: {tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}) => {
         setArtists(result.artists.items);
@@ -22,6 +25,21 @@ export default observer(function Search(props: { model: Model }) {
     }
     const [searchParams, setSearchParams] = useSearchParams();
     
+    const onItemSelected = (item: SpotifyItem) => {
+        console.log("item selected", item);
+    }
+
+    const onLocationChange = (location: string) => {
+        setSearchTab(location);
+        if (location === "artists") {
+            setItems(artists);
+        } else if (location === "tracks") {
+            setItems(tracks);
+        } else if (location === "albums") {
+            setItems(albums);
+        }
+    }
+
     useEffect(() => {
         if (!props.model.userState.userAuthToken) {
         // navigate to login
@@ -39,7 +57,7 @@ export default observer(function Search(props: { model: Model }) {
     }, [location]);
     
     return (
-        <SearchView artists={artists} tracks={tracks} albums={albums}></SearchView>
+        <SearchView location={searchTab} items={items} page={page} setPage={setPage} onLocationChange={onLocationChange} onItemSelected={onItemSelected}></SearchView>
     );
 }
 );
