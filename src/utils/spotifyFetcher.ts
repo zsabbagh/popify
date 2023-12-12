@@ -1,3 +1,5 @@
+import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from "../interfaces";
+
 // function to fetch username from spotify api
 function fetchUsername(accessToken: string) {
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -111,4 +113,11 @@ function fetchCurrentUserPlaylists(accessToken: string) {
 
 }
 
-export {fetchUsername, fetchUser, fetchTopItems, fetchRecommendations, createPlaylist, addTracksToPlaylist, fetchCurrentUserPlaylists};
+function search(accessToken: string, query: string, limit: number = 50): Promise<{tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}> {
+  const endpoint = `https://api.spotify.com/v1/search?q=${query}&type=album,track,artist&limit=${limit}`;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  return fetch(endpoint, { headers })
+    .then((res) => res.json())
+}
+
+export {fetchUsername, fetchUser, fetchTopItems, fetchRecommendations, createPlaylist, addTracksToPlaylist, fetchCurrentUserPlaylists, search};

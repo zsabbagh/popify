@@ -12,9 +12,10 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link } from 'react-router-dom';
+import { Form, Link } from 'react-router-dom';
+import { TextField } from '@mui/material';
 
-function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: boolean; loginUrl: string; handleLoginLogout: Function }) {
+function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: boolean; loginUrl: string; handleLoginLogout: Function; onSearchChange: Function; onSearch: Function }) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -54,6 +55,23 @@ function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: bool
                 <Button sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>{page}</Button>
               </Link>
             ))}
+          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <TextField
+            label="Search"
+            id="outlined-size-small"
+            defaultValue=""
+            size="small"
+            variant="filled"
+            sx={{
+              input: {
+                color: "black",
+                background: "white"
+              }
+            }}
+            onChange={(e) => {props.onSearchChange(e.target.value)}}
+            onKeyUp={(e) => {if (e.key === "Enter") {props.onSearch();}}}
+          />
           </Box>
 
           <Button
