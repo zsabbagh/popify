@@ -7,6 +7,7 @@ import Statistics from './StatisticsPresenter';
 import Recommendations from './RecommendationPresenter';
 import Search from './SearchPresenter';
 import { Model } from '../interfaces';
+import { useEffect } from 'react';
 
 interface Props {
   model: Model;
@@ -27,7 +28,7 @@ export default observer(function Router(props: Props) {
           <Route index element={<a href={loginUrl}>login</a>} />
           <Route path="/statistics" element={<Statistics model={props.model} />} />
           <Route path="/quiz" element={<>Quizzes here</>} />
-          <Route path="/recommendations" element={<Recommendations model={props.model.userState}/>} />
+          <Route path="/recommendations" element={<Recommendations model={props.model}/>} />
           <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
           <Route path="/search" element={<Search model={props.model}></Search>} />
           <Route path="*" element={<>404, page not found!</>} />

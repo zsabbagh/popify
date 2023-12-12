@@ -4,25 +4,28 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { fetchRecommendations, fetchTopItems, createPlaylist, addTracksToPlaylist, fetchCurrentUserPlaylists } from '../utils/spotifyFetcher';
 import { set } from 'mobx';
-import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack, SpotifyItem } from '../interfaces';
+import { UserTopItems, SpotifyArtist, SpotifyTrack, SpotifyItem } from '../interfaces';
 
 import UserState, { User, Model } from '../interfaces';
 
 
 export default
 observer (
-        function Recommendations(props: {model: UserState}) {
+        function Recommendations(props: {model: Model}) {
             // this assumes that a UserModel is given...
-            const navigate = useNavigate();
-            useEffect(() => {
-              if (!props.model.userAuthToken) {
+        
+        const userState: UserState = props.model?.userState;
+        const navigate = useNavigate();
+        useEffect(() => {
+            if (!userState.userAuthToken) {
                 // navigate to login
                 // TODO: add notification that you need to login
                 navigate('/');
-              }
-            }, []);
+            }
+            props.model.updateUserTopItems();
+        }, []);
 
-        const accessToken = props.model.userAuthToken || "";
+        const accessToken = userState.userAuthToken || "";
         const [items, setItems] = useState<SpotifyTrack[]>([]);
         const [seedArtists, setSeedArtists] = useState<string[]>([]);
         const [seedTracks, setSeedTracks] = useState<string[]>([]);
@@ -34,7 +37,7 @@ observer (
             console.log("exporting", newPlaylist, playlistIdentifier);
             if (newPlaylist) {
                 // create new playlist
-                let id = props?.model?.user?.id;
+                let id = userState?.user?.id;
                 if (!id) {
                     return;
                 }
@@ -71,6 +74,8 @@ observer (
         const numRecommendations = 10;
         const numTopItems = 10;
 
+        const topItems: UserTopItems | undefined = userState.topItems?.shortTerm || undefined;
+
         function getRecommendationsACB() {
             const seedGenres = seedArtists.length == 0  && seedTracks.length == 0 ?  ["pop"] : [];
             fetchRecommendations(accessToken, numRecommendations, seedArtists, seedTracks, seedGenres)
@@ -80,12 +85,12 @@ observer (
         }
 
         function getTopArtistsACB() {
-            const items = props.model?.user?.top?.short_term?.artists || [];
+            const items: Array<SpotifyArtist> = userState.topItems?.shortTerm?.artists || [];
             setTopArtists(items?.slice(0, numTopItems));
         }
 
         function getTopTracksACB() {
-            const items = props.model?.user?.top?.short_term?.tracks || [];
+            const items: Array<SpotifyTrack> = userState.topItems?.shortTerm?.tracks || [];
             setTopTracks(items?.slice(0, numTopItems));
         }
 
