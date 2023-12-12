@@ -11,7 +11,7 @@ import { FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, 
 export default function ExportDialog(props: {onExport: (newPlaylist: boolean, playlistIdentifier: string) => void, playlists: {name: string, id: string}[]}) {
   const [open, setOpen] = React.useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = React.useState(props.playlists[0]?.id || "");
-  const [newPlaylist, setNewPlaylist] = React.useState(false);
+  const [newPlaylist, setNewPlaylist] = React.useState(true);
   const [newPlaylistName, setNewPlaylistName] = React.useState("New Playlist");
 
   const handleClickOpen = () => {
@@ -26,6 +26,8 @@ export default function ExportDialog(props: {onExport: (newPlaylist: boolean, pl
     props.onExport(newPlaylist, newPlaylist ? newPlaylistName : selectedPlaylist);
     setOpen(false);
   };
+
+  const hasPlaylists = props?.playlists?.length > 0;
 
   return (
     <React.Fragment>
@@ -45,8 +47,8 @@ export default function ExportDialog(props: {onExport: (newPlaylist: boolean, pl
                 value={newPlaylist ? "new" : "existing"}
                 name="radio-buttons-group"
             >
-                <FormControlLabel value="existing" control={<Radio />} label="Existing playlist" onClick={() => {setNewPlaylist(false)}}/>
                 <FormControlLabel value="new" control={<Radio />} label="New playlist" onClick={() => {setNewPlaylist(true)}}/>
+                <FormControlLabel disabled={!hasPlaylists} value="existing" control={<Radio />} label="Existing playlist" onClick={() => {setNewPlaylist(false)}}/>
             </RadioGroup>
         </FormControl>
         {newPlaylist ? (
@@ -63,21 +65,27 @@ export default function ExportDialog(props: {onExport: (newPlaylist: boolean, pl
                 onChange={(event) => {setNewPlaylistName(event.target.value)}}
                 />
             </>)
-            : 
-            <>
-                <InputLabel id="demo-simple-select-label">Playlist</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={selectedPlaylist}
-                    label="Age"
-                    onChange={(event) => {setSelectedPlaylist(event.target.value)}}
-                >
-                    {props.playlists.map((playlist) => {
-                        return <MenuItem value={playlist.id}>{playlist.name}</MenuItem>
-                    })}
-                </Select>
-            </>
+            : ( hasPlaylists ? (
+                <>
+                    <InputLabel id="demo-simple-select-label">Playlist</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={selectedPlaylist}
+                        label="Age"
+                        onChange={(event) => {setSelectedPlaylist(event.target.value)}}
+                    >
+                        {props.playlists.map((playlist) => {
+                            return <MenuItem value={playlist.id}>{playlist.name}</MenuItem>
+                        })}
+                    </Select>
+                </>
+              ) : (
+                <DialogContentText>
+                    You don't have any playlists yet! Create one in Spotify and try again.
+                </DialogContentText>
+              )
+            )
         }
 
 
