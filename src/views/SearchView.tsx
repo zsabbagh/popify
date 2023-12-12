@@ -50,7 +50,7 @@ function SearchView(props: {items: any, onItemSelected: any, page: number, setPa
                 marginBottom: '75px',
             }}>
             <CardPages
-                currentPage={props.page}
+                page={props.page}
                 onPageChange={props.setPage}
                 items={props.items}
                 onItemSelected={props.onItemSelected} />

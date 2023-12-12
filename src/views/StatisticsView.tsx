@@ -123,7 +123,7 @@ export default function StatisticsView(props: {
                     </FormControl>
                 </div>
                 <CardPages
-                    currentPage={currentPage}
+                    page={currentPage}
                     onPageChange={(value: any) => setCurrentPage(value)}
                     items={items}
                     onItemSelected={props.onItemSelected} />

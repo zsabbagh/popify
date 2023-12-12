@@ -8,7 +8,7 @@ import ItemCard from './ItemCard';
 
 export default
     function CardsPages(props: {
-        currentPage?: number,
+        page: number,
         itemsPerPage?: number,
         itemsPerColumn?: number,
         spacing?: number,
@@ -28,18 +28,12 @@ export default
     const columns = spacing * itemsPerColumn;
     const itemsPerPage = props.itemsPerPage && props.itemsPerPage > 0 ? props.itemsPerPage : 9;
     const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
-    // presents 9 items per page
-    const currentPage = props.currentPage &&
-        props.currentPage > 0 &&
-        props.currentPage <= maxPages
-        ? props.currentPage
-        : 1;
 
     function getPageSlice() {
         if (!items) {
             return [];
         }
-        const start = (currentPage - 1) * itemsPerPage;
+        const start = (props.page - 1) * itemsPerPage;
         const end = start + itemsPerPage;
         return items.slice(start, end);
     }
@@ -51,7 +45,7 @@ export default
         }
         let opacity = 0.5;
         return items.map((item: any, index: number) => {
-            index = index + (currentPage - 1) * itemsPerPage;
+            index = index + (props.page - 1) * itemsPerPage;
             async function onItemSelectedACB() {
                 props.onItemSelected(item);
             }
@@ -75,7 +69,6 @@ export default
     return (
         <div>
             <Pagination count={maxPages}
-                defaultPage={currentPage}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{
@@ -84,6 +77,7 @@ export default
                     alignItems: 'center',
                     marginBottom: '20px',
                 }}
+                page={props.page}
             />
             <Grid container spacing={spacing} columns={columns}
                 sx={{
@@ -96,7 +90,7 @@ export default
                 {generateGridItems()}
             </Grid>
             <Pagination count={maxPages}
-                defaultPage={currentPage}
+                page={props.page}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{
