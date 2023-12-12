@@ -94,7 +94,7 @@ export default function StatisticsView(props: {
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: '20px',
-                marginBottom: '20px',
+                marginBottom: '75px',
             }}>
                 <div style={{
                     width: '80%',

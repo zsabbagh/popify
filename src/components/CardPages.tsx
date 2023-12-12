@@ -90,6 +90,18 @@ export default
                 }}>
                 {generateGridItems()}
             </Grid>
+            <Pagination count={maxPages}
+                defaultPage={currentPage}
+                siblingCount={2}
+                onChange={(event, value) => props.onPageChange(value)}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: '50px',
+                    marginBottom: '20px',
+                }}
+            />
         </div>
     )
 }
