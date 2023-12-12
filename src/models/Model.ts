@@ -5,37 +5,66 @@
 import { Model } from '../interfaces';
 import { getOrRegisterUser } from '../utils/firebase';
 import { fetchUser, fetchTopItems } from '../utils/spotifyFetcher';
+import { UserTopItems } from '../interfaces';
 
 export default {
   userState: {
     userAuthToken: undefined,
     user: undefined,
+    topItems: undefined,
     errorMessage: null,
   },
   /* fetch user's top artists and tracks */
   hasAuthToken() {
     return !!this.userState.userAuthToken;
   },
-  async getUserTopItems(timeRange?: string) {
-    if (!this?.userState?.user || !this.hasAuthToken() || ["short_term", "mid_term", "long_term"].indexOf(timeRange || '') === -1) {
+  getUserTopItems(timeRange: string | undefined) {
+    if (!timeRange) {
+      return undefined
+    }
+    if (timeRange === "short_term") {
+      return this.userState.topItems?.shortTerm;
+    } else if (timeRange === "mid_term") {
+      return this.userState.topItems?.midTerm;
+    } else if (timeRange === "long_term") {
+      return this.userState.topItems?.longTerm;
+    }
+    return undefined;
+  },
+  setUserTopItems(timeRange: string, items: UserTopItems | undefined) {
+    if (!items) {
+      return false;
+    } else if (timeRange === "short_term") {
+      this.userState.topItems!.shortTerm = items;
+    } else if (timeRange === "mid_term") {
+      this.userState.topItems!.midTerm = items;
+    } else if (timeRange === "long_term") {
+      this.userState.topItems!.longTerm = items;
+    } else {
+      return false;
+    }
+    return true;
+  },
+  async updateUserTopItems(timeRange?: string) {
+    if (!this.hasAuthToken() || ["short_term", "mid_term", "long_term"].indexOf(timeRange || '') === -1) {
       return;
     }
     const token = this.userState.userAuthToken as string;
     try {
+      const timestamp = Date.now();
+      const previousUpdate: number | undefined = this.getUserTopItems(timeRange)?.timestamp;
+      if (previousUpdate && timestamp - previousUpdate < 60 * 10) {
+        return;
+      }
       const topArtists = await fetchTopItems(token, "artists", 50, timeRange);
       const topTracks = await fetchTopItems(token, "tracks", 50, timeRange);
       const topItems = {
-        timestamp: Date.now(),
+        timestamp: timestamp,
         artists: topArtists.items,
         tracks: topTracks.items
       };
-      if (timeRange === "short_term") {
-        this.userState.user.top.short_term = topItems;
-      } else if (timeRange === "mid_term") {
-        this.userState.user.top.mid_term = topItems;
-      } else if (timeRange === "long_term") {
-        this.userState.user.top.long_term = topItems;
-      }
+      this.setUserTopItems(timeRange!, topItems);
+      this.userState.topItems!.latestUpdate = timestamp;
     } catch (error: any) {
       console.error("Error fetching top items", error);
       this.userState.errorMessage = error?.message;
@@ -64,7 +93,24 @@ export default {
       };
       this.userState.errorMessage = error.message;
     }
-    this.getUserTopItems(token, "short_term");
+    this.userState.topItems = {
+      latestUpdate: 0,
+      shortTerm: {
+        timestamp: undefined,
+        artists: [],
+        tracks: [],
+      },
+      midTerm: {
+        timestamp: undefined,
+        artists: [],
+        tracks: [],
+      },
+      longTerm: {
+        timestamp: undefined,
+        artists: [],
+        tracks: [],
+      },
+    }
   },
   logoutUser() {
     localStorage.removeItem('spotifyAuthToken');
