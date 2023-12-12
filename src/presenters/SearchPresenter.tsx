@@ -22,6 +22,7 @@ export default observer(function Search(props: { model: Model }) {
         setArtists(result.artists.items);
         setTracks(result.tracks.items);
         setAlbums(result.albums.items);
+        setItems(result.artists.items);
     }
     const [searchParams, setSearchParams] = useSearchParams();
     
