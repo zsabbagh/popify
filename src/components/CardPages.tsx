@@ -70,7 +70,7 @@ export default
     return (
         <div>
             <Pagination count={maxPages}
-                defaultPage={1}
+                defaultPage={currentPage}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{
