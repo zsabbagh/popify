@@ -6,28 +6,28 @@ import { computeTopGenres } from '../utils/tools';
 import { get, set } from 'mobx';
 import StatisticsView from '../views/StatisticsView';
 import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
+import { Suspense } from 'react';
 
 
 export default observer(function Statistics(props: { model: Model }) {
   // this assumes that a UserModel is given...
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!props.model.userState.userAuthToken) {
       // navigate to login
       // TODO: add notification that you need to login
       navigate('/');
     }
+    props.model.getUserTopItems(timeRange);
+    updateTopData();
   }, []);
 
   const user: User = props.model.userState.user || {} as User;
   const [timeRange, setTimeRange] = useState('short_term');
   const [location, setLocation] = useState('artists');
-  const [topGenres, setTopGenres] = useState<Array<any>>([]);
-  const [topData, setTopData] = useState<SpotifyUserTopItems>({
-    timestamp: 0,
-    artists: [] as Array<SpotifyArtist>,
-    tracks: [] as Array<SpotifyTrack>,
-  });
+  const [topGenres, setTopGenres] = useState<Array<any> | undefined>(undefined);
+  const [topData, setTopData] = useState<SpotifyUserTopItems | undefined>(undefined);
 
   function updateTopData() {
     if (!user?.top) {
