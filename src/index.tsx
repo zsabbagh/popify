@@ -4,7 +4,6 @@ import Router from './presenters/Router';
 import './index.css';
 import model from './models/Model';
 import { observable, configure } from 'mobx';
-import OnLoadPresenter from './presenters/OnLoadPresenter';
 import { fetchUser } from './utils/spotifyFetcher';
 import { getOrRegisterUser } from './utils/firebase';
 
@@ -15,7 +14,6 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
-    <OnLoadPresenter />
     <Router model={reactiveModel} />
   </React.StrictMode>
 );
