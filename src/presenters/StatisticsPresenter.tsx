@@ -13,16 +13,6 @@ export default observer(function Statistics(props: { model: Model }) {
   // this assumes that a UserModel is given...
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!props.model.userState.userAuthToken) {
-      // navigate to login
-      // TODO: add notification that you need to login
-      navigate('/');
-    }
-    props.model.getUserTopItems(timeRange);
-    updateTopData();
-  }, []);
-
   const user: User = props.model.userState.user || {} as User;
   const [timeRange, setTimeRange] = useState('short_term');
   const [location, setLocation] = useState('artists');
@@ -42,6 +32,17 @@ export default observer(function Statistics(props: { model: Model }) {
     }
     setTopGenres(computeTopGenres(topData?.artists || []));
   }
+
+  useEffect(() => {
+    if (!props.model.userState.userAuthToken) {
+      // navigate to login
+      // TODO: add notification that you need to login
+      navigate('/');
+    }
+    props.model.getUserTopItems(timeRange);
+    updateTopData();
+  }, []);
+
 
   useEffect(() => {
     props.model.getUserTopItems(timeRange);
