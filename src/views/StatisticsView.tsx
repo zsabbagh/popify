@@ -28,6 +28,7 @@ import {
     RadioButtonChecked,
     CheckBox,
     Favorite,
+    Audiotrack,
 } from '@mui/icons-material';
 import { User } from '../interfaces';
 import { blueGrey, deepOrange } from '@mui/material/colors';
@@ -84,7 +85,7 @@ export default function StatisticsView(props: {
                     aria-label="secondary tabs example"
                 >
                     <Tab icon={<Person />} value="artists" label="Artists" sx={boxShadow} />
-                    <Tab icon={<Album />} value="tracks" label="Tracks" sx={boxShadow} />
+                    <Tab icon={<Audiotrack />} value="tracks" label="Tracks" sx={boxShadow} />
                     <Tab icon={<AutoStories />} value="genres" label="Genres" sx={boxShadow} />
                 </Tabs>
             </div>
