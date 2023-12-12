@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
-import { fetchUser } from '../utils/spotifyFetcher';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Model } from '../interfaces';

@@ -6,6 +6,7 @@ import model from './models/Model';
 import { observable, configure } from 'mobx';
 import OnLoadPresenter from './presenters/OnLoadPresenter';
 import { fetchUser } from './utils/spotifyFetcher';
+import { getOrRegisterUser } from './utils/firebase';
 
 configure({ enforceActions: 'never' }); // we don't use Mobx actions
 const reactiveModel = observable(model);
@@ -18,6 +19,7 @@ root.render(
     <Router model={reactiveModel} />
   </React.StrictMode>
 );
+
 
 
 /*const attemptAutoLogin = () => {

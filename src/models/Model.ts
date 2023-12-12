@@ -3,6 +3,7 @@
 */
 
 import { Model } from '../interfaces';
+import { getOrRegisterUser } from '../utils/firebase';
 import { fetchUser, fetchTopItems } from '../utils/spotifyFetcher';
 
 export default {
@@ -53,7 +54,8 @@ export default {
     
     try {
       const user = await fetchUser(token);
-      this.userState.user = user;        
+      this.userState.user = user;   
+      getOrRegisterUser(this.userState.user);     
     } catch (error: any) {
       console.error("Error loggin into spotify", error);
       if(error.status === 401){
