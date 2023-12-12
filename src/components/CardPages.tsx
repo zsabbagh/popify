@@ -10,6 +10,8 @@ export default
     function CardsPages(props: {
         currentPage?: number,
         itemsPerPage?: number,
+        itemsPerColumn?: number,
+        spacing?: number,
         onPageChange: (page: number) => void,
         items: Array<any> | undefined,
         onItemSelected: (item: any) => void,
@@ -21,6 +23,9 @@ export default
 
     const items: Array<any> | undefined = props?.items;
 
+    const spacing = props.spacing && props.spacing > 0 ? props.spacing : 4;
+    const itemsPerColumn = props.itemsPerColumn && props.itemsPerColumn > 0 ? props.itemsPerColumn : 3;
+    const columns = spacing * itemsPerColumn;
     const itemsPerPage = props.itemsPerPage && props.itemsPerPage > 0 ? props.itemsPerPage : 9;
     const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
     // presents 9 items per page
@@ -52,7 +57,7 @@ export default
             }
             // delay for animation
             return (
-                <Grid key={item.id} item xs={4} xl={2}
+                <Grid key={item.id} item xs={spacing} xl={2}
                     sx={{
                         alignContent: 'center',
                     }}>
@@ -80,7 +85,7 @@ export default
                     marginBottom: '20px',
                 }}
             />
-            <Grid container spacing={4}
+            <Grid container spacing={spacing} columns={columns}
                 sx={{
                     position: 'relative',
                     marginTop: '25px',
