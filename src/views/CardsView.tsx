@@ -44,18 +44,12 @@ export default function CardsView(props: {
     const columns = spacing * itemsPerColumn;
     const itemsPerPage = props.itemsPerPage && props.itemsPerPage > 0 ? props.itemsPerPage : 9;
     const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
-    // presents 9 items per page
-    const currentPage = props.currentPage &&
-        props.currentPage > 0 &&
-        props.currentPage <= maxPages
-        ? props.currentPage
-        : 1;
 
     function getPageSlice() {
         if (!items) {
             return [];
         }
-        const start = (currentPage - 1) * itemsPerPage;
+        const start = (props.currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
         return items.slice(start, end);
     }
@@ -67,7 +61,7 @@ export default function CardsView(props: {
         }
         let opacity = 0.5;
         return items.map((item: any, index: number) => {
-            index = index + (currentPage - 1) * itemsPerPage;
+            index = index + (props.currentPage - 1) * itemsPerPage;
             async function onItemSelectedACB() {
                 props.onItemSelected(item);
             }
@@ -129,7 +123,7 @@ export default function CardsView(props: {
                 open={!!props.cardSelected}
                 onClose={props.onCardClosed} />
             <Pagination count={maxPages}
-                page={currentPage}
+                page={props.currentPage}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{
@@ -149,7 +143,7 @@ export default function CardsView(props: {
                 {generateGridItems()}
             </Grid>
             <Pagination count={maxPages}
-                page={currentPage}
+                page={props.currentPage}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{
