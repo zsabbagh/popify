@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
-import { blueGrey } from '@mui/material/colors';
-import { Album, Groups } from '@mui/icons-material';
+import { blueGrey, green, red } from '@mui/material/colors';
+import { Album, Groups, Add, Close } from '@mui/icons-material';
 import { Link } from "react-router-dom";
 import ItemDialog from './ItemDialog';
 import { ItemData } from '../interfaces';
@@ -19,13 +19,25 @@ const pastelColors = [
 export default function ItemCard(props: {
     item: ItemData;
     index: number;
-    onItemSelected:
-    Function; transition?:
-    boolean, onCardClick?: (item: any) => void }) {
+    itemIsInCart: boolean;
+    onItemSelected: Function;
+    onAddItemToCart: (item: ItemData) => void;
+    onRemoveItemFromCart: (id: string) => void;
+    transition?: boolean;
+    onCardClick?: (item: any) => void }) {
   const item = props.item;
   const index = props.index;
   const {type, image, name, album, popularity} = item;
   const artists = item.artists ? item.artists.join(', ') : '';
+
+  function onItemCartButtonClickACB(event: any) {
+    event.stopPropagation();
+    if (props.itemIsInCart) {
+      props.onRemoveItemFromCart(item.id);
+    } else {
+      props.onAddItemToCart(item);
+    }
+  }
 
   return (
     <Card
@@ -108,6 +120,15 @@ export default function ItemCard(props: {
         ) : (
           <Button size="small">Show More</Button>
         )}
+        <Button onClick={onItemCartButtonClickACB}>
+          {
+            props.itemIsInCart ? (
+              <Close sx={{ color: red[400] }} />
+            ) : (
+              <Add sx={{ color: green[400] }} />
+            )
+          }
+        </Button>
         <Box
           sx={{
             display: 'flex',

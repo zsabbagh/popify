@@ -81,12 +81,33 @@ export default observer(function Search(props: { model: Model }) {
     }, [searchQuery, latestSearchResultTime]);
 
     const [cardSelected, setCardSelected] = useState<ItemData | undefined>(undefined);
-    
+
+    function onAddItemToCartACB(item: ItemData) {
+        console.log("onAddItemToCartACB", item);
+        props.model.addItemToCart(item);
+    }
+
+    function onRemoveItemFromCartACB(id: string) {
+        console.log("onRemoveItemFromCartACB", id);
+        props.model.removeItemFromCart(id);
+    }
+
+    const [itemsInCart, setItemsInCart] = useState<Array<string>>([]);
+    useEffect(() => {
+        if (!props.model.userState.shoppingCart) {
+        return;
+        }
+        setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
+    }, [props?.model?.userState?.shoppingCart?.length])
+        
     return (
         <CardsView
             items={items}
             currentItemType={currentItemType}
+            onAddItemToCart={onAddItemToCartACB}
+            onRemoveItemFromCart={onRemoveItemFromCartACB}
             itemTypes={["artists", "tracks", "albums"]}
+            itemsInCart={itemsInCart}
             currentPage={page}
             onPageChange={setPage}
             onItemTypeChange={onItemTypeChange}

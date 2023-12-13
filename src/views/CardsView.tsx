@@ -22,7 +22,10 @@ export default function CardsView(props: {
         items: Array<any> | undefined,
         currentItemType: string,
         itemTypes: Array<string>,
+        itemsInCart: Array<string>,
         onItemTypeChange: (type: string) => void,
+        onAddItemToCart: (item: ItemData) => void,
+        onRemoveItemFromCart: (id: string) => void,
         currentPage: number,
         onPageChange: (page: number) => void,
         onItemSelected: (item: any) => void,
@@ -79,6 +82,9 @@ export default function CardsView(props: {
                     >
                         <ItemCard
                             item={item}
+                            itemIsInCart={props.itemsInCart.includes(item.id)}
+                            onAddItemToCart={props.onAddItemToCart}
+                            onRemoveItemFromCart={props.onRemoveItemFromCart}
                             index={index}
                             onItemSelected={onItemSelectedACB}
                             onCardClick={onCardClickACB}

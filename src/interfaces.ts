@@ -84,6 +84,9 @@ export interface Model {
   userState: UserState;
   getUserTopItems(timeRange: string | undefined): UserTopItems | undefined;
   setUserTopItems(timeRange: string, items: UserTopItems | undefined): boolean;
+  removeItemFromCart(item: ItemData | string | number | undefined): void;
+  addItemToCart(item: ItemData): void;
+  hasItemInCart(item: ItemData | undefined): boolean;
   updateUserTopItems(timeRange?: string): void;
   hasAuthToken(): boolean;
   loginUser(userAuthToken?: string): void;
@@ -95,6 +98,7 @@ export interface Model {
 
 interface UserState {
   userAuthToken?: string;
+  shoppingCart?: Array<ItemData>;
   user?: User;
   errorMessage: string | null;
   topItems?: {
