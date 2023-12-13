@@ -1,21 +1,37 @@
 import React, { useEffect } from "react";
 import {
     Box,
+    Tab,
+    Tabs,
     Grid,
     Pagination,
 } from '@mui/material';
-import ItemCard from './ItemCard';
-import ItemDialog from "./ItemDialog";
+import { Person, Audiotrack, AutoStories } from '@mui/icons-material';
+import ItemCard from '../components/ItemCard';
+import ItemDialog from "../components/ItemDialog";
+import { ItemData } from "../interfaces";
 
-export default
-    function CardsPages(props: {
-        currentPage?: number,
+const boxShadow = {
+    ':hover': {
+        boxShadow: '0 0 20px rgba(33,33,33,.2)',
+        transition: 'box-shadow 0.3s ease-in-out',
+    },
+}
+
+export default function CardsView(props: {
+        items: Array<any> | undefined,
+        currentItemType: string,
+        itemTypes: Array<string>,
+        onItemTypeChange: (type: string) => void,
+        currentPage: number,
+        onPageChange: (page: number) => void,
+        onItemSelected: (item: any) => void,
+        cardSelected: ItemData | undefined,
+        onCardClicked: (item: ItemData) => void,
+        onCardClosed: () => void,
         itemsPerPage?: number,
         itemsPerColumn?: number,
         spacing?: number,
-        onPageChange: (page: number) => void,
-        items: Array<any> | undefined,
-        onItemSelected: (item: any) => void,
     }) {
 
     if (!props.items) {
@@ -23,16 +39,6 @@ export default
     }
 
     const items: Array<any> | undefined = props?.items;
-
-    const [itemSelected, setItemSelected] = React.useState(undefined);
-    const [dialogOpen, setDialogOpen] = React.useState(false);
-
-
-    async function onDialogCloseACB() {
-        setItemSelected(undefined);
-        setDialogOpen(false);
-    }
-
     const spacing = props.spacing && props.spacing > 0 ? props.spacing : 4;
     const itemsPerColumn = props.itemsPerColumn && props.itemsPerColumn > 0 ? props.itemsPerColumn : 3;
     const columns = spacing * itemsPerColumn;
@@ -67,15 +73,11 @@ export default
             }
             async function onCardClickACB(item: any) {
                 console.log("onCardClickACB", item)
-                setItemSelected(item);
-                setDialogOpen(true);
+                props.onCardClicked(item);
             }
             // delay for animation
             return (
-                <Grid key={item.id} item xs={spacing} xl={2}
-                    sx={{
-                        alignContent: 'center',
-                    }}>
+                <Grid key={item.id} item xs={spacing} xl={2}>
                     <Box
                         sx={{
                             justifyContent: 'center',
@@ -93,20 +95,41 @@ export default
         });
     }
 
-    useEffect(() => {
-        console.log("CardsPages useEffect")
-        console.log("itemSelected", itemSelected)
-        console.log("dialogOpen", dialogOpen)
-    }, [itemSelected, dialogOpen]);
-
     return (
-        <div>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            marginTop: '50px',
+            marginBottom: '20px',
+        }}>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginBottom: '20px',
+            }}>
+                <Tabs
+                    value={props.currentItemType}
+                    onChange={(event: any, value: any) => props.onItemTypeChange(value)}
+                    textColor="primary"
+                    indicatorColor="primary"
+                    aria-label="secondary tabs example"
+                >
+                    {
+                        props.itemTypes.map((type: string) => {
+                            return <Tab key={type} value={type} label={type} sx={boxShadow} />
+                        })
+                    }
+                </Tabs>
+            </div>
             <ItemDialog
-                item={itemSelected}
-                open={dialogOpen}
-                onClose={onDialogCloseACB} />
+                item={props.cardSelected}
+                open={!!props.cardSelected}
+                onClose={props.onCardClosed} />
             <Pagination count={maxPages}
-                defaultPage={currentPage}
+                page={currentPage}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{
@@ -117,17 +140,16 @@ export default
                 }}
             />
             <Grid container spacing={spacing} columns={columns}
+                justifyContent='center'
+                alignItems='center'
                 sx={{
-                    position: 'relative',
-                    marginTop: '25px',
-                    martinBottom: '25px',
-                    display: 'flex',
-                    justifyContent: 'center',
+                    margin: 'auto',
+                    marginLeft: '25px'
                 }}>
                 {generateGridItems()}
             </Grid>
             <Pagination count={maxPages}
-                defaultPage={currentPage}
+                page={currentPage}
                 siblingCount={2}
                 onChange={(event, value) => props.onPageChange(value)}
                 sx={{

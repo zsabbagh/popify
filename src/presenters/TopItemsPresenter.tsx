@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { User, Model, ItemData } from '../interfaces';
 import { computeTopGenres } from '../utils/tools';
 import { get, set } from 'mobx';
-import StatisticsView from '../views/StatisticsView';
+import CardsView from '../views/CardsView';
 import { UserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 import { Suspense } from 'react';
 import { getItemInformation } from '../utils/tools';
@@ -15,7 +15,7 @@ export default observer(function Statistics(props: { model: Model }) {
   const navigate = useNavigate();
 
   const [timeRange, setTimeRange] = useState('short_term');
-  const [location, setLocation] = useState('artists');
+  const [currentItemType, setCurrentItemType] = useState('artists');
   const [topGenres, setTopGenres] = useState<Array<any> | undefined>(undefined);
   const [topData, setTopData] = useState<UserTopItems | undefined>(undefined);
 
@@ -51,9 +51,9 @@ export default observer(function Statistics(props: { model: Model }) {
     updateTopData();
   }, [topData])
 
-  /* returns the current item list based on locations */
-  function getItemList(otherLocation?: string | undefined): Array<ItemData> | undefined {
-    const tempLoc = otherLocation || location || undefined;
+  /* returns the current item list based on currentItemType */
+  function getItemList(otherType?: string | undefined): Array<ItemData> | undefined {
+    const tempLoc = otherType || currentItemType || undefined;
     let tempData: Array<any> | undefined = undefined;
     if (tempLoc === 'artists') {
       tempData = topData?.artists;
@@ -73,20 +73,27 @@ export default observer(function Statistics(props: { model: Model }) {
     console.log('onItemSelected not implemented!', item);
   }
 
-  async function onLocationChangeACB(newLocation: string) {
-    console.log('location changed from, ', location, ' to ', newLocation);
-    setLocation(newLocation);
+  async function onItemTypeChangeACB(newType: string) {
+    console.log('location changed from, ', location, ' to ', newType);
+    setCurrentItemType(newType);
   }
+
+  const [cardSelected, setCardSelected] = useState<ItemData | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <StatisticsView
-        location={location}
-        onLocationChange={onLocationChangeACB}
-        topItems={getItemList()}
-        timeRange={timeRange}
-        onTimeRangeChange={(timeRange: string) => setTimeRange(timeRange)}
+      <CardsView
+        currentItemType={currentItemType}
+        itemTypes={['artists', 'tracks', 'genres']}
+        onItemTypeChange={onItemTypeChangeACB}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        items={getItemList()}
         onItemSelected={onItemSelectedACB}
+        cardSelected={cardSelected}
+        onCardClicked={setCardSelected}
+        onCardClosed={() => setCardSelected(undefined)}
       />
     </Suspense>
   );
