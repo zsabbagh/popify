@@ -5,6 +5,7 @@
 import { Model } from '../interfaces';
 import { getOrRegisterUser } from '../utils/firebase';
 import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
+
 import { UserTopItems } from '../interfaces';
 
 export default {

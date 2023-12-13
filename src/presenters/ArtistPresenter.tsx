@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Model } from '../interfaces';
+import { Model, SpotifyArtist } from '../interfaces';
 import { useParams } from 'react-router-dom';
+import { CircularProgress, Skeleton } from '@mui/material';
+import ArtistView from '../views/ArtistView';
+import Loader from '../components/Loader';
 
-interface Props{
-  model: Model
+interface Props {
+  model: Model;
+
 }
 
 export default observer(function ArtistPresenter(props: Props) {
@@ -13,16 +17,23 @@ export default observer(function ArtistPresenter(props: Props) {
   const artist = props.model.artists.find((artist) => artist.id === id);
 
   useEffect(() => {
-    if(artist){
+    if (artist) {
       //Load additional data
     } else {
       props.model.addArtist(id!);
-      
     }
-  },[])
-console.log("artist", artist);
+  }, []);
+  console.log('artist', artist);
 
-
+  if(!artist){
+    return  <Loader></Loader>
+    
   
-  return <>{artist?.name}</>;
+  }
+
+  return (
+    <>
+        <ArtistView artist={artist!} />
+    </>
+  );
 });
