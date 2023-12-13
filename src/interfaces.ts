@@ -1,3 +1,15 @@
+export interface ItemData {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+  image: string;
+  popularity?: number;
+  album?: string;
+  artists?: Array<string>;
+  index?: number;
+  genres?: Array<string>;
+}
 export interface SpotifyImage {
   url: string;
   width: number;

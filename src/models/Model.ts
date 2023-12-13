@@ -9,6 +9,7 @@ import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
 import { UserTopItems } from '../interfaces';
 
 export default {
+  pages: ['Search', 'Top', 'Recommendations'],
   userState: {
     userAuthToken: undefined,
     user: undefined,
@@ -116,7 +117,6 @@ export default {
     this.userState.user = undefined;
     this.userState.userAuthToken = undefined;
   },
-  pages: ['Statistics', 'Quiz', 'Recommendations'],
   artists: [],
   async addArtist(id: string){
     if(this.hasAuthToken()){
