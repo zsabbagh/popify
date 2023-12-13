@@ -5,7 +5,7 @@ import { User, Model } from '../interfaces';
 import { computeTopGenres } from '../utils/tools';
 import { get, set } from 'mobx';
 import StatisticsView from '../views/StatisticsView';
-import { SpotifyUserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
+import { UserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 import { Suspense } from 'react';
 
 
@@ -13,25 +13,28 @@ export default observer(function Statistics(props: { model: Model }) {
   // this assumes that a UserModel is given...
   const navigate = useNavigate();
 
-  const user: User = props.model.userState.user || {} as User;
   const [timeRange, setTimeRange] = useState('short_term');
   const [location, setLocation] = useState('artists');
   const [topGenres, setTopGenres] = useState<Array<any> | undefined>(undefined);
-  const [topData, setTopData] = useState<SpotifyUserTopItems | undefined>(undefined);
+  const [topData, setTopData] = useState<UserTopItems | undefined>(undefined);
 
   function updateTopData() {
-    if (!user?.top) {
+    if (!props.model?.userState?.userAuthToken) {
       return
     }
-    if (timeRange === 'short_term') {
-      setTopData(user?.top?.short_term);
-    } else if (timeRange === 'mid_term') {
-      setTopData(user?.top?.mid_term);
-    } else if (timeRange === 'long_term') {
-      setTopData(user?.top?.long_term);
-    }
+    setTopData(props.model.getUserTopItems(timeRange));
     setTopGenres(computeTopGenres(topData?.artists || []));
   }
+
+  function onLoadACB() {
+    if (!props.model.getUserTopItems(timeRange)) {
+      props.model.updateUserTopItems(timeRange);
+    }
+    updateTopData();
+  }
+
+  useEffect(onLoadACB, [])
+  useEffect(onLoadACB, [props?.model?.userState?.topItems?.latestUpdate])
 
   useEffect(() => {
     if (!props.model.userState.userAuthToken) {
@@ -39,15 +42,16 @@ export default observer(function Statistics(props: { model: Model }) {
       // TODO: add notification that you need to login
       navigate('/');
     }
-    props.model.getUserTopItems(timeRange);
+    props.model.updateUserTopItems(timeRange);
     updateTopData();
-  }, []);
-
+  }, [props?.model?.userState, timeRange]);
 
   useEffect(() => {
-    props.model.getUserTopItems(timeRange);
     updateTopData();
-  }, []);
+  }, [topData])
+
+  console.log("-> GOT top data")
+  console.log(topData)
 
   /* returns the current item list based on locations */
   function getItemList(otherLocation?: string | undefined) {
@@ -62,12 +66,6 @@ export default observer(function Statistics(props: { model: Model }) {
     return undefined
   }
 
-  // when time range changes, fetch new items always
-  useEffect(() => {
-    props.model.getUserTopItems(timeRange);
-    updateTopData();
-  }, [timeRange]);
-
   async function onItemSelectedACB(item: any) {
     // TODO: implement
     console.log('onItemSelected not implemented!', item);
@@ -79,13 +77,15 @@ export default observer(function Statistics(props: { model: Model }) {
   }
 
   return (
-    <StatisticsView
-      location={location}
-      onLocationChange={onLocationChangeACB}
-      topItems={getItemList()}
-      timeRange={timeRange}
-      onTimeRangeChange={(timeRange: string) => setTimeRange(timeRange)}
-      onItemSelected={onItemSelectedACB}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <StatisticsView
+        location={location}
+        onLocationChange={onLocationChangeACB}
+        topItems={getItemList()}
+        timeRange={timeRange}
+        onTimeRangeChange={(timeRange: string) => setTimeRange(timeRange)}
+        onItemSelected={onItemSelectedACB}
+      />
+    </Suspense>
   );
 });

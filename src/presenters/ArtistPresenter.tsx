@@ -8,6 +8,7 @@ import Loader from '../components/Loader';
 
 interface Props {
   model: Model;
+
 }
 
 export default observer(function ArtistPresenter(props: Props) {

@@ -48,11 +48,6 @@ export interface SpotifyAlbum extends SpotifyItem {
   };
 }
 
-export interface SpotifyUserTopItems {
-    timestamp: string | number | undefined;
-    artists: Array<SpotifyArtist>,
-    tracks: Array<SpotifyTrack>,
-}
 
 export interface User {
   id: string;
@@ -65,16 +60,19 @@ export interface User {
     total: number;
   };
   images: SpotifyImage[];
-  top: {
-    short_term: SpotifyUserTopItems;
-    mid_term: SpotifyUserTopItems;
-    long_term: SpotifyUserTopItems;
-  };
+}
+
+export interface UserTopItems {
+    timestamp: number | undefined;
+    artists: Array<SpotifyArtist>,
+    tracks: Array<SpotifyTrack>,
 }
 
 export interface Model {
   userState: UserState;
-  getUserTopItems(userAuthToken?: string, timeRange?: string): void;
+  getUserTopItems(timeRange: string | undefined): UserTopItems | undefined;
+  setUserTopItems(timeRange: string, items: UserTopItems | undefined): boolean;
+  updateUserTopItems(timeRange?: string): void;
   hasAuthToken(): boolean;
   loginUser(userAuthToken?: string): void;
   logoutUser(): void;
@@ -87,6 +85,12 @@ interface UserState {
   userAuthToken?: string;
   user?: User;
   errorMessage: string | null;
+  topItems?: {
+    latestUpdate: number;
+    shortTerm: UserTopItems;
+    midTerm: UserTopItems;
+    longTerm: UserTopItems;
+  };
 }
 
 export default UserState;

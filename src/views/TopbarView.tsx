@@ -36,21 +36,27 @@ function TopbarView(props: {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/">
-            <Typography
-              variant="h6"
-              noWrap
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              Popify
-            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', bottom: '0' }}>
+              <img src="/logo.svg" alt="logo" style={{ height: '50px', width: 'auto' }}/>
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                  position: 'relative',
+                  marginTop: '7px',
+                  marginLeft: '10px',
+                }}
+              >
+                Popify
+              </Typography>
+            </Box>
           </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {props.pages.map((page) => (
