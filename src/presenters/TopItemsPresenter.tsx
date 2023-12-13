@@ -34,8 +34,17 @@ export default observer(function Statistics(props: { model: Model }) {
     updateTopData();
   }
 
+  const [itemsInCart, setItemsInCart] = useState<Array<string>>([]);
+
   useEffect(onLoadACB, [])
   useEffect(onLoadACB, [props?.model?.userState?.topItems?.latestUpdate])
+
+  useEffect(() => {
+    if (!props.model.userState.shoppingCart) {
+      return;
+    }
+    setItemsInCart(props.model.userState.shoppingCart.map((item: ItemData) => item.id));
+  }, [props?.model?.userState?.shoppingCart?.length])
 
   useEffect(() => {
     if (!props.model.userState.userAuthToken) {
@@ -81,11 +90,22 @@ export default observer(function Statistics(props: { model: Model }) {
   const [cardSelected, setCardSelected] = useState<ItemData | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
 
+  function onAddItemToCartACB(item: ItemData) {
+    props.model.addItemToCart(item);
+  }
+
+  function onRemoveItemFromCartACB(id: string) {
+    props.model.removeItemFromCart(id);
+  }
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <CardsView
         currentItemType={currentItemType}
+        itemsInCart={itemsInCart}
         itemTypes={['artists', 'tracks', 'genres']}
+        onAddItemToCart={onAddItemToCartACB}
+        onRemoveItemFromCart={onRemoveItemFromCartACB}
         onItemTypeChange={onItemTypeChangeACB}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
