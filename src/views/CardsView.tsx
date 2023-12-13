@@ -5,17 +5,33 @@ import {
     Tabs,
     Grid,
     Pagination,
+    Alert,
+    Fade,
 } from '@mui/material';
-import { Person, Audiotrack, AutoStories } from '@mui/icons-material';
+import { RemoveCircleOutline, Person, Audiotrack, AutoStories, CheckCircleOutline } from '@mui/icons-material';
 import ItemCard from '../components/ItemCard';
 import ItemDialog from "../components/ItemDialog";
 import { ItemData } from "../interfaces";
+import { set } from "mobx";
+import { red } from "@mui/material/colors";
 
 const boxShadow = {
     ':hover': {
         boxShadow: '0 0 20px rgba(33,33,33,.2)',
         transition: 'box-shadow 0.3s ease-in-out',
     },
+}
+
+const alertStyling = {
+    position: 'fixed',
+    fontSize: 'auto',
+    bottom: '10%',
+    left: '50%',
+    marginLeft: '-200px',
+    borderRadius: '40px',
+    right: '50%',
+    marginRight: '-200px',
+    width: '400px',
 }
 
 export default function CardsView(props: {
@@ -35,11 +51,14 @@ export default function CardsView(props: {
         itemsPerPage?: number,
         itemsPerColumn?: number,
         spacing?: number,
+        alertTimeout?: number,
     }) {
 
     if (!props.items) {
         return <></>;
     }
+
+    const alertTimeout = props.alertTimeout && props.alertTimeout > 0 ? props.alertTimeout : 2000;
 
     const items: Array<any> | undefined = props?.items;
     const spacing = props.spacing && props.spacing > 0 ? props.spacing : 4;
@@ -57,6 +76,11 @@ export default function CardsView(props: {
         return items.slice(start, end);
     }
 
+    const [successfulAdd, setSuccessfulAdd] = React.useState<string | undefined>(undefined);
+    const [addAlertOpen, setAddAlertOpen] = React.useState<boolean>(false);
+    const [successfulRemove, setSuccessfulRemove] = React.useState<string | undefined>(undefined);
+    const [removeAlertOpen, setRemoveAlertOpen] = React.useState<boolean>(false);
+
     function generateGridItems() {
         const items = getPageSlice();
         if (!items) {
@@ -72,6 +96,20 @@ export default function CardsView(props: {
                 console.log("onCardClickACB", item)
                 props.onCardClicked(item);
             }
+            async function onAddItemToCartACB(item: ItemData) {
+                setSuccessfulAdd(item.name);
+                setRemoveAlertOpen(false);
+                setAddAlertOpen(true);
+                props.onAddItemToCart(item);
+                setTimeout(() => setAddAlertOpen(false), alertTimeout);
+            }
+            async function onRemoveItemFromCartACB(id: string) {
+                setSuccessfulRemove(item.name);
+                setAddAlertOpen(false);
+                setRemoveAlertOpen(true);
+                props.onRemoveItemFromCart(id);
+                setTimeout(() => setRemoveAlertOpen(false), alertTimeout);
+            }
             // delay for animation
             return (
                 <Grid key={item.id} item xs={spacing} xl={2}>
@@ -83,8 +121,8 @@ export default function CardsView(props: {
                         <ItemCard
                             item={item}
                             itemIsInCart={props.itemsInCart.includes(item.id)}
-                            onAddItemToCart={props.onAddItemToCart}
-                            onRemoveItemFromCart={props.onRemoveItemFromCart}
+                            onAddItemToCart={onAddItemToCartACB}
+                            onRemoveItemFromCart={onRemoveItemFromCartACB}
                             index={index}
                             onItemSelected={onItemSelectedACB}
                             onCardClick={onCardClickACB}
@@ -160,6 +198,22 @@ export default function CardsView(props: {
                     marginBottom: '20px',
                 }}
             />
+            {
+                <Fade in={addAlertOpen} unmountOnExit={true}>
+                    <Alert severity="success" sx={alertStyling}
+                        icon={<CheckCircleOutline/>}>
+                        {successfulAdd} added to cart!
+                    </Alert>
+                </Fade>
+            }
+            {
+                <Fade in={removeAlertOpen} unmountOnExit={true}>
+                    <Alert severity="warning" sx={alertStyling}
+                        icon={<RemoveCircleOutline />}>
+                        {successfulRemove} removed from cart!
+                    </Alert>
+                </Fade>
+            }
         </div>
     )
 }
