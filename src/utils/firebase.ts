@@ -15,12 +15,9 @@ export const getOrRegisterUser = async (user?: User) => {
     const docSnap =  await getDoc(doc(db, "user", user.id));
 
     if (docSnap.exists()) {
-      console.log("Document data:", JSON.stringify(docSnap.data()));
+      //("Document data:", JSON.stringify(docSnap.data()));
     } else {
-      await setDoc(doc(collection(db, "user"), user.id), {
-        username: user.display_name,
-        points: 0,
-      });
+      await setDoc(doc(collection(db, "user"), user.id), user);
     }
   } catch (error) {
     //TODO handle

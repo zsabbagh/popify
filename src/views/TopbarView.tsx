@@ -15,14 +15,21 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Form, Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 
-function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: boolean; loginUrl: string; handleLoginLogout: Function; onSearchChange: Function; onSearch: Function }) {
+function TopbarView(props: {
+  pages: string[];
+  settings: string[];
+  loggedIn: boolean;
+  loginUrl: string;
+  handleLoginLogout: Function;
+  onSearchChange: Function;
+  onSearch: Function;
+}) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleLoginLogout = () => {
     props.handleLoginLogout();
   };
-
 
   return (
     <AppBar position="static">
@@ -64,27 +71,29 @@ function TopbarView(props: { pages: string[]; settings: string[]; loggedIn: bool
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <TextField
-            label="Search"
-            id="outlined-size-small"
-            defaultValue=""
-            size="small"
-            variant="filled"
-            sx={{
-              input: {
-                color: "black",
-                background: "white"
-              }
-            }}
-            onChange={(e) => {props.onSearchChange(e.target.value)}}
-            onKeyUp={(e) => {if (e.key === "Enter") {props.onSearch();}}}
-          />
+              label="Search"
+              id="outlined-size-small"
+              defaultValue=""
+              size="small"
+              variant="filled"
+              sx={{
+                input: {
+                  color: 'black',
+                  background: 'white',
+                },
+              }}
+              onChange={(e) => {
+                props.onSearchChange(e.target.value);
+              }}
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  props.onSearch();
+                }
+              }}
+            />
           </Box>
 
-          <Button
-            key="login"
-            onClick={handleLoginLogout}
-            sx={{ my: 2, color: 'white', display: 'block' }}
-          >
+          <Button key="login" onClick={handleLoginLogout} sx={{ my: 2, color: 'white', display: 'block' }}>
             {props.loggedIn ? 'Logout' : 'Login'}
           </Button>
         </Toolbar>
