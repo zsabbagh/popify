@@ -2,6 +2,9 @@ import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Typogra
 import { blueGrey } from '@mui/material/colors';
 import { Album, Groups } from '@mui/icons-material';
 import { Link } from "react-router-dom";
+import ItemDialog from './ItemDialog';
+import { ItemData } from '../interfaces';
+import ItemDetails from './ItemDetails';
 
 const pastelColors = [
   'rgba(255, 99, 71, 0.2)', // red
@@ -13,57 +16,16 @@ const pastelColors = [
   'rgba(0, 255, 127, 0.2)',
 ];
 
-export default function ItemCard(props: { item: any; index: number; onItemSelected: Function; transition?: boolean }) {
-  const type = props?.item?.type || undefined;
-  const index = props.index;
+export default function ItemCard(props: {
+    item: ItemData;
+    index: number;
+    onItemSelected:
+    Function; transition?:
+    boolean, onCardClick?: (item: any) => void }) {
   const item = props.item;
-  const images = item?.images ? item.images : item?.album?.images || [];
-  const image = images[0]?.url || '';
-  const name = item?.name;
-  const artist = item.type === 'track' ? item.artists[0]?.name : item.name;
-  const popularity = item?.popularity;
-
-  function showTrackInfo() {
-    if (type !== 'track') {
-      return <></>;
-    }
-    const album = item?.album?.name;
-    const artists = item?.artists;
-    const artistNames = artists
-      .map((artist: any) => artist?.name || '')
-      .filter((artist: any) => artist?.length > 0)
-      .join(', ');
-    const boxStyling = {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-    };
-    const fontStyling = {
-      fontSize: '0.8rem',
-      color: blueGrey[400],
-    };
-    const avatarStyling = {
-      color: blueGrey[200],
-      marginRight: '10px',
-      marginBottom: '7px',
-    };
-    return (
-      <div style={{ marginTop: '10px' }}>
-        <Box sx={boxStyling}>
-          <Album sx={avatarStyling} />
-          <Typography gutterBottom variant="body2" component="div" sx={fontStyling}>
-            {album}
-          </Typography>
-        </Box>
-        <Box sx={boxStyling}>
-          <Groups sx={avatarStyling} />
-          <Typography variant="body2" color="text.secondary" sx={fontStyling}>
-            {artistNames}
-          </Typography>
-        </Box>
-      </div>
-    );
-  }
+  const index = props.index;
+  const {type, image, name, album, popularity} = item;
+  const artists = item.artists ? item.artists.join(', ') : '';
 
   return (
     <Card
@@ -80,6 +42,7 @@ export default function ItemCard(props: { item: any; index: number; onItemSelect
           transition: 'all .5s ease-in-out',
         },
       }}
+      onClick={() => { props.onCardClick ? props.onCardClick(item) : null }}
     >
       {image ? (
         <CardMedia
@@ -108,28 +71,7 @@ export default function ItemCard(props: { item: any; index: number; onItemSelect
             width: '80%',
           }}
         >
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="div"
-            sx={{
-              fontSize: '1.2rem',
-            }}
-          >
-            {name}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              marginTop: '2px',
-              color: blueGrey[200],
-              fontStyle: 'italic',
-            }}
-          >
-            {type}
-          </Typography>
-          {showTrackInfo()}
+          <ItemDetails item={item} />
         </Box>
         <Box
           sx={{

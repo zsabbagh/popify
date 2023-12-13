@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { User, Model } from '../interfaces';
+import { User, Model, ItemData } from '../interfaces';
 import { computeTopGenres } from '../utils/tools';
 import { get, set } from 'mobx';
 import StatisticsView from '../views/StatisticsView';
 import { UserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 import { Suspense } from 'react';
+import { getItemInformation } from '../utils/tools';
 
 
 export default observer(function Statistics(props: { model: Model }) {
@@ -50,20 +51,21 @@ export default observer(function Statistics(props: { model: Model }) {
     updateTopData();
   }, [topData])
 
-  console.log("-> GOT top data")
-  console.log(topData)
-
   /* returns the current item list based on locations */
-  function getItemList(otherLocation?: string | undefined) {
+  function getItemList(otherLocation?: string | undefined): Array<ItemData> | undefined {
     const tempLoc = otherLocation || location || undefined;
+    let tempData: Array<any> | undefined = undefined;
     if (tempLoc === 'artists') {
-      return topData?.artists;
+      tempData = topData?.artists;
     } else if (tempLoc === 'tracks') {
-        return topData?.tracks;
+        tempData = topData?.tracks;
     } else if (tempLoc === 'genres') {
-        return topGenres;
+        tempData = topGenres;
+    } else {
+      return undefined
     }
-    return undefined
+    tempData = tempData?.map((item: any, index: number) => getItemInformation(item, index));
+    return tempData;
   }
 
   async function onItemSelectedACB(item: any) {

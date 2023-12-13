@@ -30,7 +30,7 @@ import {
     Favorite,
     Audiotrack,
 } from '@mui/icons-material';
-import { User } from '../interfaces';
+import { ItemData, User } from '../interfaces';
 import { blueGrey, deepOrange } from '@mui/material/colors';
 import CardPages from '../components/CardPages';
 
@@ -51,16 +51,15 @@ const boxShadow = {
 export default function StatisticsView(props: {
         location: string,
         onLocationChange: (location: string) => void,
-        topItems: any, // TODO: type this
+        topItems: Array<ItemData> | undefined, // TODO: type this
         timeRange: string,
         onTimeRangeChange: (timeRange: string) => void,
         onItemSelected: (item: any) => void,
     }) {
 
-    const items: Array<any> | undefined = props?.topItems;
+    const items: Array<ItemData> | undefined = props?.topItems;
     const [dropdownOpened, setDropdownOpened] = React.useState(false);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const itemsPerPage = 9;
 
     return (
         <Container sx={{

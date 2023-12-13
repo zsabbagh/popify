@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Box,
     Grid,
     Pagination,
 } from '@mui/material';
 import ItemCard from './ItemCard';
+import ItemDialog from "./ItemDialog";
 
 export default
     function CardsPages(props: {
@@ -22,6 +23,15 @@ export default
     }
 
     const items: Array<any> | undefined = props?.items;
+
+    const [itemSelected, setItemSelected] = React.useState(undefined);
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+
+
+    async function onDialogCloseACB() {
+        setItemSelected(undefined);
+        setDialogOpen(false);
+    }
 
     const spacing = props.spacing && props.spacing > 0 ? props.spacing : 4;
     const itemsPerColumn = props.itemsPerColumn && props.itemsPerColumn > 0 ? props.itemsPerColumn : 3;
@@ -55,6 +65,11 @@ export default
             async function onItemSelectedACB() {
                 props.onItemSelected(item);
             }
+            async function onCardClickACB(item: any) {
+                console.log("onCardClickACB", item)
+                setItemSelected(item);
+                setDialogOpen(true);
+            }
             // delay for animation
             return (
                 <Grid key={item.id} item xs={spacing} xl={2}
@@ -66,14 +81,30 @@ export default
                             justifyContent: 'center',
                         }}
                     >
-                        <ItemCard item={item} index={index} onItemSelected={onItemSelectedACB} />
+                        <ItemCard
+                            item={item}
+                            index={index}
+                            onItemSelected={onItemSelectedACB}
+                            onCardClick={onCardClickACB}
+                            />
                     </Box>
                 </Grid>
             );
         });
     }
+
+    useEffect(() => {
+        console.log("CardsPages useEffect")
+        console.log("itemSelected", itemSelected)
+        console.log("dialogOpen", dialogOpen)
+    }, [itemSelected, dialogOpen]);
+
     return (
         <div>
+            <ItemDialog
+                item={itemSelected}
+                open={dialogOpen}
+                onClose={onDialogCloseACB} />
             <Pagination count={maxPages}
                 defaultPage={currentPage}
                 siblingCount={2}
