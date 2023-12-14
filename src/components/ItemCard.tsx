@@ -1,5 +1,5 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
-import { blueGrey, green, red } from '@mui/material/colors';
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Tooltip, Typography } from '@mui/material';
+import { blue, blueGrey, green, red } from '@mui/material/colors';
 import { Album, Groups, Add, Close } from '@mui/icons-material';
 import { Link } from "react-router-dom";
 import ItemDialog from './ItemDialog';
@@ -24,6 +24,7 @@ export default function ItemCard(props: {
     onAddItemToCart: (item: ItemData) => void;
     onRemoveItemFromCart: (id: string) => void;
     transition?: boolean;
+    cartIsFull?: boolean;
     onCardClick?: (item: any) => void }) {
   const item = props.item;
   const index = props.index;
@@ -38,6 +39,11 @@ export default function ItemCard(props: {
       props.onAddItemToCart(item);
     }
   }
+
+  const disableAddToCart = !props.itemIsInCart && props.cartIsFull;
+  const tooltipAddToCart = disableAddToCart ? 'Cart is full' : (
+    props.itemIsInCart ? 'Remove from Cart' : 'Add to Cart'
+  );
 
   return (
     <Card
@@ -114,21 +120,25 @@ export default function ItemCard(props: {
           <>
         
             <Link to={`/artist/${item.id}`} >
-                <Button size="small">Show More</Button>
+                <Button size="small">Go To Page</Button>
             </Link>
           </>
         ) : (
-          <Button size="small">Show More</Button>
+          <Button size="small">Go To Page</Button>
         )}
-        <Button onClick={onItemCartButtonClickACB}>
-          {
-            props.itemIsInCart ? (
-              <Close sx={{ color: red[400] }} />
-            ) : (
-              <Add sx={{ color: green[400] }} />
-            )
-          }
-        </Button>
+        <Tooltip title={tooltipAddToCart}>
+          <span>
+            <Button onClick={onItemCartButtonClickACB} disabled={disableAddToCart}>
+              {
+                props.itemIsInCart ? (
+                  <Close sx={{ color: red[400] }} />
+                ) : (
+                  <Add sx={{ color: disableAddToCart ? blueGrey[100] : green[400] }} />
+                )
+              }
+            </Button>
+          </span>
+        </Tooltip>
         <Box
           sx={{
             display: 'flex',

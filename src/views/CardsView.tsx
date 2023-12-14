@@ -49,6 +49,7 @@ export default function CardsView(props: {
         itemsPerColumn?: number,
         spacing?: number,
         alertTimeout?: number,
+        maxCartSize?: number,
     }) {
 
     if (!props.items) {
@@ -57,6 +58,8 @@ export default function CardsView(props: {
 
     const [cardSelected, setCardSelected] = React.useState<ItemData | undefined>(undefined);
     const [cardDialogOpen, setCardDialogOpen] = React.useState<boolean>(false);
+    const maxCartSize = props.maxCartSize && props.maxCartSize > 0 ? props.maxCartSize : 5;
+    const cartIsFull = props.itemsInCart?.length >= maxCartSize;
 
     async function onCardClosedACB(item: ItemData | undefined) {
         setCardDialogOpen(false);
@@ -136,6 +139,7 @@ export default function CardsView(props: {
                             onAddItemToCart={onAddItemToCartACB}
                             onRemoveItemFromCart={onRemoveItemFromCartACB}
                             index={index}
+                            cartIsFull={cartIsFull}
                             onItemSelected={onItemSelectedACB}
                             onCardClick={onCardClickedACB}
                             />
