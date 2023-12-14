@@ -42,16 +42,13 @@ export default observer(function Topbar(props: Props) {
   return (
     <TopbarView
       pages={props.pages}
-      cartOpen={cartOpen}
-      onCartClicked={() => setCartOpen(true)}
-      onCartClosed={() => setCartOpen(false)}
       onCartRemoveItem={updateShoppingCart}
       onCartCheckout={() => undefined}
       shoppingCart={props.model.userState.shoppingCart}
       settings={props.settings}
       loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
-      handleLoginLogout={handleLoginLogout}
+      onLoginLogout={handleLoginLogout}
       onSearchChange={(term: string) => setSearchTerm(term)}
       onSearch={handleSearch}
     />

@@ -20,23 +20,18 @@ import { ItemData } from '../interfaces';
 function TopbarView(props: {
   pages: string[];
   shoppingCart: ItemData[] | undefined;
-  cartOpen: boolean;
-  onCartClicked: () => void;
-  onCartClosed: () => void;
   onCartRemoveItem: (index: number) => void;
   onCartCheckout: () => void;
   settings: string[];
   loggedIn: boolean;
   loginUrl: string;
-  handleLoginLogout: Function;
-  onSearchChange: Function;
-  onSearch: Function;
+  onLoginLogout: () => void;
+  onSearchChange: (term: string) => void;
+  onSearch: () => void;
 }) {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleLoginLogout = () => {
-    props.handleLoginLogout();
+    props.onLoginLogout();
   };
 
   return (
@@ -103,9 +98,6 @@ function TopbarView(props: {
             props.loggedIn ? (
               <ShoppingCart 
                 items={props.shoppingCart || []}
-                open={props.cartOpen}
-                onClicked={props.onCartClicked}
-                onClosed={props.onCartClosed}
                 onRemoveItem={props.onCartRemoveItem}
                 onCheckout={props.onCartCheckout}
               />
