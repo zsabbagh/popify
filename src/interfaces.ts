@@ -80,6 +80,14 @@ export interface UserTopItems {
     tracks: Array<SpotifyTrack>,
 }
 
+export interface Comment{
+  title: string;
+  content: string;
+  uri: string;
+  user_name: string;
+  user_id: string;
+}
+
 export interface Model {
   userState: UserState;
   getUserTopItems(timeRange: string | undefined): UserTopItems | undefined;
@@ -94,7 +102,9 @@ export interface Model {
   addArtist(id: string): void;
   submitRating(uri: string, rating: number): void;
   getRating(uri: string): Promise<number>;
-  getAverageRating(uri: string): Promise<{count: number, average: number}>
+  getAverageRating(uri: string): Promise<{count: number, average: number}>;
+  postComment(uri: string, content: string, title: string): Promise<Comment | null>;
+  getComments(uri: string): Promise<Comment[]>;
   artists: SpotifyArtist[];
   pages: string[];
 
