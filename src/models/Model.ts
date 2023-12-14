@@ -57,13 +57,13 @@ export default {
   },
   getUserTopItems(timeRange: string | undefined) {
     if (!timeRange) {
-      return undefined
+      return undefined;
     }
-    if (timeRange === "short_term") {
+    if (timeRange === 'short_term') {
       return this.userState.topItems?.shortTerm;
-    } else if (timeRange === "mid_term") {
+    } else if (timeRange === 'mid_term') {
       return this.userState.topItems?.midTerm;
-    } else if (timeRange === "long_term") {
+    } else if (timeRange === 'long_term') {
       return this.userState.topItems?.longTerm;
     }
     return undefined;
@@ -71,11 +71,11 @@ export default {
   setUserTopItems(timeRange: string, items: UserTopItems | undefined) {
     if (!items) {
       return false;
-    } else if (timeRange === "short_term") {
+    } else if (timeRange === 'short_term') {
       this.userState.topItems!.shortTerm = items;
-    } else if (timeRange === "mid_term") {
+    } else if (timeRange === 'mid_term') {
       this.userState.topItems!.midTerm = items;
-    } else if (timeRange === "long_term") {
+    } else if (timeRange === 'long_term') {
       this.userState.topItems!.longTerm = items;
     } else {
       return false;
@@ -83,7 +83,7 @@ export default {
     return true;
   },
   async updateUserTopItems(timeRange?: string) {
-    if (!this.hasAuthToken() || ["short_term", "mid_term", "long_term"].indexOf(timeRange || '') === -1) {
+    if (!this.hasAuthToken() || ['short_term', 'mid_term', 'long_term'].indexOf(timeRange || '') === -1) {
       return;
     }
     const token = this.userState.userAuthToken as string;
@@ -93,39 +93,38 @@ export default {
       if (previousUpdate && timestamp - previousUpdate < 60 * 10) {
         return;
       }
-      const topArtists = await fetchTopItems(token, "artists", 50, timeRange);
-      const topTracks = await fetchTopItems(token, "tracks", 50, timeRange);
+      const topArtists = await fetchTopItems(token, 'artists', 50, timeRange);
+      const topTracks = await fetchTopItems(token, 'tracks', 50, timeRange);
       const topItems = {
         timestamp: timestamp,
         artists: topArtists.items,
-        tracks: topTracks.items
+        tracks: topTracks.items,
       };
       this.setUserTopItems(timeRange!, topItems);
       this.userState.topItems!.latestUpdate = timestamp;
     } catch (error: any) {
-      console.error("Error fetching top items", error);
+      console.error('Error fetching top items', error);
       this.userState.errorMessage = error?.message;
     }
   },
-  async loginUser(token?: string ) {
-    
-    if(!token){
+  async loginUser(token?: string) {
+    if (!token) {
       const cachedToken = localStorage.getItem('spotifyAuthToken');
-      if(cachedToken) token = cachedToken;
+      if (cachedToken) token = cachedToken;
       else return;
     }
     this.userState.userAuthToken = token;
-    
+
     try {
       const user = await fetchUser(token);
-      this.userState.user = user;   
-      firebaseApi.getOrRegisterUser(this.userState.user);     
+      this.userState.user = user;
+      firebaseApi.getOrRegisterUser(this.userState.user);
     } catch (error: any) {
-      console.error("Error loggin into spotify", error);
-      if(error.status === 401){
+      console.error('Error loggin into spotify', error);
+      if (error.status === 401) {
         //Token expired
         this.logoutUser();
-      };
+      }
       this.userState.errorMessage = error.message;
     }
     this.userState.topItems = {
@@ -145,7 +144,7 @@ export default {
         artists: [],
         tracks: [],
       },
-    }
+    };
     this.userState.shoppingCart = [];
   },
   logoutUser() {
@@ -154,27 +153,31 @@ export default {
     this.userState.userAuthToken = undefined;
   },
   artists: [],
-  async addArtist(id: string){
-    if(this.hasAuthToken()){
+  async addArtist(id: string) {
+    if (this.hasAuthToken()) {
       try {
         const artist = await fetchArtist(this.userState.userAuthToken!, id);
         this.artists.push(artist);
       } catch (error) {
         //TODO handle
       }
-
     }
   },
-  async submitRating(uri: string, rating: number){
-  await firebaseApi.putRating(uri, rating, this.userState.user!);
-
+  async submitRating(uri: string, rating: number) {
+    await firebaseApi.putRating(uri, rating, this.userState.user!);
   },
-  async getRating(uri: string){
+  async getRating(uri: string) {
     return await firebaseApi.getRating(uri, this.userState.user!);
   },
 
-  async getAverageRating(uri: string){
+  async getAverageRating(uri: string) {
     return await firebaseApi.getAverageRating(uri);
-  }
-
+  },
+  async getComments(uri: string) {
+    return await firebaseApi.getComments(uri);
+  },
+  async postComment(uri: string, content: string, title: string) {
+     return await firebaseApi.postComment(uri, this.userState.user!, content, title);
+  },
+  
 } as Model;

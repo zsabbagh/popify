@@ -14,6 +14,7 @@ import {
 import { collection, getDocs, getCountFromServer, AggregateQuerySnapshot } from 'firebase/firestore';
 import { firebaseConfig } from '../config';
 import { User } from '../interfaces';
+import { Comment } from '../interfaces';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -78,6 +79,7 @@ export const getRating = async (uri: string, user: User) => {
     //TODO handle
   }
 };
+
 export const getAverageRating = async (uri: string) => {
   try {
     const q = query(collection(db, 'rating'), where('uri', '==', uri));
@@ -98,9 +100,41 @@ export const getAverageRating = async (uri: string) => {
     console.log('error', error);
     return {
       count: 0,
-      average:0,
+      average: 0,
     };
+  }
+};
 
+
+export const getComments = async (uri: string): Promise<Comment[]> => {
+  try {
+    const response = await getDocs(query(collection(db, 'comment'), where("uri", "==", uri)));
+    if(response.empty){
+      return [];
+    } else {
+      return response.docs.map(doc => doc.data()) as Comment[];
+    }
+
+  } catch (error) {
+    return [];
+    //TODO handle
+  }
+};
+
+export const postComment = async (uri: string, user: User, content: string, title: string) => {
+  try {
+
+    const commentObject = {
+      title: title,
+      content: content,
+      uri: uri,
+      user_id: user.id,
+      user_name: user.display_name
+    }
+    await setDoc(doc(collection(db, 'comment')), commentObject);
+    return commentObject;
+  } catch (error) {
+    return null;
     //TODO handle
   }
 };

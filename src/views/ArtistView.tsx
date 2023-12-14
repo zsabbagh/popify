@@ -3,6 +3,7 @@ import { Model, SpotifyArtist } from '../interfaces';
 import { Suspense } from 'react';
 import PersonalRatingPresenter from '../presenters/PersonalRatingPresenter';
 import AverageRatingPresenter from '../presenters/AverageRatingPresenter';
+import CommentPresenter from '../presenters/CommentPresenter';
 
 interface Props {
   artist: SpotifyArtist;
@@ -22,7 +23,8 @@ const ArtistView = (props: Props) => {
       {artist.name}
       <AverageRatingPresenter uri={artist.uri} model={props.model} />
       <PersonalRatingPresenter uri={artist.uri} model={props.model}/>
-
+    <br></br>
+     <CommentPresenter model={props.model} uri={artist.uri} />
 
     </>
   );

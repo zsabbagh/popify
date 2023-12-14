@@ -33,7 +33,7 @@ const AverageRatingPresenter: React.FC<Props> = (props: Props) => {
   return (
     <>
       <div>
-        <Rating value={averageRating.average} readOnly />
+        <Rating value={averageRating.average} readOnly precision={0.1} />
         <span>{`${averageRating.count} reviews!`}</span>
       </div>
     </>
