@@ -45,9 +45,6 @@ export default function CardsView(props: {
         currentPage: number,
         onPageChange: (page: number) => void,
         onItemSelected: (item: any) => void,
-        cardSelected: ItemData | undefined,
-        onCardClicked: (item: ItemData) => void,
-        onCardClosed: () => void,
         itemsPerPage?: number,
         itemsPerColumn?: number,
         spacing?: number,
@@ -56,6 +53,21 @@ export default function CardsView(props: {
 
     if (!props.items) {
         return <></>;
+    }
+
+    const [cardSelected, setCardSelected] = React.useState<ItemData | undefined>(undefined);
+    const [cardDialogOpen, setCardDialogOpen] = React.useState<boolean>(false);
+
+    async function onCardClosedACB(item: ItemData | undefined) {
+        setCardDialogOpen(false);
+        if (!item) {
+            return;
+        }
+        setTimeout(() => {
+            if (item.id === cardSelected?.id && !cardDialogOpen) {
+                setCardSelected(undefined);
+            }
+        }, 500);
     }
 
     const alertTimeout = props.alertTimeout && props.alertTimeout > 0 ? props.alertTimeout : 2000;
@@ -92,9 +104,9 @@ export default function CardsView(props: {
             async function onItemSelectedACB() {
                 props.onItemSelected(item);
             }
-            async function onCardClickACB(item: any) {
-                console.log("onCardClickACB", item)
-                props.onCardClicked(item);
+            async function onCardClickedACB(item: any) {
+                setCardDialogOpen(true);
+                setCardSelected(item);
             }
             async function onAddItemToCartACB(item: ItemData) {
                 setSuccessfulAdd(item.name);
@@ -125,7 +137,7 @@ export default function CardsView(props: {
                             onRemoveItemFromCart={onRemoveItemFromCartACB}
                             index={index}
                             onItemSelected={onItemSelectedACB}
-                            onCardClick={onCardClickACB}
+                            onCardClick={onCardClickedACB}
                             />
                     </Box>
                 </Grid>
@@ -163,9 +175,9 @@ export default function CardsView(props: {
                 </Tabs>
             </div>
             <ItemDialog
-                item={props.cardSelected}
-                open={!!props.cardSelected}
-                onClose={props.onCardClosed} />
+                item={cardSelected}
+                open={cardDialogOpen}
+                onClose={onCardClosedACB} />
             <Pagination count={maxPages}
                 page={props.currentPage}
                 siblingCount={2}

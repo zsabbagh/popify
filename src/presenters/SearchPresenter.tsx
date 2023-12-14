@@ -80,8 +80,6 @@ export default observer(function Search(props: { model: Model }) {
         }
     }, [searchQuery, latestSearchResultTime]);
 
-    const [cardSelected, setCardSelected] = useState<ItemData | undefined>(undefined);
-
     function onAddItemToCartACB(item: ItemData) {
         console.log("onAddItemToCartACB", item);
         props.model.addItemToCart(item);
@@ -112,9 +110,6 @@ export default observer(function Search(props: { model: Model }) {
             onPageChange={setPage}
             onItemTypeChange={onItemTypeChange}
             onItemSelected={onItemSelected}
-            cardSelected={cardSelected}
-            onCardClicked={(item: ItemData) => setCardSelected(item)}
-            onCardClosed={() => setCardSelected(undefined)}
         />
     );
 }

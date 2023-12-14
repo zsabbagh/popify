@@ -16,7 +16,7 @@ import ItemDetails from './ItemDetails';
 export default function ItemDialog(props: {
     item: ItemData | undefined,
     open: boolean,
-    onClose: () => void
+    onClose: (item: ItemData | undefined) => void
 }) {
 
     const { id, type, image, name, album, popularity } = props.item || {};
@@ -25,8 +25,7 @@ export default function ItemDialog(props: {
 
     return (
         <React.Fragment>
-            <Dialog open={open} onClose={props.onClose} maxWidth="sm" fullWidth sx={{
-                transition: 'all 0.5s ease-in-out',
+            <Dialog open={open} onClose={() => props.onClose(props.item)} maxWidth="sm" fullWidth sx={{
                 backdropFilter: 'blur(5px)',
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}>
@@ -43,7 +42,7 @@ export default function ItemDialog(props: {
                 <DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={props.onClose}>Cancel</Button>
+                    <Button onClick={() => props.onClose(props.item)}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>

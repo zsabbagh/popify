@@ -87,7 +87,6 @@ export default observer(function Statistics(props: { model: Model }) {
     setCurrentItemType(newType);
   }
 
-  const [cardSelected, setCardSelected] = useState<ItemData | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
 
   function onAddItemToCartACB(item: ItemData) {
@@ -111,9 +110,6 @@ export default observer(function Statistics(props: { model: Model }) {
         onPageChange={setCurrentPage}
         items={getItemList()}
         onItemSelected={onItemSelectedACB}
-        cardSelected={cardSelected}
-        onCardClicked={setCardSelected}
-        onCardClosed={() => setCardSelected(undefined)}
       />
     </Suspense>
   );
