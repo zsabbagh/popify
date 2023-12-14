@@ -30,7 +30,7 @@ export default observer(function Router(props: Props) {
           // If user is truthy, render all the routes
           <Routes>
             <Route index element={<Index model={props.model} />} />
-            <Route path="/statistics" element={<Statistics model={props.model} />} />
+            <Route path="/top" element={<TopItems model={props.model} />} />
             <Route path="/quiz" element={<>Quizzes here</>} />
             <Route path="/recommendations" element={<Recommendations model={props.model} />} />
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
