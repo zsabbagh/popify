@@ -1,3 +1,15 @@
+export interface ItemData {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+  image: string;
+  popularity?: number;
+  album?: string;
+  artists?: Array<string>;
+  index?: number;
+  genres?: Array<string>;
+}
 export interface SpotifyImage {
   url: string;
   width: number;
@@ -72,6 +84,9 @@ export interface Model {
   userState: UserState;
   getUserTopItems(timeRange: string | undefined): UserTopItems | undefined;
   setUserTopItems(timeRange: string, items: UserTopItems | undefined): boolean;
+  removeItemFromCart(item: ItemData | string | number | undefined): void;
+  addItemToCart(item: ItemData): void;
+  hasItemInCart(item: ItemData | undefined): boolean;
   updateUserTopItems(timeRange?: string): void;
   hasAuthToken(): boolean;
   loginUser(userAuthToken?: string): void;
@@ -87,6 +102,7 @@ export interface Model {
 
 interface UserState {
   userAuthToken?: string;
+  shoppingCart?: Array<ItemData>;
   user?: User;
   errorMessage: string | null;
   topItems?: {

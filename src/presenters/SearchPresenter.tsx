@@ -3,8 +3,11 @@ import { Model, SpotifyItem, SpotifyTrack, SpotifyAlbum, SpotifyArtist } from ".
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { query } from "firebase/firestore";
-import SearchView from "../views/SearchView";
 import { search } from "../utils/spotifyFetcher";
+import { getItemInformation } from "../utils/tools";
+import { set } from "mobx";
+import { ItemData } from "../interfaces";
+import CardsView from "../views/CardsView";
 
 export default observer(function Search(props: { model: Model }) {
     // this assumes that a UserModel is given...
@@ -15,30 +18,42 @@ export default observer(function Search(props: { model: Model }) {
     const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
     const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
     const [page, setPage] = useState(1);
-    const [items, setItems] = useState<SpotifyItem[]>([]);
-    const [searchTab, setSearchTab] = useState("artists");
+    const [items, setItems] = useState<ItemData[]>([]);
+    const [currentItemType, setCurrentItemType] = useState("artists");
+    const [latestSearchResultTime, setLatestSearchResultTime] = useState(0);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    function updateItems() {
+        let temp: Array<any> = [];
+        if (currentItemType === "artists") {
+            temp = artists;
+        } else if (currentItemType === "tracks") {
+            temp = tracks;
+        } else if (currentItemType === "albums") {
+            temp = albums;
+        }
+        if (temp) {
+            temp = temp.map((item: any, index: number) => getItemInformation(item, index));
+            setItems(temp);
+        }
+    }
     
     const handleSearchResults = (result: {tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}) => {
         setArtists(result.artists.items);
         setTracks(result.tracks.items);
         setAlbums(result.albums.items);
-        setItems(result.artists.items);
+        updateItems();
+        setLatestSearchResultTime(Date.now());
     }
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const onItemSelected = (item: SpotifyItem) => {
+    const onItemSelected = (item: ItemData) => {
         console.log("item selected", item);
     }
 
-    const onLocationChange = (location: string) => {
-        setSearchTab(location);
-        if (location === "artists") {
-            setItems(artists);
-        } else if (location === "tracks") {
-            setItems(tracks);
-        } else if (location === "albums") {
-            setItems(albums);
-        }
+    const onItemTypeChange = (newType: string) => {
+        setCurrentItemType(newType);
+        updateItems();
     }
 
     useEffect(() => {
@@ -53,12 +68,49 @@ export default observer(function Search(props: { model: Model }) {
     useEffect(() => {
         const query = searchParams.get("q");
         if (query) {
-            search(props.model.userState.userAuthToken || "", query).then(handleSearchResults);
+            setSearchQuery(query);
         }
     }, [location]);
-    
+
+    useEffect(() => {
+        const query = searchParams.get("q");
+        if (query) {
+            search(props.model.userState.userAuthToken || "", query)
+                .then(handleSearchResults);
+        }
+    }, [searchQuery, latestSearchResultTime]);
+
+    function onAddItemToCartACB(item: ItemData) {
+        console.log("onAddItemToCartACB", item);
+        props.model.addItemToCart(item);
+    }
+
+    function onRemoveItemFromCartACB(id: string) {
+        console.log("onRemoveItemFromCartACB", id);
+        props.model.removeItemFromCart(id);
+    }
+
+    const [itemsInCart, setItemsInCart] = useState<Array<string>>([]);
+    useEffect(() => {
+        if (!props.model.userState.shoppingCart) {
+        return;
+        }
+        setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
+    }, [props?.model?.userState?.shoppingCart?.length])
+        
     return (
-        <SearchView location={searchTab} items={items} page={page} setPage={setPage} onLocationChange={onLocationChange} onItemSelected={onItemSelected}></SearchView>
+        <CardsView
+            items={items}
+            currentItemType={currentItemType}
+            onAddItemToCart={onAddItemToCartACB}
+            onRemoveItemFromCart={onRemoveItemFromCartACB}
+            itemTypes={["artists", "tracks", "albums"]}
+            itemsInCart={itemsInCart}
+            currentPage={page}
+            onPageChange={setPage}
+            onItemTypeChange={onItemTypeChange}
+            onItemSelected={onItemSelected}
+        />
     );
 }
 );

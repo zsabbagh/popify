@@ -14,6 +14,9 @@ interface Props {
 export default observer(function Topbar(props: Props) {
   const [searchTerm, setSearchTerm] = React.useState('');
   const navigate = useNavigate();
+  const [cartItemRemoved, setCartItemRemoved] = React.useState(false);
+  const [cartItemAdded, setCartItemAdded] = React.useState(false);
+  const [cartSize, setCartSize] = React.useState(props?.model?.userState?.shoppingCart?.length || 0);
   const handleSearch = () => {
     navigate('/search?q=' + searchTerm);
   }
@@ -27,13 +30,25 @@ export default observer(function Topbar(props: Props) {
       window.location.href = loginUrl;
     }
   };
+
+  const [cartOpen, setCartOpen] = React.useState(false);
+
+  function updateShoppingCart(index: number) {
+    console.log("removing item from cart", index)
+    props.model.removeItemFromCart(index);
+  }
+
+
   return (
     <TopbarView
       pages={props.pages}
+      onCartRemoveItem={updateShoppingCart}
+      onCartCheckout={() => undefined}
+      shoppingCart={props.model.userState.shoppingCart}
       settings={props.settings}
       loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
-      handleLoginLogout={handleLoginLogout}
+      onLoginLogout={handleLoginLogout}
       onSearchChange={(term: string) => setSearchTerm(term)}
       onSearch={handleSearch}
     />

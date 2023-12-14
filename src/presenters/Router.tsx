@@ -3,7 +3,7 @@ import loginUrl from '../utils/spotifyAuthorization';
 import SpotifyResponseHandler from '../handlers/SpotifyResponseHandler';
 import { observer } from 'mobx-react-lite';
 import Topbar from './TopbarPresenter';
-import Statistics from './StatisticsPresenter';
+import TopItems from './TopItemsPresenter';
 import Index from '../presenters/IndexPresenter';
 import Recommendations from './RecommendationPresenter';
 import Search from './SearchPresenter';

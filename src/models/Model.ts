@@ -6,14 +6,50 @@ import { Model, User } from '../interfaces';
 import * as firebaseApi from '../utils/firebase';
 import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
 
-import { UserTopItems } from '../interfaces';
+import { UserTopItems, ItemData } from '../interfaces';
 
 export default {
+  pages: ['Search', 'Top', 'Recommendations'],
   userState: {
     userAuthToken: undefined,
+    shoppingCart: undefined,
     user: undefined,
     topItems: undefined,
     errorMessage: null,
+  },
+  hasItemInCart(item: ItemData | undefined) {
+    if (!item || !this.userState.shoppingCart) {
+      return false;
+    }
+    return this.userState.shoppingCart.some((x) => x.id === item.id);
+  },
+  addItemToCart(item: ItemData | undefined) {
+    if (!item) {
+      return;
+    }
+    if (!this.userState.shoppingCart) {
+      this.userState.shoppingCart = [];
+    }
+    if (this.hasItemInCart(item)) {
+      return;
+    }
+    this.userState.shoppingCart.push(item);
+  },
+  /* removes by ID or index */
+  removeItemFromCart(itemOrIndex: number | undefined) {
+    if (itemOrIndex === undefined) {
+      return;
+    }
+    if (!this.userState.shoppingCart) {
+      return;
+    }
+    if (typeof itemOrIndex === 'string') {
+      const id = itemOrIndex;
+      this.userState.shoppingCart = this.userState.shoppingCart.filter((x) => x.id !== id);
+    } else if (typeof itemOrIndex === 'number') {
+      const index = itemOrIndex;
+      this.userState.shoppingCart = this.userState.shoppingCart.filter((x, i) => i !== index);
+    }
   },
   /* fetch user's top artists and tracks */
   hasAuthToken() {
@@ -110,13 +146,13 @@ export default {
         tracks: [],
       },
     }
+    this.userState.shoppingCart = [];
   },
   logoutUser() {
     localStorage.removeItem('spotifyAuthToken');
     this.userState.user = undefined;
     this.userState.userAuthToken = undefined;
   },
-  pages: ['Statistics', 'Quiz', 'Recommendations'],
   artists: [],
   async addArtist(id: string){
     if(this.hasAuthToken()){
