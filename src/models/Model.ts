@@ -2,8 +2,8 @@
    The Model keeps only abstract data and has no notions of graphics or interaction
 */
 
-import { Model } from '../interfaces';
-import { getOrRegisterUser } from '../utils/firebase';
+import { Model, User } from '../interfaces';
+import * as firebaseApi from '../utils/firebase';
 import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
 
 import { UserTopItems, ItemData } from '../interfaces';
@@ -119,7 +119,7 @@ export default {
     try {
       const user = await fetchUser(token);
       this.userState.user = user;   
-      getOrRegisterUser(this.userState.user);     
+      firebaseApi.getOrRegisterUser(this.userState.user);     
     } catch (error: any) {
       console.error("Error loggin into spotify", error);
       if(error.status === 401){
@@ -164,5 +164,17 @@ export default {
       }
 
     }
+  },
+  async submitRating(uri: string, rating: number){
+  await firebaseApi.putRating(uri, rating, this.userState.user!);
+
+  },
+  async getRating(uri: string){
+    return await firebaseApi.getRating(uri, this.userState.user!);
+  },
+
+  async getAverageRating(uri: string){
+    return await firebaseApi.getAverageRating(uri);
   }
+
 } as Model;
