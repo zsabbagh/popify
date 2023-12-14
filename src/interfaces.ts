@@ -77,8 +77,12 @@ export interface Model {
   loginUser(userAuthToken?: string): void;
   logoutUser(): void;
   addArtist(id: string): void;
+  submitRating(uri: string, rating: number): void;
+  getRating(uri: string): Promise<number>;
+  getAverageRating(uri: string): Promise<{count: number, average: number}>
   artists: SpotifyArtist[];
   pages: string[];
+
 }
 
 interface UserState {

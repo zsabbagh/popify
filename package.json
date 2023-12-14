@@ -8,7 +8,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
-    "firebase": "^9.17.1",
+    "firebase": "^10.7.1",
     "mobx": "^6.8.0",
     "mobx-react-lite": "^3.4.2",
     "react": "^18.0.0",

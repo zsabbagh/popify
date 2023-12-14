@@ -8,12 +8,10 @@ import Loader from '../components/Loader';
 
 interface Props {
   model: Model;
-
 }
 
 export default observer(function ArtistPresenter(props: Props) {
   let { id } = useParams();
-
   const artist = props.model.artists.find((artist) => artist.id === id);
 
   useEffect(() => {
@@ -23,17 +21,14 @@ export default observer(function ArtistPresenter(props: Props) {
       props.model.addArtist(id!);
     }
   }, []);
-  console.log('artist', artist);
 
-  if(!artist){
-    return  <Loader></Loader>
-    
-  
+  if (!artist || !props.model.userState.user) {
+    return <Loader></Loader>;
   }
 
   return (
     <>
-        <ArtistView artist={artist!} />
+      <ArtistView artist={artist!} model={props.model} />
     </>
   );
 });

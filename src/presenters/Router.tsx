@@ -9,6 +9,7 @@ import Recommendations from './RecommendationPresenter';
 import Search from './SearchPresenter';
 import { Model } from '../interfaces';
 import ArtistPresenter from './ArtistPresenter';
+import { useEffect } from 'react';
 
 interface Props {
   model: Model;
@@ -17,23 +18,34 @@ interface Props {
 const settings = ['Logout'];
 
 export default observer(function Router(props: Props) {
-  props.model.loginUser();
+  useEffect(() => {
+    props.model.loginUser();
+  }, []);
 
   return (
     <>
       <BrowserRouter>
         <Topbar pages={props.model.pages} settings={settings} model={props.model} />
-        <Routes>
-          <Route index element={<Index model={props.model} />} />
-          <Route path="/statistics" element={<Statistics model={props.model} />} />
-          <Route path="/quiz" element={<>Quizzes here</>} />
+        {props.model.userState.user ? (
+          // If user is truthy, render all the routes
+          <Routes>
+            <Route index element={<Index model={props.model} />} />
+            <Route path="/statistics" element={<Statistics model={props.model} />} />
+            <Route path="/quiz" element={<>Quizzes here</>} />
+            <Route path="/recommendations" element={<Recommendations model={props.model} />} />
+            <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
+            <Route path="/search" element={<Search model={props.model}></Search>} />
+            <Route path="/artist/:id" element={<ArtistPresenter model={props.model} />} />
+            <Route path="*" element={<>404, page not found!</>} />
+          </Routes>
+        ) : (
+          // If user is falsy, render only the index route
+          <Routes>
+            <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
 
-          <Route path="/recommendations" element={<Recommendations model={props.model}/>} />
-          <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
-          <Route path="/search" element={<Search model={props.model}></Search>} />
-          <Route path="/artist/:id" element={<ArtistPresenter model={props.model} />} />
-          <Route path="*" element={<>404, page not found!</>} />
-        </Routes>
+            <Route path="*" element={<Index model={props.model} />} />
+          </Routes>
+        )}
       </BrowserRouter>
     </>
   );
