@@ -31,7 +31,7 @@ const CommentPresenter = (props: Props) => {
   const addComment = async(title: string, content: string) => {    
     const response = await props.model.postComment(props.uri, content, title);
     if(response){
-      setComments((oldComments) => [...(oldComments || []), response])
+      setComments((oldComments) => [response, ...(oldComments || [])])
     }
   };
 
