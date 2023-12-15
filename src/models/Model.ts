@@ -174,7 +174,8 @@ export default {
     return await firebaseApi.getAverageRating(uri);
   },
   async getComments(uri: string) {
-    return await firebaseApi.getComments(uri);
+    const response = await firebaseApi.getComments(uri);    
+    return response;
   },
   async postComment(uri: string, content: string, title: string) {
      return await firebaseApi.postComment(uri, this.userState.user!, content, title);
