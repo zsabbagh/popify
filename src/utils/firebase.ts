@@ -12,6 +12,7 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  Timestamp,
 } from 'firebase/firestore';
 import { collection, getDocs, getCountFromServer, AggregateQuerySnapshot } from 'firebase/firestore';
 import { firebaseConfig } from '../config';
@@ -47,7 +48,7 @@ export const putRating = async (uri: string, rating: number, user: User) => {
       uri: uri,
       user_id: user.id,
       user_name: user.display_name,
-      timestamp: serverTimestamp(),
+      timestamp: Timestamp.now(),
     };
 
     if (!querySnapshot.empty) {
@@ -133,7 +134,8 @@ export const postComment = async (uri: string, user: User, content: string, titl
       uri: uri,
       user_id: user.id,
       user_name: user.display_name,
-      timestamp: serverTimestamp(),
+      user_image: user.images[0].url,
+      timestamp: Timestamp.now(),
     };
     await setDoc(doc(collection(db, 'comment')), commentObject);
     return commentObject;

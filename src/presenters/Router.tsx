@@ -42,7 +42,6 @@ export default observer(function Router(props: Props) {
           // If user is falsy, render only the index route
           <Routes>
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
-
             <Route path="*" element={<Index model={props.model} />} />
           </Routes>
         )}
