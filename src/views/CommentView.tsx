@@ -49,7 +49,7 @@ const CommentView = (props: Props) => {
           label="text"
           onChange={(e) => setContent(e.target.value)}
         ></TextField>
-        <div style={{width: "100%", margin:"10px 0px", textAlign: "center"}}>
+        <div style={{ width: '100%', margin: '10px 0px', textAlign: 'center' }}>
           <Button variant="contained" type="submit">
             Add comment
           </Button>
@@ -68,11 +68,10 @@ const CommentView = (props: Props) => {
                 primary={comment.title}
                 secondary={
                   <React.Fragment>
-                    <Typography sx={{ display: 'inline' }} component="span" variant="body2" color="text.primary">
-                      {comment.user_name}
-                    </Typography>
-                    {' - ' + comment.content}
-                    <p>{formatDistanceToNow(comment.timestamp.toDate(), { addSuffix: true })}</p>
+                    {comment.content}
+                    <p>
+                      {`${comment.user_name}, ` + formatDistanceToNow(comment.timestamp.toDate(), { addSuffix: true })}
+                    </p>
                   </React.Fragment>
                 }
               />
