@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import Topbar from './TopbarPresenter';
 import TopItems from './TopItemsPresenter';
 import Index from '../presenters/IndexPresenter';
-import Recommendations from './RecommendationPresenter';
+import Checkout from './CheckoutPresenter';
 import Search from './SearchPresenter';
 import { Model } from '../interfaces';
 import ArtistPresenter from './ArtistPresenter';
@@ -32,7 +32,7 @@ export default observer(function Router(props: Props) {
             <Route index element={<Index model={props.model} />} />
             <Route path="/top" element={<TopItems model={props.model} />} />
             <Route path="/quiz" element={<>Quizzes here</>} />
-            <Route path="/recommendations" element={<Recommendations model={props.model} />} />
+            <Route path="/checkout" element={<Checkout model={props.model} />} />
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
             <Route path="/search" element={<Search model={props.model}></Search>} />
             <Route path="/artist/:id" element={<ArtistPresenter model={props.model} />} />

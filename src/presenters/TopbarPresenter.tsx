@@ -31,6 +31,10 @@ export default observer(function Topbar(props: Props) {
     }
   };
 
+  const onCartCheckout = () => {
+    navigate('/checkout');
+  }
+
   const [cartOpen, setCartOpen] = React.useState(false);
 
   function updateShoppingCart(index: number) {
@@ -43,7 +47,7 @@ export default observer(function Topbar(props: Props) {
     <TopbarView
       pages={props.pages}
       onCartRemoveItem={updateShoppingCart}
-      onCartCheckout={() => undefined}
+      onCartCheckout={onCartCheckout}
       shoppingCart={props.model.userState.shoppingCart}
       settings={props.settings}
       loggedIn={!!props.model.userState.user}
