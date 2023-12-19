@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface ItemData {
   id: string;
   name: string;
@@ -86,6 +88,8 @@ export interface Comment{
   uri: string;
   user_name: string;
   user_id: string;
+  user_image: string;
+  timestamp: Timestamp
 }
 
 export interface Model {

@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
+    "date-fns": "^3.0.0",
     "firebase": "^10.7.1",
     "mobx": "^6.8.0",
     "mobx-react-lite": "^3.4.2",

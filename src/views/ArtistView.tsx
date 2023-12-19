@@ -14,7 +14,7 @@ interface Props {
 const ArtistView = (props: Props) => {
   const artist = props.artist;
   return (
-    <>
+    <div style={{marginBottom: "20px"}}>
       <img
         style={{ width: '100%', height: '300px', objectFit: 'cover', userSelect: 'none' }}
         src={artist.images[0].url}
@@ -26,7 +26,7 @@ const ArtistView = (props: Props) => {
     <br></br>
      <CommentPresenter model={props.model} uri={artist.uri} />
 
-    </>
+    </div>
   );
 };
 

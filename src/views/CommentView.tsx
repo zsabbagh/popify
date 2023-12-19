@@ -1,5 +1,19 @@
 import { FormEvent, FormEventHandler, useState } from 'react';
 import { Comment } from '../interfaces';
+import {
+  Avatar,
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material';
+import React from 'react';
+import { formatDistanceToNow } from 'date-fns';
 
 interface Props {
   comments: Comment[];
@@ -11,26 +25,62 @@ const CommentView = (props: Props) => {
   const [content, setContent] = useState<string>('');
 
   return (
-    <div>
+    <Paper elevation={3} style={{ maxWidth: '400px', padding: '20px', margin: '0px auto' }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           props.addComment(title, content);
         }}
       >
-        <input value={title} onChange={(e) => setTitle(e.target.value)} id="title" />
-        <input value={content} onChange={(e) => setContent(e.target.value)} type="text" id="content"></input>
-        <button type="submit">Add comment</button>
+        <TextField
+          fullWidth
+          required
+          value={title}
+          label="title"
+          onChange={(e) => setTitle(e.target.value)}
+        ></TextField>
+        <Divider style={{ height: '10px' }} variant="fullWidth" />
+        <TextField
+          fullWidth
+          required
+          multiline
+          rows={3}
+          value={content}
+          label="text"
+          onChange={(e) => setContent(e.target.value)}
+        ></TextField>
+        <div style={{width: "100%", margin:"10px 0px", textAlign: "center"}}>
+          <Button variant="contained" type="submit">
+            Add comment
+          </Button>
+        </div>
       </form>
       <br />
-      {props.comments.map((comment) => (
-        <>
-        <h1>{comment.title}</h1>
-        <p>{comment.content}</p>
-        <br></br>
-        </>
-      ))}
-    </div>
+      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        {props.comments.map((comment) => (
+          <>
+            <Divider variant="inset" component="li" />
+            <ListItem alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar alt="profile image" src={comment.user_image} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={comment.title}
+                secondary={
+                  <React.Fragment>
+                    <Typography sx={{ display: 'inline' }} component="span" variant="body2" color="text.primary">
+                      {comment.user_name}
+                    </Typography>
+                    {' - ' + comment.content}
+                    <p>{formatDistanceToNow(comment.timestamp.toDate(), { addSuffix: true })}</p>
+                  </React.Fragment>
+                }
+              />
+            </ListItem>
+          </>
+        ))}
+      </List>
+    </Paper>
   );
 };
 
