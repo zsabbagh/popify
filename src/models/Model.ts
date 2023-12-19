@@ -9,7 +9,7 @@ import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
 import { UserTopItems, ItemData } from '../interfaces';
 
 export default {
-  pages: ['Search', 'Top', 'Recommendations'],
+  pages: ['Search', 'Top'],
   userState: {
     userAuthToken: undefined,
     shoppingCart: undefined,

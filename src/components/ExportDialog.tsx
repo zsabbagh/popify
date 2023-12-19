@@ -31,7 +31,7 @@ export default function ExportDialog(props: {onExport: (newPlaylist: boolean, pl
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button sx={{width:"100%"}} variant="outlined" onClick={handleClickOpen}>
         Add songs to playlist
       </Button>
       <Dialog open={open} onClose={handleClose}>
