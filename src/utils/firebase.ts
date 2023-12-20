@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { collection, getDocs, getCountFromServer, AggregateQuerySnapshot } from 'firebase/firestore';
 import { firebaseConfig } from '../config';
-import { ItemData, User } from '../interfaces';
+import { ItemData, SpotifyTrack, User } from '../interfaces';
 import { Comment } from '../interfaces';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -88,6 +88,26 @@ export const getCartFirebase = async (user?: User) => {
     //TODO handle
   }
 };
+
+
+export const putPlaylist = async (playlist: SpotifyTrack[], userId?: string ) => {
+  if (!userId) {
+    return;
+  }
+
+  const playlistObject = {
+    playlist: playlist,
+    userId: userId,
+    timestamp: Timestamp.now()
+  }
+  try {
+    await setDoc(doc(collection(db, 'playlist')), playlistObject);
+
+  } catch (error) {
+    //TODO handle
+  }
+};
+
 
 export const putRating = async (uri: string, rating: number, user: User) => {
   try {

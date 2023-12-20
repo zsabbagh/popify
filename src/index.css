@@ -34,3 +34,8 @@ code {
 		transform: scale(0.95);
 	}
 }
+
+a{
+	color: blue;
+	text-decoration: none;
+}

@@ -11,6 +11,7 @@ import { Model } from '../interfaces';
 import ItemPresenter from './ItemPagePresenter';
 import { useEffect } from 'react';
 import OnLoadView from '../views/OnLoadView';
+import UserPresenter from './UserPresenter';
 
 interface Props {
   model: Model;
@@ -22,6 +23,8 @@ export default observer(function Router(props: Props) {
   useEffect(() => {
     props.model.loginUser();
   }, []);
+
+  if(!props.model.userState.userAuthToken) props.model.userState.user = undefined;
 
 
 
@@ -39,6 +42,7 @@ export default observer(function Router(props: Props) {
             <Route path="/checkout" element={<Checkout model={props.model} />} />
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
             <Route path="/search" element={<Search model={props.model}></Search>} />
+            <Route path="/user/:id" element={<UserPresenter model={props.model} />} />
             <Route path="/artist/:id" element={<ItemPresenter model={props.model} type="artist" />} />
             <Route path="/track/:id" element={<ItemPresenter model={props.model} type="track" />} />
             <Route path="/album/:id" element={<ItemPresenter model={props.model} type="album" />} />

@@ -11,8 +11,10 @@ const reactiveModel = observable(model);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
+
 root.render(
   <React.StrictMode>
+    
     <OnLoadPresenter />
     <Router model={reactiveModel} />
   </React.StrictMode>
