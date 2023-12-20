@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { Form, Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
-import ShoppingCart from '../components/ShoppingCart';
+import ShoppingCart from './ShoppingCartView';
 import { ItemData } from '../interfaces';
 
 function TopbarView(props: {

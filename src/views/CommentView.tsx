@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import Loader from '../components/Loader';
+import Loader from './LoaderView';
 
 interface Props {
   comments: Comment[] | null;

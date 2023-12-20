@@ -8,7 +8,7 @@ import Index from '../presenters/IndexPresenter';
 import Checkout from './CheckoutPresenter';
 import Search from './SearchPresenter';
 import { Model } from '../interfaces';
-import ItemPresenter from './ItemPresenter';
+import ItemPresenter from './ItemPagePresenter';
 import { useEffect } from 'react';
 
 interface Props {

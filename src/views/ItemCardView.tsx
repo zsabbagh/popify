@@ -2,9 +2,8 @@ import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Tooltip
 import { blue, blueGrey, green, red } from '@mui/material/colors';
 import { Album, Groups, Add, Close } from '@mui/icons-material';
 import { Link } from "react-router-dom";
-import ItemDialog from './ItemDialog';
 import { ItemData } from '../interfaces';
-import ItemDetails from './ItemDetails';
+import ItemDetails from './ItemDetailsView';
 import { isValidType } from '../utils/spotifyFetcher';
 
 const pastelColors = [

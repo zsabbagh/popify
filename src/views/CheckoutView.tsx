@@ -1,6 +1,6 @@
 import { Avatar, Button, Checkbox, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Tooltip, Typography } from '@mui/material';
 import { ItemData, SpotifyAlbum, SpotifyArtist, SpotifyItem, SpotifyTrack } from '../interfaces';
-import ExportDialog from '../components/ExportDialog';
+import ExportDialog from './ExportDialogView';
 import { teal } from '@mui/material/colors';
 import { RemoveCircleOutline } from '@mui/icons-material';
 

@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { CircularProgress, Skeleton } from '@mui/material';
 import CommentView from '../views/CommentView';
 import ItemPageView from '../views/ItemPageView';
-import Loader from '../components/Loader';
+import Loader from '../views/LoaderView';
 
 interface Props {
     model: Model;

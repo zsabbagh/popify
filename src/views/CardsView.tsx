@@ -9,8 +9,8 @@ import {
     Fade,
 } from '@mui/material';
 import { RemoveCircleOutline, Person, Audiotrack, AutoStories, CheckCircleOutline } from '@mui/icons-material';
-import ItemCard from '../components/ItemCard';
-import ItemDialog from "../components/ItemDialog";
+import ItemCard from './ItemCardView';
+import ItemDialog from "./ItemDialogView";
 import { ItemData } from "../interfaces";
 import { set } from "mobx";
 import { red } from "@mui/material/colors";

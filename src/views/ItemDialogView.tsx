@@ -11,7 +11,7 @@ import {
     Typography,
 } from '@mui/material';
 import { ItemData } from '../interfaces';
-import ItemDetails from './ItemDetails';
+import ItemDetails from './ItemDetailsView';
 
 export default function ItemDialog(props: {
     item: ItemData | undefined,
