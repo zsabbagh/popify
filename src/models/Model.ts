@@ -35,9 +35,10 @@ export default {
       return;
     }
     this.userState.shoppingCart.push(item);
+    this.pushCartFirebase();
   },
   /* removes by ID or index */
-  removeItemFromCart(itemOrIndex: number | undefined) {
+  removeItemFromCart(itemOrIndex: number | string | undefined) {
     if (itemOrIndex === undefined) {
       return;
     }
@@ -51,6 +52,16 @@ export default {
       const index = itemOrIndex;
       this.userState.shoppingCart = this.userState.shoppingCart.filter((x, i) => i !== index);
     }
+    this.pushCartFirebase();
+  },
+  async pushCartFirebase(){
+    console.log("pushing to firebase", this.userState.shoppingCart);
+    
+    firebaseApi.pushCartFirebase(this.userState.shoppingCart, this.userState.user);
+  },
+  async getCartFirebase(){
+    return await firebaseApi.getCartFirebase(this.userState.user);
+
   },
   /* fetch user's top artists and tracks */
   hasAuthToken() {
@@ -146,7 +157,7 @@ export default {
         tracks: [],
       },
     };
-    this.userState.shoppingCart = [];
+    this.userState.shoppingCart = await this.getCartFirebase();
   },
   logoutUser() {
     localStorage.removeItem('spotifyAuthToken');
@@ -190,5 +201,8 @@ export default {
   async postComment(uri: string, content: string, title: string) {
      return await firebaseApi.postComment(uri, this.userState.user!, content, title);
   },
+  async getUser(userId: string) {
+    return await firebaseApi.getUser(userId);
+  }
   
 } as Model;

@@ -10,6 +10,7 @@ import Search from './SearchPresenter';
 import { Model } from '../interfaces';
 import ItemPresenter from './ItemPagePresenter';
 import { useEffect } from 'react';
+import OnLoadView from '../views/OnLoadView';
 
 interface Props {
   model: Model;
@@ -22,9 +23,12 @@ export default observer(function Router(props: Props) {
     props.model.loginUser();
   }, []);
 
+
+
   return (
     <>
       <BrowserRouter>
+        <OnLoadView fadeInTime={500} show={true} transition={true}></OnLoadView>
         <Topbar pages={props.model.pages} settings={settings} model={props.model} />
         {props.model.userState.user ? (
           // If user is truthy, render all the routes
