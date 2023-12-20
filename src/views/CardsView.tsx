@@ -53,7 +53,8 @@ export default function CardsView(props: {
     spacing?: number,
     alertTimeout?: number,
     maxCartSize?: number,
-    onSearch?: (query: string) => void | undefined,
+    onSearchChange?: (query: string) => void | undefined,
+    onSearch?: () => void | undefined,
     awaitingSearch?: boolean,
 }) {
 
@@ -163,6 +164,12 @@ export default function CardsView(props: {
         setCurrentPage(1);
     }
 
+    async function onKeyPressACB(event: any) {
+        if (event.key === 'Enter') {
+            props.onSearch ? props.onSearch() : undefined;
+        }
+    }
+
     console.log("got itemSlice", itemSlice)
 
     return (
@@ -207,10 +214,11 @@ export default function CardsView(props: {
                 marginBottom: '20px',
             }}>
                 {
-                    props?.onSearch ?
+                    props?.onSearchChange ?
                     <>
                         <TextField id="search" label="Search" variant="standard" 
-                            onChange={(event) => props?.onSearch ? props.onSearch(event.target.value) : undefined}
+                            onChange={(event) => props?.onSearchChange ? props.onSearchChange(event.target.value) : undefined}
+                            onKeyDown={onKeyPressACB}
                             InputProps={{
                                 startAdornment: (
                                 <InputAdornment position="start">

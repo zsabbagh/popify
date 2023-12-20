@@ -39,10 +39,10 @@ export default observer(function Search(props: { model: Model }) {
     }
     
     const handleSearchResults = (result: {tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}) => {
-        setLatestSearchResultTime(Date.now());
         if (!result) {
             return;
         }
+        setLatestSearchResultTime(Date.now());
         setTracks(result?.tracks ? result.tracks.items : []);
         setArtists(result?.artists ? result.artists.items : []);
         setAlbums(result?.albums ? result.albums.items : []);
@@ -71,13 +71,6 @@ export default observer(function Search(props: { model: Model }) {
         }
     }, [location]);
 
-    useEffect(() => {
-        if (searchQuery) {
-            search(props.model.userState.userAuthToken || "", searchQuery)
-                .then(handleSearchResults);
-        }
-    }, [searchQuery]);
-
     function onAddItemToCartACB(item: ItemData) {
         console.log("onAddItemToCartACB", item);
         props.model.addItemToCart(item);
@@ -96,23 +89,18 @@ export default observer(function Search(props: { model: Model }) {
         setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
     }, [props?.model?.userState?.shoppingCart?.length])
 
-    function onSearchACB(query: string) {
-        if (!query || query === '') {
-            setLatestInputChange(0);
+    useEffect(() => {
+        updateItems();
+    }, [latestSearchResultTime])
+
+    function onSearchACB() {
+        if (searchQuery === "") {
             return;
         }
-        console.log("onSearchACB", query);
-        const thisSearchTimestamp = Date.now();
-        setLatestInputChange(thisSearchTimestamp);
-        setTimeout(() => {
-            console.log("onSearchACB timeout", query);
-            if (thisSearchTimestamp < latestInputChange) {
-                return;
-            }
-            if (query != searchQuery) {
-                setSearchQuery(query);
-            }
-        }, 500);
+        setLatestInputChange(Date.now());
+        console.log("searching for ", query, " at ", Date.now());
+        search(props.model.userState.userAuthToken || "", searchQuery)
+            .then(handleSearchResults);
     }
         
     return (
@@ -124,7 +112,8 @@ export default observer(function Search(props: { model: Model }) {
             onAddItemToCart={onAddItemToCartACB}
             onRemoveItemFromCart={onRemoveItemFromCartACB}
             itemsInCart={itemsInCart}
-            onSearch={onSearchACB}
+            onSearchChange={(query: string) => setSearchQuery(query)}
+            onSearch={() => onSearchACB()}
             awaitingSearch={latestInputChange > latestSearchResultTime}
         />
     );

@@ -104,7 +104,7 @@ export default observer(function Statistics(props: { model: Model }) {
         onRemoveItemFromCart={onRemoveItemFromCartACB}
         onTabChange={onTabChangeACB}
         items={getItemList()}
-        onSearch={(query: string) => setSearchQuery(query)}
+        onSearchChange={(query: string) => setSearchQuery(query)}
       />
   );
 });
