@@ -8,7 +8,7 @@ import Index from '../presenters/IndexPresenter';
 import Checkout from './CheckoutPresenter';
 import Search from './SearchPresenter';
 import { Model } from '../interfaces';
-import ArtistPresenter from './ArtistPresenter';
+import ItemPresenter from './ItemPresenter';
 import { useEffect } from 'react';
 
 interface Props {
@@ -35,7 +35,7 @@ export default observer(function Router(props: Props) {
             <Route path="/checkout" element={<Checkout model={props.model} />} />
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
             <Route path="/search" element={<Search model={props.model}></Search>} />
-            <Route path="/artist/:id" element={<ArtistPresenter model={props.model} />} />
+            <Route path="/:type/:id" element={<ItemPresenter model={props.model} />} />
             <Route path="*" element={<>404, page not found!</>} />
           </Routes>
         ) : (

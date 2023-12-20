@@ -1,4 +1,6 @@
-import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '../interfaces';
+import { ItemData, SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '../interfaces';
+
+const itemTypes = [ 'artist', 'album', 'track' ];
 
 // function to fetch username from spotify api
 function fetchUsername(accessToken: string) {
@@ -12,10 +14,19 @@ function fetchUsername(accessToken: string) {
     });
 }
 
+// returns true if type is one of spotify's valid types for item fetching
+function isValidType(type: string): boolean {
+  return itemTypes.indexOf(type) !== -1;
+}
+
 // function to fetch artist from spotify api
-function fetchArtist(accessToken: string, artistId: string): Promise<SpotifyArtist> {
+function fetchItem(accessToken: string, id: string, type: string = "artist"): Promise<any> {
+  // type is either 'artist', 'album' or 'track', i.e. singular
+  if (isValidType(type) === false) {
+    throw new Error("Invalid type! Expected one of: " + itemTypes.join(', ') + ". Got: " + type);
+  }
   const headers = { Authorization: `Bearer ${accessToken}` };
-  return fetch(`https://api.spotify.com/v1/artists/${artistId}`, { headers })
+  return fetch(`https://api.spotify.com/v1/${type}s/${id}`, { headers })
     .then((res) => {
       if (res.ok) {
         return res.json();
@@ -156,5 +167,6 @@ export {
   addTracksToPlaylist,
   fetchCurrentUserPlaylists,
   search,
-  fetchArtist,
+  fetchItem,
+  isValidType,
 };

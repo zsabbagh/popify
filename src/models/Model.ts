@@ -4,9 +4,10 @@
 
 import { Model, User } from '../interfaces';
 import * as firebaseApi from '../utils/firebase';
-import { fetchUser, fetchTopItems, fetchArtist } from '../utils/spotifyFetcher';
+import { fetchUser, fetchTopItems, fetchItem, isValidType } from '../utils/spotifyFetcher';
 
 import { UserTopItems, ItemData } from '../interfaces';
+import { getItemInformation } from '../utils/tools';
 
 export default {
   pages: ['Search', 'Top'],
@@ -152,12 +153,21 @@ export default {
     this.userState.user = undefined;
     this.userState.userAuthToken = undefined;
   },
-  artists: [],
-  async addArtist(id: string) {
+  items: [],
+  async addItem(id: string, type: string) {
+    // expects a valid type
+    if (!isValidType(type)) {
+      return null;
+    }
+
     if (this.hasAuthToken()) {
       try {
-        const artist = await fetchArtist(this.userState.userAuthToken!, id);
-        this.artists.push(artist);
+        const data: any = await fetchItem(this.userState.userAuthToken!, id, type);
+        const item: ItemData | undefined = getItemInformation(data);
+        if (!item) {
+          throw new Error('Invalid item');
+        }
+        this.items.push(item);
       } catch (error) {
         //TODO handle
       }

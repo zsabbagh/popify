@@ -14,10 +14,11 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import Loader from '../components/Loader';
 
 interface Props {
-  comments: Comment[];
-  addComment: Function;
+  comments: Comment[] | null;
+  onAddComment: Function;
 }
 
 const CommentView = (props: Props) => {
@@ -29,7 +30,7 @@ const CommentView = (props: Props) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          props.addComment(title, content);
+          props.onAddComment(title, content);
         }}
       >
         <TextField
@@ -56,6 +57,7 @@ const CommentView = (props: Props) => {
         </div>
       </form>
       <br />
+      {props.comments ?
       <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
         {props.comments.map((comment) => (
           <>
@@ -79,6 +81,8 @@ const CommentView = (props: Props) => {
           </>
         ))}
       </List>
+      : <Loader/>
+      }
     </Paper>
   );
 };
