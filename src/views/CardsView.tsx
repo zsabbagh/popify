@@ -7,13 +7,19 @@ import {
     Pagination,
     Alert,
     Fade,
+    TextField,
+    InputAdornment,
+    Skeleton,
+    CircularProgress,
+    Typography,
 } from '@mui/material';
-import { RemoveCircleOutline, Person, Audiotrack, AutoStories, CheckCircleOutline } from '@mui/icons-material';
+import { RemoveCircleOutline, Person, Audiotrack, AutoStories, CheckCircleOutline, Search } from '@mui/icons-material';
 import ItemCard from './ItemCardView';
 import ItemDialog from "./ItemDialogView";
 import { ItemData } from "../interfaces";
 import { set } from "mobx";
 import { red } from "@mui/material/colors";
+import LoaderView from "./LoaderView";
 
 const boxShadow = {
     ':hover': {
@@ -36,19 +42,19 @@ const alertStyling = {
 
 export default function CardsView(props: {
     items: Array<any> | undefined,
-    currentItemType: string,
-    itemTypes: Array<string>,
+    tab: string,
+    tabs: Array<string>,
+    onTabChange: (type: string) => void,
     itemsInCart: Array<string>,
-    onItemTypeChange: (type: string) => void,
     onAddItemToCart: (item: ItemData) => void,
     onRemoveItemFromCart: (id: string) => void,
-    currentPage: number,
-    onPageChange: (page: number) => void,
     itemsPerPage?: number,
     itemsPerColumn?: number,
     spacing?: number,
     alertTimeout?: number,
     maxCartSize?: number,
+    onSearch?: (query: string) => void | undefined,
+    awaitingSearch?: boolean,
 }) {
 
     if (!props.items) {
@@ -59,6 +65,28 @@ export default function CardsView(props: {
     const [cardDialogOpen, setCardDialogOpen] = React.useState<boolean>(false);
     const maxCartSize = props.maxCartSize && props.maxCartSize > 0 ? props.maxCartSize : 5;
     const cartIsFull = props.itemsInCart?.length >= maxCartSize;
+
+    const alertTimeout = props.alertTimeout && props.alertTimeout > 0 ? props.alertTimeout : 2000;
+
+    const items: Array<any> | undefined = props?.items;
+    const spacing = props.spacing && props.spacing > 0 ? props.spacing : 4;
+    const itemsPerColumn = props.itemsPerColumn && props.itemsPerColumn > 0 ? props.itemsPerColumn : 3;
+    const columns = spacing * itemsPerColumn;
+    const itemsPerPage = props.itemsPerPage && props.itemsPerPage > 0 ? props.itemsPerPage : 9;
+    const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
+
+    const [page, setCurrentPage] = React.useState<number>(1);
+
+    console.log("page", page);
+
+    // compute slice of the given items to display
+    let sliceStart = (page - 1) * itemsPerPage;
+    if (sliceStart >= items?.length) {
+        // slice is larger than items, so set to last page
+        sliceStart = (maxPages - 1) * itemsPerPage;
+    }
+    const sliceEnd = sliceStart + itemsPerPage;
+    const itemSlice = items ? items.slice(sliceStart, sliceEnd) : undefined;
 
     async function onCardClosedACB(item: ItemData | undefined) {
         setCardDialogOpen(false);
@@ -72,31 +100,13 @@ export default function CardsView(props: {
         }, 500);
     }
 
-    const alertTimeout = props.alertTimeout && props.alertTimeout > 0 ? props.alertTimeout : 2000;
-
-    const items: Array<any> | undefined = props?.items;
-    const spacing = props.spacing && props.spacing > 0 ? props.spacing : 4;
-    const itemsPerColumn = props.itemsPerColumn && props.itemsPerColumn > 0 ? props.itemsPerColumn : 3;
-    const columns = spacing * itemsPerColumn;
-    const itemsPerPage = props.itemsPerPage && props.itemsPerPage > 0 ? props.itemsPerPage : 9;
-    const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
-
-    function getPageSlice() {
-        if (!items) {
-            return [];
-        }
-        const start = (props.currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        return items.slice(start, end);
-    }
-
     const [successfulAdd, setSuccessfulAdd] = React.useState<string | undefined>(undefined);
     const [addAlertOpen, setAddAlertOpen] = React.useState<boolean>(false);
     const [successfulRemove, setSuccessfulRemove] = React.useState<string | undefined>(undefined);
     const [removeAlertOpen, setRemoveAlertOpen] = React.useState<boolean>(false);
 
     function renderItemCB(item: any, index: number) {
-        index = index + (props.currentPage - 1) * itemsPerPage;
+        index = index + (page - 1) * itemsPerPage;
         async function onCardClickedACB(item: any) {
             setCardDialogOpen(true);
             setCardSelected(item);
@@ -123,21 +133,37 @@ export default function CardsView(props: {
                         justifyContent: 'center',
                     }}
                 >
-                    <ItemCard
-                        item={item}
-                        itemIsInCart={props.itemsInCart.includes(item.id)}
-                        onAddItemToCart={onAddItemToCartACB}
-                        onRemoveItemFromCart={onRemoveItemFromCartACB}
-                        index={index}
-                        cartIsFull={cartIsFull}
-                        onCardClick={onCardClickedACB}
-                    />
+                    {
+                        !props.awaitingSearch ?
+                        <ItemCard
+                            item={item}
+                            itemIsInCart={props.itemsInCart.includes(item.id)}
+                            onAddItemToCart={onAddItemToCartACB}
+                            onRemoveItemFromCart={onRemoveItemFromCartACB}
+                            index={index}
+                            cartIsFull={cartIsFull}
+                            height="345px"
+                            width="345px"
+                            onCardClick={onCardClickedACB}
+                        /> :
+                        <Skeleton variant="rectangular" animation="wave"
+                            width={345}
+                            height={345}
+                            sx={{
+                                borderRadius: '20px',
+                            }} />
+                    }
                 </Box>
             </Grid>
         );
     }
 
-    const itemSlice = getPageSlice();
+    async function onTabChangeACB(newType: string) {
+        props.onTabChange(newType);
+        setCurrentPage(1);
+    }
+
+    console.log("got itemSlice", itemSlice)
 
     return (
         <div style={{
@@ -155,14 +181,14 @@ export default function CardsView(props: {
                 marginBottom: '20px',
             }}>
                 <Tabs
-                    value={props.currentItemType}
-                    onChange={(event: any, value: any) => props.onItemTypeChange(value)}
+                    value={props.tab}
+                    onChange={(event: any, value: any) => onTabChangeACB(value)}
                     textColor="primary"
                     indicatorColor="primary"
                     aria-label="secondary tabs example"
                 >
                     {
-                        props.itemTypes.map((type: string) => {
+                        props.tabs.map((type: string) => {
                             return <Tab key={type} value={type} label={type} sx={boxShadow} />
                         })
                     }
@@ -172,57 +198,110 @@ export default function CardsView(props: {
                 item={cardSelected}
                 open={cardDialogOpen}
                 onClose={onCardClosedACB} />
-            <Pagination count={maxPages}
-                page={props.currentPage}
-                siblingCount={2}
-                onChange={(event, value) => props.onPageChange(value)}
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: '20px',
-                }}
-            />
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginBottom: '20px',
+            }}>
+                {
+                    props?.onSearch ?
+                    <>
+                        <TextField id="search" label="Search" variant="standard" 
+                            onChange={(event) => props?.onSearch ? props.onSearch(event.target.value) : undefined}
+                            InputProps={{
+                                startAdornment: (
+                                <InputAdornment position="start">
+                                    <Search />
+                                </InputAdornment>
+                                ),
+                            }}
+                            sx={{
+                                width: '25%',
+                                minWidth: '200px',
+                                margin: 'auto',
+                                marginBottom: '20px',
+                            }} >
+                            </TextField> 
+                            { props.awaitingSearch ?
+                                <CircularProgress sx={{
+                                    position: 'absolute',
+                                    left: '50%',
+                                    right: '50%',
+                            }} /> : <></> }
+                    </>
+                    : <></>
+                }
+            </div>
             {
-                itemSlice ?
-                <Grid container spacing={spacing} columns={columns}
-                    justifyContent='center'
-                    alignItems='center'
-                    sx={{
-                        margin: 'auto',
-                        marginLeft: '25px'
+                (itemSlice && itemSlice?.length > 0) || props.awaitingSearch ?
+                <>
+                    <Pagination count={maxPages}
+                        page={page}
+                        siblingCount={2}
+                        onChange={(event, value) => setCurrentPage(value)}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginBottom: '20px',
+                        }}
+                    />
+                    {
+                        itemSlice ?
+                        <Grid container spacing={spacing} columns={columns}
+                            justifyContent='center'
+                            alignItems='center'
+                            sx={{
+                                margin: 'auto',
+                                marginLeft: '25px'
+                            }}>
+                            {itemSlice.map(renderItemCB)}
+                        </Grid>
+                        : <LoaderView />
+                    }
+                    <Pagination count={maxPages}
+                        page={page}
+                        siblingCount={2}
+                        onChange={(event, value) => setCurrentPage(value)}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: '50px',
+                            marginBottom: '20px',
+                        }}
+                    />
+                    {
+                        <Fade in={addAlertOpen} unmountOnExit={true}>
+                            <Alert severity="success" sx={alertStyling}
+                                icon={<CheckCircleOutline />}>
+                                {successfulAdd} added to cart!
+                            </Alert>
+                        </Fade>
+                    }
+                    {
+                        <Fade in={removeAlertOpen} unmountOnExit={true}>
+                            <Alert severity="warning" sx={alertStyling}
+                                icon={<RemoveCircleOutline />}>
+                                {successfulRemove} removed from cart!
+                            </Alert>
+                        </Fade>
+                    }
+                </> :
+                <div>
+                    <Typography variant="h3" sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: '50px',
+                        marginBottom: '20px',
                     }}>
-                    {itemSlice.map(renderItemCB)}
-                </Grid>
-                : <></>
-            }
-            <Pagination count={maxPages}
-                page={props.currentPage}
-                siblingCount={2}
-                onChange={(event, value) => props.onPageChange(value)}
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: '50px',
-                    marginBottom: '20px',
-                }}
-            />
-            {
-                <Fade in={addAlertOpen} unmountOnExit={true}>
-                    <Alert severity="success" sx={alertStyling}
-                        icon={<CheckCircleOutline />}>
-                        {successfulAdd} added to cart!
-                    </Alert>
-                </Fade>
-            }
-            {
-                <Fade in={removeAlertOpen} unmountOnExit={true}>
-                    <Alert severity="warning" sx={alertStyling}
-                        icon={<RemoveCircleOutline />}>
-                        {successfulRemove} removed from cart!
-                    </Alert>
-                </Fade>
+                        No items to display
+                    </Typography>
+                </div>
             }
         </div>
     )

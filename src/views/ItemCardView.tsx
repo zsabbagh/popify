@@ -14,11 +14,15 @@ export default function ItemCard(props: {
     onRemoveItemFromCart: (id: string) => void;
     transition?: boolean;
     cartIsFull?: boolean;
+    height?: string;
+    width?: string;
     onCardClick?: (item: any) => void }) {
   const item = props.item;
   const index = props.index;
   const {type, image, name, album, popularity} = item;
   const artists = item.artists ? item.artists.join(', ') : '';
+  const height = props.height || '345px';
+  const width = props.width || '345px';
 
   function onItemCartButtonClickACB(event: any) {
     event.stopPropagation();
@@ -39,11 +43,10 @@ export default function ItemCard(props: {
       sx={{
         float: 'left',
         position: 'relative',
-        maxWidth: 345,
         background: image ? 'transparent' : 'linear-gradient(45deg, #EBF3F8 10%, #DEF2F3 90%)',
         borderRadius: '20px',
-        height: '95%',
-        width: '95%',
+        height: height,
+        width: width,
         ':hover': {
           boxShadow: '0 0 40px rgba(33,33,33,.4)',
           transition: 'all .5s ease-in-out',

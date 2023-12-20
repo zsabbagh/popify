@@ -17,19 +17,19 @@ export default observer(function Search(props: { model: Model }) {
     const [artists, setArtists] = useState<SpotifyArtist[]>([]);
     const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
     const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
-    const [page, setPage] = useState(1);
     const [items, setItems] = useState<ItemData[]>([]);
-    const [currentItemType, setCurrentItemType] = useState("artists");
+    const [tab, setTab] = useState("artists");
     const [latestSearchResultTime, setLatestSearchResultTime] = useState(0);
+    const [latestInputChange, setLatestInputChange] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
 
     function updateItems() {
         let temp: Array<any> = [];
-        if (currentItemType === "artists") {
+        if (tab === "artists") {
             temp = artists;
-        } else if (currentItemType === "tracks") {
+        } else if (tab === "tracks") {
             temp = tracks;
-        } else if (currentItemType === "albums") {
+        } else if (tab === "albums") {
             temp = albums;
         }
         if (temp) {
@@ -39,16 +39,19 @@ export default observer(function Search(props: { model: Model }) {
     }
     
     const handleSearchResults = (result: {tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}) => {
-        setArtists(result.artists.items);
-        setTracks(result.tracks.items);
-        setAlbums(result.albums.items);
-        updateItems();
         setLatestSearchResultTime(Date.now());
+        if (!result) {
+            return;
+        }
+        setTracks(result?.tracks ? result.tracks.items : []);
+        setArtists(result?.artists ? result.artists.items : []);
+        setAlbums(result?.albums ? result.albums.items : []);
+        updateItems();
     }
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const onItemTypeChange = (newType: string) => {
-        setCurrentItemType(newType);
+    async function onTabChangeACB(newType: string) {
+        setTab(newType);
         updateItems();
     }
 
@@ -69,12 +72,11 @@ export default observer(function Search(props: { model: Model }) {
     }, [location]);
 
     useEffect(() => {
-        const query = searchParams.get("q");
-        if (query) {
-            search(props.model.userState.userAuthToken || "", query)
+        if (searchQuery) {
+            search(props.model.userState.userAuthToken || "", searchQuery)
                 .then(handleSearchResults);
         }
-    }, [searchQuery, latestSearchResultTime]);
+    }, [searchQuery]);
 
     function onAddItemToCartACB(item: ItemData) {
         console.log("onAddItemToCartACB", item);
@@ -93,18 +95,37 @@ export default observer(function Search(props: { model: Model }) {
         }
         setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
     }, [props?.model?.userState?.shoppingCart?.length])
+
+    function onSearchACB(query: string) {
+        if (!query || query === '') {
+            setLatestInputChange(0);
+            return;
+        }
+        console.log("onSearchACB", query);
+        const thisSearchTimestamp = Date.now();
+        setLatestInputChange(thisSearchTimestamp);
+        setTimeout(() => {
+            console.log("onSearchACB timeout", query);
+            if (thisSearchTimestamp < latestInputChange) {
+                return;
+            }
+            if (query != searchQuery) {
+                setSearchQuery(query);
+            }
+        }, 500);
+    }
         
     return (
         <CardsView
             items={items}
-            currentItemType={currentItemType}
+            tab={tab}
+            tabs={['artists', 'tracks', 'albums']}
+            onTabChange={onTabChangeACB}
             onAddItemToCart={onAddItemToCartACB}
             onRemoveItemFromCart={onRemoveItemFromCartACB}
-            itemTypes={["artists", "tracks", "albums"]}
             itemsInCart={itemsInCart}
-            currentPage={page}
-            onPageChange={setPage}
-            onItemTypeChange={onItemTypeChange}
+            onSearch={onSearchACB}
+            awaitingSearch={latestInputChange > latestSearchResultTime}
         />
     );
 }
