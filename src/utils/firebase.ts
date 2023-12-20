@@ -16,11 +16,12 @@ import {
 } from 'firebase/firestore';
 import { collection, getDocs, getCountFromServer, AggregateQuerySnapshot } from 'firebase/firestore';
 import { firebaseConfig } from '../config';
-import { User } from '../interfaces';
+import { ItemData, User } from '../interfaces';
 import { Comment } from '../interfaces';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+//Currently only registers users
 export const getOrRegisterUser = async (user?: User) => {
   if (!user) {
     return;
@@ -32,6 +33,56 @@ export const getOrRegisterUser = async (user?: User) => {
       //("Document data:", JSON.stringify(docSnap.data()));
     } else {
       await setDoc(doc(collection(db, 'user'), user.id), user);
+    }
+  } catch (error) {
+    //TODO handle
+  }
+};
+
+export const getUser = async (userId: string) => {
+  if (!userId) {
+    return;
+  }
+  try {
+    const docSnap = await getDoc(doc(db, 'user', userId));
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+      //("Document data:", JSON.stringify(docSnap.data()));
+    } else {
+      return;
+    }
+  } catch (error) {
+    //TODO handle
+  }
+};
+
+export const pushCartFirebase = async (cart?: ItemData[], user?: User) => {
+  if (!cart || !user) {
+    return;
+  }
+
+  try {
+   await setDoc(doc(collection(db, 'cart'), user.id), {cart: cart});
+  
+  } catch (error) {
+    console.log("error", error);
+    //TODO handle
+  }
+};
+
+export const getCartFirebase = async (user?: User) => {
+  if (!user) {
+    return;
+  }
+  try {
+    const docSnap = await getDoc(doc(db, 'cart', user.id));
+
+    if (docSnap.exists()) {
+      return docSnap.data().cart as ItemData[];
+      //("Document data:", JSON.stringify(docSnap.data()));
+    } else {
+      return;
     }
   } catch (error) {
     //TODO handle

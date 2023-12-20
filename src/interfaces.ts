@@ -109,6 +109,9 @@ export interface Model {
   getAverageRating(uri: string): Promise<{count: number, average: number}>;
   postComment(uri: string, content: string, title: string): Promise<Comment | null>;
   getComments(uri: string): Promise<Comment[]>;
+  getUser(userId: string): Promise<User | undefined>;
+  getCartFirebase(): Promise<ItemData[]>;
+  pushCartFirebase(): void;
   items: ItemData[];
   pages: string[];
 

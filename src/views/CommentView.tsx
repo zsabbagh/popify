@@ -60,7 +60,7 @@ const CommentView = (props: Props) => {
       {props.comments ?
       <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
         {props.comments.map((comment) => (
-          <>
+          <div key={comment.uri}>
             <Divider variant="inset" component="li" />
             <ListItem alignItems="flex-start">
               <ListItemAvatar>
@@ -78,7 +78,7 @@ const CommentView = (props: Props) => {
                 }
               />
             </ListItem>
-          </>
+          </div>
         ))}
       </List>
       : <Loader/>
