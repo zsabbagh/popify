@@ -174,7 +174,7 @@ export default {
     }
   },
   async submitRating(uri: string, rating: number) {
-    await firebaseApi.putRating(uri, rating, this.userState.user!);
+    return await firebaseApi.putRating(uri, rating, this.userState.user!);
   },
   async getRating(uri: string) {
     return await firebaseApi.getRating(uri, this.userState.user!);

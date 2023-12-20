@@ -104,7 +104,7 @@ export interface Model {
   loginUser(userAuthToken?: string): void;
   logoutUser(): void;
   addItem(id: string, type: string): void;
-  submitRating(uri: string, rating: number): void;
+  submitRating(uri: string, rating: number): Promise<void>;
   getRating(uri: string): Promise<number>;
   getAverageRating(uri: string): Promise<{count: number, average: number}>;
   postComment(uri: string, content: string, title: string): Promise<Comment | null>;

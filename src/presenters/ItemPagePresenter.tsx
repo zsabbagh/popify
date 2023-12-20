@@ -37,7 +37,8 @@ export default observer(function ItemPresenter(props: Props) {
     async function onRatingChangeACB(value: number | null) {
         if (value !== null) {
             setUserRating(value);
-            props.model.submitRating(spotifyUri, value);
+            await props.model.submitRating(spotifyUri, value);
+            updateRating();
         }
     }
 
