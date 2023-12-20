@@ -2,6 +2,7 @@ import { Rating, Skeleton, Typography } from '@mui/material';
 import { Comment, ItemData, Model, SpotifyArtist } from '../interfaces';
 import { Suspense } from 'react';
 import CommentView from './CommentView';
+import LoaderView from './LoaderView';
 
 interface Props {
   item: ItemData; // TODO: fix this to use the correct type
@@ -16,6 +17,10 @@ interface Props {
 export default
 function ItemPageView(props: Props) {
   const item = props.item;
+
+  if (!item) {
+    return <LoaderView />;
+  }
 
   function renderRating() {
     if (!props.averageRating) {

@@ -35,7 +35,9 @@ export default observer(function Router(props: Props) {
             <Route path="/checkout" element={<Checkout model={props.model} />} />
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
             <Route path="/search" element={<Search model={props.model}></Search>} />
-            <Route path="/:type/:id" element={<ItemPresenter model={props.model} />} />
+            <Route path="/artist/:id" element={<ItemPresenter model={props.model} type="artist" />} />
+            <Route path="/track/:id" element={<ItemPresenter model={props.model} type="track" />} />
+            <Route path="/album/:id" element={<ItemPresenter model={props.model} type="album" />} />
             <Route path="*" element={<>404, page not found!</>} />
           </Routes>
         ) : (

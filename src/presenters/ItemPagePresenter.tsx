@@ -9,10 +9,12 @@ import Loader from '../views/LoaderView';
 
 interface Props {
     model: Model;
+    type: string;
 }
 
 export default observer(function ItemPresenter(props: Props) {
-    const { type, id } = useParams();
+    const { id } = useParams();
+    const type = props.type;
     const item = props.model.items.find((x) => x.id === id);
 
     const [averageRating, setAverageRating] = useState<{ count: number; average: number } | null>(null);
@@ -73,10 +75,6 @@ export default observer(function ItemPresenter(props: Props) {
     useEffect(() => {
         updateRating();
     }, [userRating]);
-
-    if (!item || !props.model.userState.user) {
-        return <Loader></Loader>;
-    }
 
     return (
         <>
