@@ -5,7 +5,7 @@ import { RemoveCircleOutline } from '@mui/icons-material';
 import { ItemData } from '../interfaces';
 import { blue, blueGrey, green, orange, red, teal, yellow } from '@mui/material/colors';
 
-export default function ShoppingCart(props: {
+export default function ShoppingCartView(props: {
   items: Array<ItemData>,
   maxSize?: number,
   onRemoveItem: (index: number) => void,
@@ -13,7 +13,6 @@ export default function ShoppingCart(props: {
 }) {
 
   const maxSize = props.maxSize || 5;
-  const [itemsSize, setItemsSize] = useState(props.items?.length || 0); // [items, setItems
   const [open, setOpen] = useState(false);
 
   function generateListItem(item: ItemData, index: number) {
