@@ -21,6 +21,7 @@ export default observer(function ItemPresenter(props: Props) {
     const spotifyUri = `spotify:${type}:${id}`
 
     async function updateRating() {
+        /* updates the average rating and the user rating */
         try {
             const averageRating = await props.model.getAverageRating(spotifyUri);
             setAverageRating(averageRating);
@@ -40,7 +41,17 @@ export default observer(function ItemPresenter(props: Props) {
 
     console.log("got type: " + type + " and id: " + id);
 
+    async function updateComments() {
+        try {
+            const response = await props.model.getComments(spotifyUri);
+            setComments(response);
+        } catch (error) {
+            console.error('Error fetching rating:', error);
+        }
+    }
+
     useEffect(() => {
+
         if (item) {
             //Load additional data
         } else {
@@ -50,14 +61,7 @@ export default observer(function ItemPresenter(props: Props) {
         updateComments();
     }, []);
 
-    async function updateComments() {
-        try {
-            const response = await props.model.getComments(spotifyUri);
-            setComments(response);
-        } catch (error) {
-            console.error('Error fetching rating:', error);
-        }
-    }
+    useEffect(() => undefined, [comments]);
 
     async function onAddCommentACB(title: string, content: string) {
         const response = await props.model.postComment(spotifyUri, content, title);

@@ -47,10 +47,6 @@ export default observer(function Search(props: { model: Model }) {
     }
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const onItemSelected = (item: ItemData) => {
-        console.log("item selected", item);
-    }
-
     const onItemTypeChange = (newType: string) => {
         setCurrentItemType(newType);
         updateItems();
@@ -109,7 +105,6 @@ export default observer(function Search(props: { model: Model }) {
             currentPage={page}
             onPageChange={setPage}
             onItemTypeChange={onItemTypeChange}
-            onItemSelected={onItemSelected}
         />
     );
 }

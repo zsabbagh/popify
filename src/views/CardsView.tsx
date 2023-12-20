@@ -44,7 +44,6 @@ export default function CardsView(props: {
         onRemoveItemFromCart: (id: string) => void,
         currentPage: number,
         onPageChange: (page: number) => void,
-        onItemSelected: (item: any) => void,
         itemsPerPage?: number,
         itemsPerColumn?: number,
         spacing?: number,
@@ -104,9 +103,6 @@ export default function CardsView(props: {
         let opacity = 0.5;
         return items.map((item: any, index: number) => {
             index = index + (props.currentPage - 1) * itemsPerPage;
-            async function onItemSelectedACB() {
-                props.onItemSelected(item);
-            }
             async function onCardClickedACB(item: any) {
                 setCardDialogOpen(true);
                 setCardSelected(item);
@@ -140,7 +136,6 @@ export default function CardsView(props: {
                             onRemoveItemFromCart={onRemoveItemFromCartACB}
                             index={index}
                             cartIsFull={cartIsFull}
-                            onItemSelected={onItemSelectedACB}
                             onCardClick={onCardClickedACB}
                             />
                     </Box>

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import ItemDialog from './ItemDialog';
 import { ItemData } from '../interfaces';
 import ItemDetails from './ItemDetails';
+import { isValidType } from '../utils/spotifyFetcher';
 
 const pastelColors = [
   'rgba(255, 99, 71, 0.2)', // red
@@ -20,7 +21,6 @@ export default function ItemCard(props: {
     item: ItemData;
     index: number;
     itemIsInCart: boolean;
-    onItemSelected: Function;
     onAddItemToCart: (item: ItemData) => void;
     onRemoveItemFromCart: (id: string) => void;
     transition?: boolean;
@@ -116,16 +116,13 @@ export default function ItemCard(props: {
           flexDirection: 'row',
         }}
       >
-        {type === 'artist' ? (
-          <>
-        
-            <Link to={`/artist/${item.id}`} >
-                <Button size="small">Go To Page</Button>
-            </Link>
-          </>
-        ) : (
-          <Button size="small">Go To Page</Button>
-        )}
+        {
+          isValidType(type) ?
+          <Link to={`/${type}/${item.id}`} >
+              <Button size="small">Go To Page</Button>
+          </Link>
+          : <></>
+        }
         <Tooltip title={tooltipAddToCart}>
           <span>
             <Button onClick={onItemCartButtonClickACB} disabled={disableAddToCart}>

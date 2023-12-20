@@ -77,11 +77,6 @@ export default observer(function Statistics(props: { model: Model }) {
     return tempData;
   }
 
-  async function onItemSelectedACB(item: any) {
-    // TODO: implement
-    console.log('onItemSelected not implemented!', item);
-  }
-
   async function onItemTypeChangeACB(newType: string) {
     console.log('location changed from, ', location, ' to ', newType);
     setCurrentItemType(newType);
@@ -109,7 +104,6 @@ export default observer(function Statistics(props: { model: Model }) {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         items={getItemList()}
-        onItemSelected={onItemSelectedACB}
       />
     </Suspense>
   );
