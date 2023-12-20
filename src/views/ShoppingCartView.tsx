@@ -13,7 +13,6 @@ export default function ShoppingCartView(props: {
 }) {
 
   const maxSize = props.maxSize || 5;
-  const [itemsSize, setItemsSize] = useState(props.items?.length || 0); // [items, setItems
   const [open, setOpen] = useState(false);
 
   function generateListItem(item: ItemData, index: number) {

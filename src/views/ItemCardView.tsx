@@ -6,16 +6,6 @@ import { ItemData } from '../interfaces';
 import ItemDetails from './ItemDetailsView';
 import { isValidType } from '../utils/spotifyFetcher';
 
-const pastelColors = [
-  'rgba(255, 99, 71, 0.2)', // red
-  'rgba(255, 165, 0, 0.2)', // orange
-  'rgba(255, 215, 0, 0.2)', // yellow
-  'rgba(255, 255, 0, 0.2)', // now greenish
-  'rgba(173, 255, 47, 0.2)',
-  'rgba(154, 205, 50, 0.2)',
-  'rgba(0, 255, 127, 0.2)',
-];
-
 export default function ItemCard(props: {
     item: ItemData;
     index: number;

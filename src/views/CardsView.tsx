@@ -35,21 +35,21 @@ const alertStyling = {
 }
 
 export default function CardsView(props: {
-        items: Array<any> | undefined,
-        currentItemType: string,
-        itemTypes: Array<string>,
-        itemsInCart: Array<string>,
-        onItemTypeChange: (type: string) => void,
-        onAddItemToCart: (item: ItemData) => void,
-        onRemoveItemFromCart: (id: string) => void,
-        currentPage: number,
-        onPageChange: (page: number) => void,
-        itemsPerPage?: number,
-        itemsPerColumn?: number,
-        spacing?: number,
-        alertTimeout?: number,
-        maxCartSize?: number,
-    }) {
+    items: Array<any> | undefined,
+    currentItemType: string,
+    itemTypes: Array<string>,
+    itemsInCart: Array<string>,
+    onItemTypeChange: (type: string) => void,
+    onAddItemToCart: (item: ItemData) => void,
+    onRemoveItemFromCart: (id: string) => void,
+    currentPage: number,
+    onPageChange: (page: number) => void,
+    itemsPerPage?: number,
+    itemsPerColumn?: number,
+    spacing?: number,
+    alertTimeout?: number,
+    maxCartSize?: number,
+}) {
 
     if (!props.items) {
         return <></>;
@@ -95,54 +95,49 @@ export default function CardsView(props: {
     const [successfulRemove, setSuccessfulRemove] = React.useState<string | undefined>(undefined);
     const [removeAlertOpen, setRemoveAlertOpen] = React.useState<boolean>(false);
 
-    function generateGridItems() {
-        const items = getPageSlice();
-        if (!items) {
-            return <></>;
+    function renderItemCB(item: any, index: number) {
+        index = index + (props.currentPage - 1) * itemsPerPage;
+        async function onCardClickedACB(item: any) {
+            setCardDialogOpen(true);
+            setCardSelected(item);
         }
-        let opacity = 0.5;
-        return items.map((item: any, index: number) => {
-            index = index + (props.currentPage - 1) * itemsPerPage;
-            async function onCardClickedACB(item: any) {
-                setCardDialogOpen(true);
-                setCardSelected(item);
-            }
-            async function onAddItemToCartACB(item: ItemData) {
-                setSuccessfulAdd(item.name);
-                setRemoveAlertOpen(false);
-                setAddAlertOpen(true);
-                props.onAddItemToCart(item);
-                setTimeout(() => setAddAlertOpen(false), alertTimeout);
-            }
-            async function onRemoveItemFromCartACB(id: string) {
-                setSuccessfulRemove(item.name);
-                setAddAlertOpen(false);
-                setRemoveAlertOpen(true);
-                props.onRemoveItemFromCart(id);
-                setTimeout(() => setRemoveAlertOpen(false), alertTimeout);
-            }
-            // delay for animation
-            return (
-                <Grid key={item.id} item xs={spacing} xl={2}>
-                    <Box
-                        sx={{
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <ItemCard
-                            item={item}
-                            itemIsInCart={props.itemsInCart.includes(item.id)}
-                            onAddItemToCart={onAddItemToCartACB}
-                            onRemoveItemFromCart={onRemoveItemFromCartACB}
-                            index={index}
-                            cartIsFull={cartIsFull}
-                            onCardClick={onCardClickedACB}
-                            />
-                    </Box>
-                </Grid>
-            );
-        });
+        async function onAddItemToCartACB(item: ItemData) {
+            setSuccessfulAdd(item.name);
+            setRemoveAlertOpen(false);
+            setAddAlertOpen(true);
+            props.onAddItemToCart(item);
+            setTimeout(() => setAddAlertOpen(false), alertTimeout);
+        }
+        async function onRemoveItemFromCartACB(id: string) {
+            setSuccessfulRemove(item.name);
+            setAddAlertOpen(false);
+            setRemoveAlertOpen(true);
+            props.onRemoveItemFromCart(id);
+            setTimeout(() => setRemoveAlertOpen(false), alertTimeout);
+        }
+        // delay for animation
+        return (
+            <Grid key={item.id} item xs={spacing} xl={2}>
+                <Box
+                    sx={{
+                        justifyContent: 'center',
+                    }}
+                >
+                    <ItemCard
+                        item={item}
+                        itemIsInCart={props.itemsInCart.includes(item.id)}
+                        onAddItemToCart={onAddItemToCartACB}
+                        onRemoveItemFromCart={onRemoveItemFromCartACB}
+                        index={index}
+                        cartIsFull={cartIsFull}
+                        onCardClick={onCardClickedACB}
+                    />
+                </Box>
+            </Grid>
+        );
     }
+
+    const itemSlice = getPageSlice();
 
     return (
         <div style={{
@@ -188,15 +183,19 @@ export default function CardsView(props: {
                     marginBottom: '20px',
                 }}
             />
-            <Grid container spacing={spacing} columns={columns}
-                justifyContent='center'
-                alignItems='center'
-                sx={{
-                    margin: 'auto',
-                    marginLeft: '25px'
-                }}>
-                {generateGridItems()}
-            </Grid>
+            {
+                itemSlice ?
+                <Grid container spacing={spacing} columns={columns}
+                    justifyContent='center'
+                    alignItems='center'
+                    sx={{
+                        margin: 'auto',
+                        marginLeft: '25px'
+                    }}>
+                    {itemSlice.map(renderItemCB)}
+                </Grid>
+                : <></>
+            }
             <Pagination count={maxPages}
                 page={props.currentPage}
                 siblingCount={2}
@@ -212,7 +211,7 @@ export default function CardsView(props: {
             {
                 <Fade in={addAlertOpen} unmountOnExit={true}>
                     <Alert severity="success" sx={alertStyling}
-                        icon={<CheckCircleOutline/>}>
+                        icon={<CheckCircleOutline />}>
                         {successfulAdd} added to cart!
                     </Alert>
                 </Fade>

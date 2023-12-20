@@ -3,6 +3,7 @@ import { Comment, ItemData, Model, SpotifyArtist } from '../interfaces';
 import { Suspense } from 'react';
 import CommentView from './CommentView';
 import LoaderView from './LoaderView';
+import RatingView from './RatingView';
 
 interface Props {
   item: ItemData; // TODO: fix this to use the correct type
@@ -22,18 +23,6 @@ function ItemPageView(props: Props) {
     return <LoaderView />;
   }
 
-  function renderRating() {
-    if (!props.averageRating) {
-      return <Skeleton></Skeleton>;
-    }
-    return (
-      <div>
-        <Rating value={props.averageRating.average} readOnly precision={0.1} />
-        <span>{`${props.averageRating.count} reviews!`}</span>
-      </div>
-    );
-  }
-
   return (
     <div style={{marginBottom: "20px"}}>
       <img
@@ -42,11 +31,10 @@ function ItemPageView(props: Props) {
       ></img>
 
       {item.name}
-      {renderRating()}
-        <Rating
-          value={props.userRating}
-          onChange={(event, value) => props.onRatingChange(value)}
-        />
+      <RatingView
+        averageRating={props.averageRating}
+        userRating={props.userRating}
+        onRatingChange={props.onRatingChange} />
     <br></br>
      <CommentView comments={props.comments} onAddComment={props.onAddComment} />
     </div>
