@@ -60,3 +60,30 @@ function getItemInformation(item: any, index?: number): ItemData | undefined {
         genres,
     }
 }
+
+export function itemMatchesQuery(itemData: ItemData | undefined, query?: string): boolean {
+    if (!itemData) {
+        return false;
+    }
+    if (!query) {
+        return true;
+    }
+    const { name, artists, album, genres } = itemData;
+    const queryLower = query.toLowerCase();
+    function matchesString(str: string | undefined) {
+        if (!str) {
+            return false;
+        }
+        return str.toLowerCase().includes(queryLower);
+    }
+    if (matchesString(name)) {
+        return true;
+    } else if (artists?.some((x) => matchesString(x))) {
+        return true;
+    } else if (matchesString(album)) {
+        return true;
+    } else if (genres?.some((x) => matchesString(x))) {
+        return true;
+    }
+    return false;
+}

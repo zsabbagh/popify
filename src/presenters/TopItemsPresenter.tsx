@@ -7,7 +7,7 @@ import { get, set } from 'mobx';
 import CardsView from '../views/CardsView';
 import { UserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 import { Suspense } from 'react';
-import { getItemInformation } from '../utils/tools';
+import { getItemInformation, itemMatchesQuery } from '../utils/tools';
 
 
 export default observer(function Statistics(props: { model: Model }) {
@@ -15,9 +15,10 @@ export default observer(function Statistics(props: { model: Model }) {
   const navigate = useNavigate();
 
   const [timeRange, setTimeRange] = useState('short_term');
-  const [currentItemType, setCurrentItemType] = useState('artists');
+  const [tab, setTab] = useState('artists');
   const [topGenres, setTopGenres] = useState<Array<any> | undefined>(undefined);
   const [topData, setTopData] = useState<UserTopItems | undefined>(undefined);
+  const [searchQuery, setSearchQuery] = useState('');
 
   function updateTopData() {
     if (!props.model?.userState?.userAuthToken) {
@@ -60,29 +61,29 @@ export default observer(function Statistics(props: { model: Model }) {
     updateTopData();
   }, [topData])
 
-  /* returns the current item list based on currentItemType */
-  function getItemList(otherType?: string | undefined): Array<ItemData> | undefined {
-    const tempLoc = otherType || currentItemType || undefined;
+  /* returns the current item list based on tab */
+  function getItemList(): Array<ItemData> | undefined {
     let tempData: Array<any> | undefined = undefined;
-    if (tempLoc === 'artists') {
+    if (tab === 'artists') {
       tempData = topData?.artists;
-    } else if (tempLoc === 'tracks') {
+    } else if (tab === 'tracks') {
         tempData = topData?.tracks;
-    } else if (tempLoc === 'genres') {
+    } else if (tab === 'genres') {
         tempData = topGenres;
     } else {
       return undefined
     }
     tempData = tempData?.map((item: any, index: number) => getItemInformation(item, index));
+    if (searchQuery) {
+      tempData = tempData?.filter((item: any) => itemMatchesQuery(item, searchQuery));
+    }
     return tempData;
   }
 
-  async function onItemTypeChangeACB(newType: string) {
+  async function onTabChangeACB(newType: string) {
     console.log('location changed from, ', location, ' to ', newType);
-    setCurrentItemType(newType);
+    setTab(newType);
   }
-
-  const [currentPage, setCurrentPage] = useState(1);
 
   function onAddItemToCartACB(item: ItemData) {
     props.model.addItemToCart(item);
@@ -92,19 +93,18 @@ export default observer(function Statistics(props: { model: Model }) {
     props.model.removeItemFromCart(id);
   }
 
+  const items = getItemList();
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
       <CardsView
-        currentItemType={currentItemType}
+        tab={tab}
         itemsInCart={itemsInCart}
-        itemTypes={['artists', 'tracks', 'genres']}
+        tabs={['artists', 'tracks', 'genres']}
         onAddItemToCart={onAddItemToCartACB}
         onRemoveItemFromCart={onRemoveItemFromCartACB}
-        onItemTypeChange={onItemTypeChangeACB}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        onTabChange={onTabChangeACB}
         items={getItemList()}
+        onSearchChange={(query: string) => setSearchQuery(query)}
       />
-    </Suspense>
   );
 });

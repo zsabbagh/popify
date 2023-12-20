@@ -17,19 +17,19 @@ export default observer(function Search(props: { model: Model }) {
     const [artists, setArtists] = useState<SpotifyArtist[]>([]);
     const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
     const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
-    const [page, setPage] = useState(1);
     const [items, setItems] = useState<ItemData[]>([]);
-    const [currentItemType, setCurrentItemType] = useState("artists");
+    const [tab, setTab] = useState("artists");
     const [latestSearchResultTime, setLatestSearchResultTime] = useState(0);
+    const [latestInputChange, setLatestInputChange] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
 
     function updateItems() {
         let temp: Array<any> = [];
-        if (currentItemType === "artists") {
+        if (tab === "artists") {
             temp = artists;
-        } else if (currentItemType === "tracks") {
+        } else if (tab === "tracks") {
             temp = tracks;
-        } else if (currentItemType === "albums") {
+        } else if (tab === "albums") {
             temp = albums;
         }
         if (temp) {
@@ -39,16 +39,19 @@ export default observer(function Search(props: { model: Model }) {
     }
     
     const handleSearchResults = (result: {tracks: {items: SpotifyTrack[]}, artists: {items: SpotifyArtist[]}, albums: {items: SpotifyAlbum[]}}) => {
-        setArtists(result.artists.items);
-        setTracks(result.tracks.items);
-        setAlbums(result.albums.items);
-        updateItems();
+        if (!result) {
+            return;
+        }
         setLatestSearchResultTime(Date.now());
+        setTracks(result?.tracks ? result.tracks.items : []);
+        setArtists(result?.artists ? result.artists.items : []);
+        setAlbums(result?.albums ? result.albums.items : []);
+        updateItems();
     }
     const [searchParams, setSearchParams] = useSearchParams();
     
-    const onItemTypeChange = (newType: string) => {
-        setCurrentItemType(newType);
+    async function onTabChangeACB(newType: string) {
+        setTab(newType);
         updateItems();
     }
 
@@ -68,14 +71,6 @@ export default observer(function Search(props: { model: Model }) {
         }
     }, [location]);
 
-    useEffect(() => {
-        const query = searchParams.get("q");
-        if (query) {
-            search(props.model.userState.userAuthToken || "", query)
-                .then(handleSearchResults);
-        }
-    }, [searchQuery, latestSearchResultTime]);
-
     function onAddItemToCartACB(item: ItemData) {
         console.log("onAddItemToCartACB", item);
         props.model.addItemToCart(item);
@@ -93,18 +88,33 @@ export default observer(function Search(props: { model: Model }) {
         }
         setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
     }, [props?.model?.userState?.shoppingCart?.length])
+
+    useEffect(() => {
+        updateItems();
+    }, [latestSearchResultTime])
+
+    function onSearchACB() {
+        if (searchQuery === "") {
+            return;
+        }
+        setLatestInputChange(Date.now());
+        console.log("searching for ", query, " at ", Date.now());
+        search(props.model.userState.userAuthToken || "", searchQuery)
+            .then(handleSearchResults);
+    }
         
     return (
         <CardsView
             items={items}
-            currentItemType={currentItemType}
+            tab={tab}
+            tabs={['artists', 'tracks', 'albums']}
+            onTabChange={onTabChangeACB}
             onAddItemToCart={onAddItemToCartACB}
             onRemoveItemFromCart={onRemoveItemFromCartACB}
-            itemTypes={["artists", "tracks", "albums"]}
             itemsInCart={itemsInCart}
-            currentPage={page}
-            onPageChange={setPage}
-            onItemTypeChange={onItemTypeChange}
+            onSearchChange={(query: string) => setSearchQuery(query)}
+            onSearch={() => onSearchACB()}
+            awaitingSearch={latestInputChange > latestSearchResultTime}
         />
     );
 }
