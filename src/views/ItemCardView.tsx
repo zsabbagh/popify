@@ -45,7 +45,7 @@ export default function ItemCard(props: {
         position: 'relative',
         background: image ? 'transparent' : 'linear-gradient(45deg, #EBF3F8 10%, #DEF2F3 90%)',
         borderRadius: '20px',
-        height: height,
+        height: 'auto',
         width: width,
         ':hover': {
           boxShadow: '0 0 40px rgba(33,33,33,.4)',

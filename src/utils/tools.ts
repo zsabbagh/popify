@@ -10,18 +10,22 @@ function computeTopGenres(artists: Array<SpotifyArtist> | undefined) {
     if (!artists) {
         return [];
     }
+
     let genres = new Map<string, any>();
+
     for (const item of artists) {
         const itemGenres = item?.genres || [];
         for (const genre of itemGenres) {
             if (genres.has(genre)) {
                 genres.get(genre).popularity++;
+                genres.get(genre).artists.add(item);
             } else {
                 genres.set(genre, {
                     id: genre,
                     type: 'genre',
                     name: genre,
                     popularity: 1,
+                    artists: new Set<SpotifyArtist>([item]),
                 });
             }
         }
@@ -45,7 +49,7 @@ function getItemInformation(item: any, index?: number): ItemData | undefined {
     const genres = item?.genres || [];
     let artists = [];
     if (item?.artists) {
-        artists = item.artists.map((artist: any) => artist.name);
+        artists = item.artists;
     }
     return {
         id,
@@ -78,7 +82,7 @@ export function itemMatchesQuery(itemData: ItemData | undefined, query?: string)
     }
     if (matchesString(name)) {
         return true;
-    } else if (artists?.some((x) => matchesString(x))) {
+    } else if (artists?.some((x) => matchesString(x.name))) {
         return true;
     } else if (matchesString(album)) {
         return true;
