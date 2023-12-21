@@ -14,12 +14,6 @@ interface Props {
 export default observer(function Topbar(props: Props) {
   const [searchTerm, setSearchTerm] = React.useState('');
   const navigate = useNavigate();
-  const [cartItemRemoved, setCartItemRemoved] = React.useState(false);
-  const [cartItemAdded, setCartItemAdded] = React.useState(false);
-  const [cartSize, setCartSize] = React.useState(props?.model?.userState?.shoppingCart?.length || 0);
-  const handleSearch = () => {
-    navigate('/search?q=' + searchTerm);
-  }
   const handleLoginLogout = () => {
     if (!!props.model.userState.user) {
         props.model.logoutUser();
@@ -34,8 +28,6 @@ export default observer(function Topbar(props: Props) {
   const onCartCheckout = () => {
     navigate('/checkout');
   }
-
-  const [cartOpen, setCartOpen] = React.useState(false);
 
   function updateShoppingCart(index: number) {
     console.log("removing item from cart", index)
@@ -53,8 +45,6 @@ export default observer(function Topbar(props: Props) {
       loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
       onLoginLogout={handleLoginLogout}
-      onSearchChange={(term: string) => setSearchTerm(term)}
-      onSearch={handleSearch}
     />
   );
 });

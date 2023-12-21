@@ -26,8 +26,6 @@ function TopbarView(props: {
   loggedIn: boolean;
   loginUrl: string;
   onLoginLogout: () => void;
-  onSearchChange: (term: string) => void;
-  onSearch: () => void;
 }) {
 
   const handleLoginLogout = () => {
@@ -70,29 +68,6 @@ function TopbarView(props: {
                 <Button sx={{ my: 2, color: 'white', display: 'block', textDecoration: 'none' }}>{page}</Button>
               </Link>
             ))}
-          </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <TextField
-              label="Search"
-              id="outlined-size-small"
-              defaultValue=""
-              size="small"
-              variant="filled"
-              sx={{
-                input: {
-                  color: 'black',
-                  background: 'white',
-                },
-              }}
-              onChange={(e) => {
-                props.onSearchChange(e.target.value);
-              }}
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  props.onSearch();
-                }
-              }}
-            />
           </Box>
           {
             props.loggedIn ? (
