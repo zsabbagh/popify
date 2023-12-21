@@ -107,7 +107,7 @@ export default function CardsView(props: {
     const [removeAlertOpen, setRemoveAlertOpen] = React.useState<boolean>(false);
 
     function renderItemCB(item: any, index: number) {
-        index = index + (page - 1) * itemsPerPage;
+        index = item.index || index;
         async function onCardClickedACB(item: any) {
             setCardDialogOpen(true);
             setCardSelected(item);

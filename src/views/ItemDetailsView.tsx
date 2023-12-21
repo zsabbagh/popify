@@ -84,7 +84,9 @@ export default function ItemDetails(props: {
       <div>
         {item?.artists?.length ?
         <Box sx={boxStyling}>
-          <Groups sx={avatarStyling} />
+          <Tooltip title="Artists" placement="top">
+            <Groups sx={avatarStyling} />
+          </Tooltip>
           <div style={{
             display: 'flex',
             flexDirection: 'row',
@@ -93,8 +95,10 @@ export default function ItemDetails(props: {
             {item.artists.map(renderItem)}
           </div>
         </Box> : <></>}
-        {type === 'track' ?         <Box sx={boxStyling}>
-          <Album sx={avatarStyling} />
+        {item?.album ?         <Box sx={boxStyling}>
+          <Tooltip title="Album" placement="top">
+            <Album sx={avatarStyling} />
+          </Tooltip>
           <div style={{
             display: 'flex',
             flexDirection: 'row',
@@ -137,7 +141,9 @@ export default function ItemDetails(props: {
       {generateTrackInformation()}
       {item?.genres && genres ?
         <Box sx={boxStyling}>
-          <AutoStories sx={avatarStyling} />
+          <Tooltip title="Genres" placement="top" arrow>
+            <AutoStories sx={avatarStyling} />
+          </Tooltip>
           <Typography variant="body2" color="text.secondary" sx={fontStyling}>
             {genres}
           </Typography>
