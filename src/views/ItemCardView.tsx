@@ -20,7 +20,6 @@ export default function ItemCard(props: {
   const item = props.item;
   const index = props.index;
   const {type, image, name, album, popularity} = item;
-  const artists = item.artists ? item.artists.join(', ') : '';
   const height = props.height || '345px';
   const width = props.width || '345px';
 
@@ -43,7 +42,7 @@ export default function ItemCard(props: {
       sx={{
         float: 'left',
         position: 'relative',
-        background: image ? 'transparent' : 'linear-gradient(45deg, #EBF3F8 10%, #DEF2F3 90%)',
+        background: image ? 'transparent' : 'linear-gradient(45deg, #F4F4F5 10%, #F3F9FC 90%)',
         borderRadius: '20px',
         height: 'auto',
         width: width,

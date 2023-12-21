@@ -3,6 +3,7 @@ import { blueGrey } from "@mui/material/colors";
 import { Album, AutoStories, Groups } from "@mui/icons-material";
 import { Box, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { isValidType } from "../utils/spotifyFetcher";
 
 export default function ItemDetails(props: {
   item: ItemData | undefined,
@@ -15,13 +16,26 @@ export default function ItemDetails(props: {
     return <></>;
   }
 
-  function artistCB(artist: ItemData) {
+  function renderItem(item: ItemData | string | undefined) {
+
+    if (!item) {
+      return <></>;
+    }
+
+    if (typeof item === 'string') {
+      return (
+        <Typography variant="body2" color="text.secondary" sx={fontStyling}>
+          {item}
+        </Typography>
+      );
+    }
+
     return (
-      <Tooltip title={`${artist.name}'s artist page`} placement="top" arrow>
+      <Tooltip title={`${item.name}'s ${item.type} page`} placement="top" arrow>
         <Box sx={{
           marginRight: '10px',
           marginBottom: '7px',
-          backgroundColor: blueGrey[50],
+          backgroundColor: '#DEE6EA',
           borderRadius: '5px',
           padding: '2px 5px',
           height: 'fit-content',
@@ -32,9 +46,9 @@ export default function ItemDetails(props: {
             cursor: 'pointer',
           }
         }}>
-          <Link to={"/artist/" + artist.id} style={{ textDecoration: 'none' }}>
+          <Link to={`/${item.type}/${item.id}`} style={{ textDecoration: 'none' }}>
             <Typography variant="body2" color="text.secondary" sx={fontStyling}>
-              {artist.name}
+              {item.name}
             </Typography>
           </Link>
         </Box>
@@ -48,7 +62,6 @@ export default function ItemDetails(props: {
   const titleStyle = props.titleStyle ? props.titleStyle : { fontSize: '1.2rem' };
   const infoStyle = props.infoStyle ? props.infoStyle : {};
   const { type, image, name, album, popularity } = item;
-  const artists = item.artists ? item.artists.join(', ') : '';
 
   const boxStyling = {
     display: 'flex',
@@ -69,21 +82,26 @@ export default function ItemDetails(props: {
   function generateTrackInformation() {
     return (
       <div>
-        {type === 'track' || type === 'genre' ? <Box sx={boxStyling}>
+        {item?.artists?.length ?
+        <Box sx={boxStyling}>
           <Groups sx={avatarStyling} />
           <div style={{
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
           }}>
-            {item.artists?.map(artistCB)}
+            {item.artists.map(renderItem)}
           </div>
         </Box> : <></>}
         {type === 'track' ?         <Box sx={boxStyling}>
           <Album sx={avatarStyling} />
-          <Typography gutterBottom variant="body2" component="div" sx={fontStyling}>
-            {album}
-          </Typography>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}>
+            {renderItem(item.album)}
+          </div>
         </Box> : <></>}
       </div>
     );

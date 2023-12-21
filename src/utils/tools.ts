@@ -5,7 +5,7 @@ import {
 
 /* computes the top genres from a list of artists */
 export
-function computeTopGenres(artists: Array<SpotifyArtist> | undefined) {
+function computeTopGenres(artists: Array<SpotifyArtist> | undefined): Array<ItemData> {
     // return empty
     if (!artists) {
         return [];
@@ -18,14 +18,17 @@ function computeTopGenres(artists: Array<SpotifyArtist> | undefined) {
         for (const genre of itemGenres) {
             if (genres.has(genre)) {
                 genres.get(genre).popularity++;
-                genres.get(genre).artists.add(item);
+                const artists = genres.get(genre).artists;
+                if (!artists.some((x: ItemData) => x.id === item.id)) {
+                    artists.push(item);
+                }
             } else {
                 genres.set(genre, {
                     id: genre,
                     type: 'genre',
                     name: genre,
                     popularity: 1,
-                    artists: new Set<SpotifyArtist>([item]),
+                    artists: [item],
                 });
             }
         }
@@ -45,7 +48,7 @@ function getItemInformation(item: any, index?: number): ItemData | undefined {
     const images = item?.images || item?.album?.images || [];
     const image = images ? images[0]?.url : '';
     const popularity = item?.popularity || item?.album?.popularity || 0;
-    const album = item?.album?.name || '';
+    const album = item?.album || undefined;
     const genres = item?.genres || [];
     let artists = [];
     if (item?.artists) {
@@ -84,7 +87,7 @@ export function itemMatchesQuery(itemData: ItemData | undefined, query?: string)
         return true;
     } else if (artists?.some((x) => matchesString(x.name))) {
         return true;
-    } else if (matchesString(album)) {
+    } else if (matchesString(album?.name)) {
         return true;
     } else if (genres?.some((x) => matchesString(x))) {
         return true;
