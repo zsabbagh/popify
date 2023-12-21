@@ -2,8 +2,9 @@ import { observer } from 'mobx-react-lite';
 import TopbarView from '../views/TopbarView';
 import { Model } from '../interfaces';
 import loginUrl from '../utils/spotifyAuthorization';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { set } from 'date-fns';
 
 interface Props {
   model: Model;
@@ -13,6 +14,9 @@ interface Props {
 
 export default observer(function Topbar(props: Props) {
   const [searchTerm, setSearchTerm] = React.useState('');
+
+  const [shoppingCart, setShoppingCart] = React.useState(props.model.userState.shoppingCart);
+
   const navigate = useNavigate();
   const handleLoginLogout = () => {
     if (!!props.model.userState.user) {
@@ -25,6 +29,10 @@ export default observer(function Topbar(props: Props) {
     }
   };
 
+  useEffect(() => {
+    setShoppingCart(props.model.userState.shoppingCart);
+  }, [props.model.userState.shoppingCart?.length])
+  
   const onCartCheckout = () => {
     navigate('/checkout');
   }
@@ -40,7 +48,7 @@ export default observer(function Topbar(props: Props) {
       pages={props.pages}
       onCartRemoveItem={updateShoppingCart}
       onCartCheckout={onCartCheckout}
-      shoppingCart={props.model.userState.shoppingCart}
+      shoppingCart={shoppingCart}
       settings={props.settings}
       loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
