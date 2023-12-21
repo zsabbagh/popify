@@ -13,6 +13,7 @@ import { get, set } from 'mobx';
 import { UserTopItems, SpotifyArtist, SpotifyTrack, SpotifyItem } from '../interfaces';
 
 import UserState, { User, Model } from '../interfaces';
+import { getSeedsFromCart } from '../utils/tools';
 
 export default observer(function Checkout(props: { model: Model }) {
   // this assumes that a UserModel is given...
@@ -71,9 +72,10 @@ export default observer(function Checkout(props: { model: Model }) {
   const numRecommendations = 20; // TODO: make this a slider
 
   function getRecommendationsACB() {
-    const obj = getSeedItems();
-
-    fetchRecommendations(accessToken, numRecommendations, obj.seedArtists, obj.seedTracks, obj.seedGenres).then(
+    if (!userState?.shoppingCart) return;
+    const obj = getSeedsFromCart(userState.shoppingCart);
+    console.log(obj);
+    fetchRecommendations(accessToken, numRecommendations, obj.artists, obj.tracks, obj.genres).then(
       (items) => {
         setRecommendations(items);
         props.model.putPlaylist(items);
@@ -87,33 +89,10 @@ export default observer(function Checkout(props: { model: Model }) {
     });
   }
 
-  function getSeedItems() {
-    const cartItems = userState?.shoppingCart || [];
-
-    const obj: any = {
-      seedArtists: [],
-      seedTracks: [],
-      seedGenres: [],
-    };
-
-
-    for (let item of cartItems) {
-      if (item.type === 'artist') {
-        obj['seedArtists'].push(item.id);
-      } else if (item.type === 'track') {
-        obj['seedTracks'].push(item.id);
-      } else if (item.type === 'genre') {
-        obj['seedGenres'].push(item.id);
-      }
-    }
-    return obj;
-  }
-
   // get seed artists
   // Fetch items on load
   function onLoadACB() {
     getUserPlaylists();
-    getSeedItems();
   }
 
   useEffect(onLoadACB, []);
