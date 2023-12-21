@@ -16,6 +16,7 @@ import ExportDialog from './ExportDialogView';
 import { teal } from '@mui/material/colors';
 import { RemoveCircleOutline } from '@mui/icons-material';
 import LoaderView from './LoaderView';
+import { Link, useNavigate } from 'react-router-dom';
 
 function CheckoutView(props: {
   recommendations: SpotifyTrack[] | null;
@@ -25,13 +26,15 @@ function CheckoutView(props: {
   onExport: (newPlaylist: boolean, playlistIdentifier: string) => void;
   onRemoveItem: (index: number) => void;
 }) {
+
+  const navigate = useNavigate();
   function itemACB(item: ItemData, index: number) {
     const id = item.id;
     const name = item.name;
     const image = item.image || '';
 
     return (
-      <ListItem sx={{ height: 60, width: '100%', maxWidth: "400px" }}>
+      <ListItem sx={{ height: 60, width: '100%', maxWidth: "400px" }} key={id}>
         <ListItemAvatar>
           <Avatar variant="square" alt={`Avatar ${id}`} src={image} />
         </ListItemAvatar>
@@ -53,7 +56,7 @@ function CheckoutView(props: {
 
   function recommendationACB(track: SpotifyTrack) {
     return (
-      <ListItem sx={{ height: 60, width: '100%', maxWidth: "400px" }}>
+      <ListItem sx={{ height: 60, width: '100%', maxWidth: "400px" }} key={track.id}>
         <ListItemAvatar>
           <Avatar variant="square" alt={`Avatar ${track.id}`} src={track.album.images[0]?.url || ''} />
         </ListItemAvatar>
@@ -80,17 +83,30 @@ function CheckoutView(props: {
           >
             {props.cartItems?.map(itemACB)}
             {props.cartItems?.length > 0 ? 
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }}>
+            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="recommendations-button">
               <Button sx={{ width: '100%' }} variant="contained" onClick={props.onGetRecommendations}>
                 Get Recommendations!
               </Button>
             </ListItem>
             : 
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }}>
+            <>
+            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="empty-cart-text">
               <Typography sx={{ mt: 2, mb: 0 }} variant="body1" component="div" textAlign="center">
                 Add items to your cart to generate recommendations!
               </Typography>
-            </ListItem>}
+            </ListItem>
+            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="top-items-redirect">
+              <Button sx={{ width: '100%' }} variant="contained" onClick={() => {navigate("/top")}}>
+                Show my top items
+              </Button>
+            </ListItem>
+            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="search-redirect">
+              <Button sx={{ width: '100%' }} variant="contained" onClick={() => {navigate("/search")}}>
+                Search for any music
+              </Button>
+            </ListItem>
+            </>
+            }
           </List>
         </Grid>
 
