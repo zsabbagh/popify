@@ -79,11 +79,18 @@ function CheckoutView(props: {
             }}
           >
             {props.cartItems?.map(itemACB)}
+            {props.cartItems?.length > 0 ? 
             <ListItem sx={{ height: 60, width: '25%', mt: 3 }}>
               <Button sx={{ width: '100%' }} variant="contained" onClick={props.onGetRecommendations}>
                 Get Recommendations!
               </Button>
             </ListItem>
+            : 
+            <ListItem sx={{ height: 60, width: '25%', mt: 3 }}>
+              <Typography sx={{ mt: 2, mb: 0 }} variant="body1" component="div" textAlign="center">
+                Add items to your cart to generate recommendations!
+              </Typography>
+            </ListItem>}
           </List>
         </Grid>
 
