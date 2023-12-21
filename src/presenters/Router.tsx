@@ -36,7 +36,11 @@ export default observer(function Router(props: Props) {
         {props.model.userState.user ? (
           // If user is truthy, render all the routes
           <Routes>
-            <Route index element={<Index model={props.model} />} />
+            <Route index element={
+              !props.model.hasAuthToken() ? 
+              <Index model={props.model} /> 
+              : <TopItems model={props.model} />} 
+            />
             <Route path="/top" element={<TopItems model={props.model} />} />
             <Route path="/quiz" element={<>Quizzes here</>} />
             <Route path="/checkout" element={<Checkout model={props.model} />} />
