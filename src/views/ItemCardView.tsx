@@ -45,7 +45,8 @@ export default function ItemCard(props: {
         background: image ? 'transparent' : 'linear-gradient(45deg, #F4F4F5 10%, #F3F9FC 90%)',
         borderRadius: '20px',
         height: 'auto',
-        width: width,
+        width: '100%',
+        maxWidth: width,
         ':hover': {
           boxShadow: '0 0 40px rgba(33,33,33,.4)',
           transition: 'all .5s ease-in-out',
@@ -90,14 +91,15 @@ export default function ItemCard(props: {
             width: '50%',
           }}
         >
-          nr
           <Avatar
             sx={{
-              bgcolor: blueGrey[200],
+              bgcolor: blueGrey[100],
               marginLeft: '10px',
             }}
           >
-            {index + 1}
+            <Typography variant='body2'>
+              {index + 1}
+            </Typography>
           </Avatar>
         </Box>
       </CardContent>
