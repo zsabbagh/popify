@@ -63,7 +63,7 @@ export const pushCartFirebase = async (cart?: ItemData[], user?: User) => {
   }
 
   try {
-   await setDoc(doc(collection(db, 'cart'), user.id), {cart: cart});
+   await setDoc(doc(collection(db, 'cart'), user.id), {cart: JSON.stringify(cart)});
   
   } catch (error) {
     console.log("error", error);
@@ -79,7 +79,7 @@ export const getCartFirebase = async (user?: User) => {
     const docSnap = await getDoc(doc(db, 'cart', user.id));
 
     if (docSnap.exists()) {
-      return docSnap.data().cart as ItemData[];
+      return JSON.parse(docSnap.data().cart) as ItemData[];
       //("Document data:", JSON.stringify(docSnap.data()));
     } else {
       return;
