@@ -61,7 +61,7 @@ const CommentView = (props: Props) => {
       {props.comments ? (
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
           {props.comments.map((comment) => (
-            <div key={comment.uri}>
+            <div key={comment.timestamp.toString()}>
               <Divider variant="inset" component="li" />
               <ListItem alignItems="flex-start">
                 <ListItemAvatar>
@@ -72,10 +72,10 @@ const CommentView = (props: Props) => {
                   secondary={
                     <React.Fragment>
                       {comment.content}
-                      <p>
+                      <div>
                         <Link  to={`/user/${comment.user_id}`}>{`${comment.user_name}, `}</Link>
                         {formatDistanceToNow(comment.timestamp.toDate(), { addSuffix: true })}
-                      </p>
+                      </div>
                     </React.Fragment>
                   }
                 />

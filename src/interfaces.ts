@@ -61,6 +61,11 @@ export interface SpotifyAlbum extends SpotifyItem {
     items: SpotifyTrack[];
   };
 }
+export interface playlistObject {
+  playlist: SpotifyTrack[];
+  userId: string;
+  timestamp: Timestamp;
+}
 
 
 export interface User {
@@ -112,6 +117,9 @@ export interface Model {
   getUser(userId?: string): Promise<User | undefined>;
   getCartFirebase(): Promise<ItemData[]>;
   pushCartFirebase(): void;
+  putPlaylist(playlist: SpotifyTrack[]): Promise<playlistObject>;
+  getPlaylists(userId: string): Promise<SpotifyTrack[][]>;
+  getMyRecentPlaylist(): Promise<SpotifyTrack[] | null>
   items: ItemData[];
   pages: string[];
 

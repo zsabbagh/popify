@@ -2,7 +2,7 @@
    The Model keeps only abstract data and has no notions of graphics or interaction
 */
 
-import { Model, User } from '../interfaces';
+import { Model, SpotifyTrack, User } from '../interfaces';
 import * as firebaseApi from '../utils/firebase';
 import { fetchUser, fetchTopItems, fetchItem, isValidType } from '../utils/spotifyFetcher';
 
@@ -54,14 +54,13 @@ export default {
     }
     this.pushCartFirebase();
   },
-  async pushCartFirebase(){
-    console.log("pushing to firebase", this.userState.shoppingCart);
-    
+  async pushCartFirebase() {
+    console.log('pushing to firebase', this.userState.shoppingCart);
+
     firebaseApi.pushCartFirebase(this.userState.shoppingCart, this.userState.user);
   },
-  async getCartFirebase(){
+  async getCartFirebase() {
     return await firebaseApi.getCartFirebase(this.userState.user);
-
   },
   /* fetch user's top artists and tracks */
   hasAuthToken() {
@@ -195,14 +194,29 @@ export default {
     return await firebaseApi.getAverageRating(uri);
   },
   async getComments(uri: string) {
-    const response = await firebaseApi.getComments(uri);    
+    const response = await firebaseApi.getComments(uri);
     return response;
   },
   async postComment(uri: string, content: string, title: string) {
-     return await firebaseApi.postComment(uri, this.userState.user!, content, title);
+    return await firebaseApi.postComment(uri, this.userState.user!, content, title);
   },
   async getUser(userId: string) {
     return await firebaseApi.getUser(userId);
-  }
-  
+  },
+  async putPlaylist(playlist: SpotifyTrack[]) {
+    return await firebaseApi.putPlaylist(playlist, this.userState.user?.id);
+  },
+
+  async getPlaylists(userId: string) {
+    return await firebaseApi.getPlaylists(userId);
+  },
+  async getMyRecentPlaylist() {
+    const response = await firebaseApi.getPlaylists(this.userState.user?.id || '');
+    console.log(response);
+    
+    if (response.length > 0) {
+      return response[0];
+    }
+    return null;
+  },
 } as Model;
