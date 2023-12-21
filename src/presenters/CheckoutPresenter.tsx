@@ -42,10 +42,6 @@ export default observer(function Checkout(props: { model: Model }) {
   const [recommendations, setRecommendations] = useState<SpotifyTrack[] | null>([]);
   const [userPlaylists, setUserPlaylists] = useState<{ name: string; id: string }[]>([]);
 
-  const [seedArtists, setSeedArtists] = useState<string[]>([]);
-  const [seedTracks, setSeedTracks] = useState<string[]>([]);
-  const [seedGenres, setSeedGenres] = useState<string[]>([]);
-
   const onExportACB = (newPlaylist: boolean, playlistIdentifier: string) => {
     if (!recommendations) return;
     console.log('exporting', newPlaylist, playlistIdentifier);
@@ -100,19 +96,13 @@ export default observer(function Checkout(props: { model: Model }) {
       seedGenres: [],
     };
 
-    setSeedArtists([]);
-    setSeedTracks([]);
-    setSeedGenres([]);
 
     for (let item of cartItems) {
       if (item.type === 'artist') {
-        setSeedArtists((prev) => [...prev, item.id]);
         obj['seedArtists'].push(item.id);
       } else if (item.type === 'track') {
-        setSeedTracks((prev) => [...prev, item.id]);
         obj['seedTracks'].push(item.id);
       } else if (item.type === 'genre') {
-        setSeedGenres((prev) => [...prev, item.id]);
         obj['seedGenres'].push(item.id);
       }
     }
