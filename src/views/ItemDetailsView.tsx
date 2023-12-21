@@ -2,6 +2,7 @@ import { ItemData } from "../interfaces";
 import { blueGrey } from "@mui/material/colors";
 import { Album, AutoStories, Groups } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function ItemDetails(props: {
   item: ItemData | undefined,
@@ -13,6 +14,11 @@ export default function ItemDetails(props: {
   if (!props.item) {
     return <></>;
   }
+
+  function artistCB(artist: ItemData) {
+    return <Link to={"/artist/" + artist.id}>{artist.name}, </Link>;
+  }
+
   const {left, right, top, bottom} = props.spacing ? props.spacing : {left: 0, right: 0, top: 0, bottom: 0};
   const item = props.item;
   const styling = props.style ? props.style : {};
@@ -20,6 +26,7 @@ export default function ItemDetails(props: {
   const infoStyle = props.infoStyle ? props.infoStyle : {};
   const { type, image, name, album, popularity } = item;
   const artists = item.artists ? item.artists.join(', ') : '';
+
   const boxStyling = {
     display: 'flex',
     flexDirection: 'row',
@@ -34,25 +41,23 @@ export default function ItemDetails(props: {
     marginRight: '10px',
     marginBottom: '7px',
   };
+
   const genres = item.genres ? item.genres.join(', ') : '';
   function generateTrackInformation() {
-    if (type !== 'track') {
-      return <></>
-    }
     return (
       <div>
-        <Box sx={boxStyling}>
+        {type === 'track' || type === 'genre' ? <Box sx={boxStyling}>
+          <Groups sx={avatarStyling} />
+          <Typography variant="body2" color="text.secondary" sx={fontStyling}>
+            {item.artists?.map(artistCB)}
+          </Typography>
+        </Box> : <></>}
+        {type === 'track' ?         <Box sx={boxStyling}>
           <Album sx={avatarStyling} />
           <Typography gutterBottom variant="body2" component="div" sx={fontStyling}>
             {album}
           </Typography>
-        </Box>
-        <Box sx={boxStyling}>
-          <Groups sx={avatarStyling} />
-          <Typography variant="body2" color="text.secondary" sx={fontStyling}>
-            {artists}
-          </Typography>
-        </Box>
+        </Box> : <></>}
       </div>
     );
   }

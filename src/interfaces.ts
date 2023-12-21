@@ -8,7 +8,7 @@ export interface ItemData {
   image: string;
   popularity?: number;
   album?: string;
-  artists?: Array<string>;
+  artists?: Array<ItemData>;
   index?: number;
   genres?: Array<string>;
 }
