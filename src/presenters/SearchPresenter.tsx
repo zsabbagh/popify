@@ -78,7 +78,7 @@ export default observer(function Search(props: { model: Model }) {
         if (!props.model.userState.shoppingCart) {
             return;
         }
-        setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
+        setItemsInCart(props.model.userState.shoppingCart.map((item: ItemData) => item.id));
     }, [props?.model?.userState?.shoppingCart?.length])
 
     useEffect(() => {
