@@ -18,14 +18,14 @@ function computeTopGenres(artists: Array<SpotifyArtist> | undefined) {
         for (const genre of itemGenres) {
             if (genres.has(genre)) {
                 genres.get(genre).popularity++;
-                genres.get(genre).artists.push(item);
+                genres.get(genre).artists.add(item);
             } else {
                 genres.set(genre, {
                     id: genre,
                     type: 'genre',
                     name: genre,
                     popularity: 1,
-                    artists: [item],
+                    artists: new Set<SpotifyArtist>([item]),
                 });
             }
         }

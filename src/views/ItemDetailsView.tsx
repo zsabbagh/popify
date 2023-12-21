@@ -1,7 +1,7 @@
 import { ItemData } from "../interfaces";
 import { blueGrey } from "@mui/material/colors";
 import { Album, AutoStories, Groups } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function ItemDetails(props: {
@@ -16,7 +16,30 @@ export default function ItemDetails(props: {
   }
 
   function artistCB(artist: ItemData) {
-    return <Link to={"/artist/" + artist.id}>{artist.name}, </Link>;
+    return (
+      <Tooltip title={`${artist.name}'s artist page`} placement="top" arrow>
+        <Box sx={{
+          marginRight: '10px',
+          marginBottom: '7px',
+          backgroundColor: blueGrey[50],
+          borderRadius: '5px',
+          padding: '2px 5px',
+          height: 'fit-content',
+          width: 'fit-content',
+          ':hover': {
+            backgroundColor: blueGrey[100],
+            borderColor: blueGrey[400],
+            cursor: 'pointer',
+          }
+        }}>
+          <Link to={"/artist/" + artist.id} style={{ textDecoration: 'none' }}>
+            <Typography variant="body2" color="text.secondary" sx={fontStyling}>
+              {artist.name}
+            </Typography>
+          </Link>
+        </Box>
+      </Tooltip>
+    );
   }
 
   const {left, right, top, bottom} = props.spacing ? props.spacing : {left: 0, right: 0, top: 0, bottom: 0};
@@ -48,9 +71,13 @@ export default function ItemDetails(props: {
       <div>
         {type === 'track' || type === 'genre' ? <Box sx={boxStyling}>
           <Groups sx={avatarStyling} />
-          <Typography variant="body2" color="text.secondary" sx={fontStyling}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}>
             {item.artists?.map(artistCB)}
-          </Typography>
+          </div>
         </Box> : <></>}
         {type === 'track' ?         <Box sx={boxStyling}>
           <Album sx={avatarStyling} />
