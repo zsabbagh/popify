@@ -73,7 +73,7 @@ export default {
     }
     if (timeRange === 'short_term') {
       return this.userState.topItems?.shortTerm;
-    } else if (timeRange === 'mid_term') {
+    } else if (timeRange === 'medium_term') {
       return this.userState.topItems?.midTerm;
     } else if (timeRange === 'long_term') {
       return this.userState.topItems?.longTerm;
@@ -85,7 +85,7 @@ export default {
       return false;
     } else if (timeRange === 'short_term') {
       this.userState.topItems!.shortTerm = items;
-    } else if (timeRange === 'mid_term') {
+    } else if (timeRange === 'medium_term') {
       this.userState.topItems!.midTerm = items;
     } else if (timeRange === 'long_term') {
       this.userState.topItems!.longTerm = items;
@@ -95,7 +95,7 @@ export default {
     return true;
   },
   async updateUserTopItems(timeRange?: string) {
-    if (!this.hasAuthToken() || ['short_term', 'mid_term', 'long_term'].indexOf(timeRange || '') === -1) {
+    if (!this.hasAuthToken() || ['short_term', 'medium_term', 'long_term'].indexOf(timeRange || '') === -1) {
       return;
     }
     const token = this.userState.userAuthToken as string;

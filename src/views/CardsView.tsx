@@ -4,14 +4,14 @@ import {
     Tab,
     Tabs,
     Grid,
+    InputAdornment,
+    Skeleton,
+    Typography,
     Pagination,
     Alert,
     Fade,
     TextField,
-    InputAdornment,
-    Skeleton,
     CircularProgress,
-    Typography,
 } from '@mui/material';
 import { RemoveCircleOutline, Person, Audiotrack, AutoStories, CheckCircleOutline, Search } from '@mui/icons-material';
 import ItemCard from './ItemCardView';
@@ -77,8 +77,6 @@ export default function CardsView(props: {
     const maxPages = Math.ceil((items?.length || 0) / itemsPerPage);
 
     const [page, setCurrentPage] = React.useState<number>(1);
-
-    console.log("page", page);
 
     // compute slice of the given items to display
     let sliceStart = (page - 1) * itemsPerPage;
@@ -170,13 +168,11 @@ export default function CardsView(props: {
         }
     }
 
-    console.log("got itemSlice", itemSlice)
-
     return (
         <div style={{
             display: 'flex',
             flexDirection: 'column',
-            marginTop: '50px',
+            marginTop: '10px',
             marginBottom: '20px',
         }}>
             <div style={{
@@ -246,17 +242,6 @@ export default function CardsView(props: {
             {
                 (itemSlice && itemSlice?.length > 0) || props.awaitingSearch ?
                 <>
-                    <Pagination count={maxPages}
-                        page={page}
-                        siblingCount={2}
-                        onChange={(event, value) => setCurrentPage(value)}
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: '20px',
-                        }}
-                    />
                     {
                         itemSlice ?
                         <Grid container spacing={spacing} columns={columns}

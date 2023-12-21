@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { User, Model, ItemData } from '../interfaces';
 import { computeTopGenres } from '../utils/tools';
 import { get, set } from 'mobx';
+import TimeRangeView from "../views/TimeRangeView";
 import CardsView from '../views/CardsView';
 import { UserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 import { Suspense } from 'react';
@@ -96,15 +97,22 @@ export default observer(function Statistics(props: { model: Model }) {
   const items = getItemList();
 
   return (
-      <CardsView
-        tab={tab}
-        itemsInCart={itemsInCart}
-        tabs={['artists', 'tracks', 'genres']}
-        onAddItemToCart={onAddItemToCartACB}
-        onRemoveItemFromCart={onRemoveItemFromCartACB}
-        onTabChange={onTabChangeACB}
-        items={getItemList()}
-        onSearchChange={(query: string) => setSearchQuery(query)}
-      />
+      <div>
+        <TimeRangeView
+          timeRange={timeRange}
+          timeRanges={['short_term', 'medium_term', 'long_term']}
+          onTimeRangeChange={(query: string) => setTimeRange(query)}
+        />
+        <CardsView
+          tab={tab}
+          itemsInCart={itemsInCart}
+          tabs={['artists', 'tracks', 'genres']}
+          onAddItemToCart={onAddItemToCartACB}
+          onRemoveItemFromCart={onRemoveItemFromCartACB}
+          onTabChange={onTabChangeACB}
+          items={getItemList()}
+          onSearchChange={(query: string) => setSearchQuery(query)}
+        />
+      </div>
   );
 });
