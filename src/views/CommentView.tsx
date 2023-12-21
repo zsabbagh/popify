@@ -15,6 +15,7 @@ import {
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import Loader from './LoaderView';
+import { Link } from 'react-router-dom';
 
 interface Props {
   comments: Comment[] | null;
@@ -57,32 +58,34 @@ const CommentView = (props: Props) => {
         </div>
       </form>
       <br />
-      {props.comments ?
-      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        {props.comments.map((comment) => (
-          <div key={comment.uri}>
-            <Divider variant="inset" component="li" />
-            <ListItem alignItems="flex-start">
-              <ListItemAvatar>
-                <Avatar alt="profile image" src={comment.user_image} />
-              </ListItemAvatar>
-              <ListItemText
-                primary={comment.title}
-                secondary={
-                  <React.Fragment>
-                    {comment.content}
-                    <p>
-                      {`${comment.user_name}, ` + formatDistanceToNow(comment.timestamp.toDate(), { addSuffix: true })}
-                    </p>
-                  </React.Fragment>
-                }
-              />
-            </ListItem>
-          </div>
-        ))}
-      </List>
-      : <Loader/>
-      }
+      {props.comments ? (
+        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+          {props.comments.map((comment) => (
+            <div key={comment.timestamp.toString()}>
+              <Divider variant="inset" component="li" />
+              <ListItem alignItems="flex-start">
+                <ListItemAvatar>
+                  <Avatar alt="profile image" src={comment.user_image} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={comment.title}
+                  secondary={
+                    <React.Fragment>
+                      {comment.content}
+                      <div>
+                        <Link  to={`/user/${comment.user_id}`}>{`${comment.user_name}, `}</Link>
+                        {formatDistanceToNow(comment.timestamp.toDate(), { addSuffix: true })}
+                      </div>
+                    </React.Fragment>
+                  }
+                />
+              </ListItem>
+            </div>
+          ))}
+        </List>
+      ) : (
+        <Loader />
+      )}
     </Paper>
   );
 };

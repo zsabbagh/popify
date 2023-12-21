@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { collection, getDocs, getCountFromServer, AggregateQuerySnapshot } from 'firebase/firestore';
 import { firebaseConfig } from '../config';
-import { ItemData, User } from '../interfaces';
+import { ItemData, SpotifyTrack, User, playlistObject } from '../interfaces';
 import { Comment } from '../interfaces';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -88,6 +88,45 @@ export const getCartFirebase = async (user?: User) => {
     //TODO handle
   }
 };
+
+
+export const putPlaylist = async (playlist: SpotifyTrack[], userId?: string ) => {
+  if (!userId || !playlist) {
+    return;
+  }
+
+  const minimizedPlaylist = playlist.map(item => {
+  return {...item, available_markets: null} as SpotifyTrack
+}) as SpotifyTrack[];
+
+
+  const playlistObject = {
+    playlist: minimizedPlaylist,
+    userId: userId,
+    timestamp: Timestamp.now()
+  } as playlistObject;
+
+  try {
+    await setDoc(doc(collection(db, 'playlist')), playlistObject);
+    return playlistObject;
+  } catch (error) {
+    //TODO handle
+  }
+};
+
+export const getPlaylists = async (userId: string) => {
+  
+  try {
+    const response = await getDocs(query(collection(db, 'playlist'), where('userId', '==', userId), orderBy('timestamp', "desc")));
+    return response.docs.map((doc) => doc.data()["playlist"]) as SpotifyTrack[][];
+  } catch (error) {
+    console.log(error);
+    
+    return [];
+    //TODO handle
+  }
+};
+
 
 export const putRating = async (uri: string, rating: number, user: User) => {
   try {
