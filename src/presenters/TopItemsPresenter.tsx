@@ -68,9 +68,9 @@ export default observer(function Statistics(props: { model: Model }) {
     if (tab === 'artists') {
       tempData = topData?.artists;
     } else if (tab === 'tracks') {
-        tempData = topData?.tracks;
+      tempData = topData?.tracks;
     } else if (tab === 'genres') {
-        tempData = topGenres;
+      tempData = topGenres;
     } else {
       return undefined
     }
@@ -97,22 +97,22 @@ export default observer(function Statistics(props: { model: Model }) {
   const items = getItemList();
 
   return (
-      <div>
-        <TimeRangeView
-          timeRange={timeRange}
-          timeRanges={['short_term', 'medium_term', 'long_term']}
-          onTimeRangeChange={(query: string) => setTimeRange(query)}
-        />
-        <CardsView
-          tab={tab}
-          itemsInCart={itemsInCart}
-          tabs={['artists', 'tracks', 'genres']}
-          onAddItemToCart={onAddItemToCartACB}
-          onRemoveItemFromCart={onRemoveItemFromCartACB}
-          onTabChange={onTabChangeACB}
-          items={getItemList()}
-          onSearchChange={(query: string) => setSearchQuery(query)}
-        />
-      </div>
+    <>
+      <TimeRangeView
+        timeRange={timeRange}
+        timeRanges={['short_term', 'medium_term', 'long_term']}
+        onTimeRangeChange={(query: string) => setTimeRange(query)}
+      />
+      <CardsView
+        tab={tab}
+        itemsInCart={itemsInCart}
+        tabs={['artists', 'tracks', 'genres']}
+        onAddItemToCart={onAddItemToCartACB}
+        onRemoveItemFromCart={onRemoveItemFromCartACB}
+        onTabChange={onTabChangeACB}
+        items={getItemList()}
+        onSearchChange={(query: string) => setSearchQuery(query)}
+      />
+    </>
   );
 });
