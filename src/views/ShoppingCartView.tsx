@@ -71,6 +71,7 @@ export default function ShoppingCartView(props: {
   const cartIsFull = props.items?.length >= maxSize;
   const colorOfProgress = cartIsFull ? green[400] : blue[400];
 
+
   return (
     <div style={{
       display: 'flex',
