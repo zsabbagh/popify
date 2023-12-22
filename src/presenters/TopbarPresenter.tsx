@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import TopbarView from '../views/TopbarView';
 import { Model } from '../interfaces';
 import loginUrl from '../utils/spotifyAuthorization';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -13,13 +13,10 @@ interface Props {
 
 export default observer(function Topbar(props: Props) {
   const [searchTerm, setSearchTerm] = React.useState('');
+
+  const [shoppingCart, setShoppingCart] = React.useState(props.model.userState.shoppingCart);
+
   const navigate = useNavigate();
-  const [cartItemRemoved, setCartItemRemoved] = React.useState(false);
-  const [cartItemAdded, setCartItemAdded] = React.useState(false);
-  const [cartSize, setCartSize] = React.useState(props?.model?.userState?.shoppingCart?.length || 0);
-  const handleSearch = () => {
-    navigate('/search?q=' + searchTerm);
-  }
   const handleLoginLogout = () => {
     if (!!props.model.userState.user) {
         props.model.logoutUser();
@@ -31,30 +28,41 @@ export default observer(function Topbar(props: Props) {
     }
   };
 
+  useEffect(() => {
+    setShoppingCart(props.model.userState.shoppingCart);
+  }, [props.model.userState.shoppingCart?.length])
+  
   const onCartCheckout = () => {
     navigate('/checkout');
   }
-
-  const [cartOpen, setCartOpen] = React.useState(false);
 
   function updateShoppingCart(index: number) {
     console.log("removing item from cart", index)
     props.model.removeItemFromCart(index);
   }
 
+  const [isPortrait, setIsPortrait] = React.useState(window.innerWidth < 600);
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 600) {
+      setIsPortrait(false);
+    } else {
+      setIsPortrait(true);
+    }
+  });
 
   return (
     <TopbarView
+      isPortrait={isPortrait}
       pages={props.pages}
       onCartRemoveItem={updateShoppingCart}
       onCartCheckout={onCartCheckout}
-      shoppingCart={props.model.userState.shoppingCart}
+      shoppingCart={shoppingCart}
       settings={props.settings}
       loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
       onLoginLogout={handleLoginLogout}
-      onSearchChange={(term: string) => setSearchTerm(term)}
-      onSearch={handleSearch}
+      user={props.model.userState.user}
     />
   );
 });

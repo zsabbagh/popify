@@ -1,7 +1,9 @@
 import { ItemData } from "../interfaces";
 import { blueGrey } from "@mui/material/colors";
 import { Album, AutoStories, Groups } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { isValidType } from "../utils/spotifyFetcher";
 
 export default function ItemDetails(props: {
   item: ItemData | undefined,
@@ -13,13 +15,54 @@ export default function ItemDetails(props: {
   if (!props.item) {
     return <></>;
   }
+
+  function renderItem(item: ItemData | string | undefined) {
+
+    if (!item) {
+      return <></>;
+    }
+
+    if (typeof item === 'string') {
+      return (
+        <Typography variant="body2" color="text.secondary" sx={fontStyling}>
+          {item}
+        </Typography>
+      );
+    }
+
+    return (
+      <Tooltip title={`${item.name}'s ${item.type} page`} placement="top" arrow>
+        <Box sx={{
+          marginRight: '10px',
+          marginBottom: '7px',
+          backgroundColor: '#DEE6EA',
+          borderRadius: '5px',
+          padding: '2px 5px',
+          height: 'fit-content',
+          width: 'fit-content',
+          ':hover': {
+            backgroundColor: blueGrey[100],
+            borderColor: blueGrey[400],
+            cursor: 'pointer',
+          }
+        }}>
+          <Link to={`/${item.type}/${item.id}`} style={{ textDecoration: 'none' }}>
+            <Typography variant="body2" color="text.secondary" sx={fontStyling}>
+              {item.name}
+            </Typography>
+          </Link>
+        </Box>
+      </Tooltip>
+    );
+  }
+
   const {left, right, top, bottom} = props.spacing ? props.spacing : {left: 0, right: 0, top: 0, bottom: 0};
   const item = props.item;
   const styling = props.style ? props.style : {};
   const titleStyle = props.titleStyle ? props.titleStyle : { fontSize: '1.2rem' };
   const infoStyle = props.infoStyle ? props.infoStyle : {};
   const { type, image, name, album, popularity } = item;
-  const artists = item.artists ? item.artists.join(', ') : '';
+
   const boxStyling = {
     display: 'flex',
     flexDirection: 'row',
@@ -34,25 +77,36 @@ export default function ItemDetails(props: {
     marginRight: '10px',
     marginBottom: '7px',
   };
+
   const genres = item.genres ? item.genres.join(', ') : '';
   function generateTrackInformation() {
-    if (type !== 'track') {
-      return <></>
-    }
     return (
       <div>
+        {item?.artists?.length ?
         <Box sx={boxStyling}>
-          <Album sx={avatarStyling} />
-          <Typography gutterBottom variant="body2" component="div" sx={fontStyling}>
-            {album}
-          </Typography>
-        </Box>
-        <Box sx={boxStyling}>
-          <Groups sx={avatarStyling} />
-          <Typography variant="body2" color="text.secondary" sx={fontStyling}>
-            {artists}
-          </Typography>
-        </Box>
+          <Tooltip title="Artists" placement="top">
+            <Groups sx={avatarStyling} />
+          </Tooltip>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}>
+            {item.artists.map(renderItem)}
+          </div>
+        </Box> : <></>}
+        {item?.album ?         <Box sx={boxStyling}>
+          <Tooltip title="Album" placement="top">
+            <Album sx={avatarStyling} />
+          </Tooltip>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          }}>
+            {renderItem(item.album)}
+          </div>
+        </Box> : <></>}
       </div>
     );
   }
@@ -87,7 +141,9 @@ export default function ItemDetails(props: {
       {generateTrackInformation()}
       {item?.genres && genres ?
         <Box sx={boxStyling}>
-          <AutoStories sx={avatarStyling} />
+          <Tooltip title="Genres" placement="top" arrow>
+            <AutoStories sx={avatarStyling} />
+          </Tooltip>
           <Typography variant="body2" color="text.secondary" sx={fontStyling}>
             {genres}
           </Typography>

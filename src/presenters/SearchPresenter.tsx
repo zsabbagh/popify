@@ -52,7 +52,6 @@ export default observer(function Search(props: { model: Model }) {
     
     async function onTabChangeACB(newType: string) {
         setTab(newType);
-        updateItems();
     }
 
     useEffect(() => {
@@ -63,13 +62,6 @@ export default observer(function Search(props: { model: Model }) {
         }
 
     }, []);
-
-    useEffect(() => {
-        const query = searchParams.get("q");
-        if (query) {
-            setSearchQuery(query);
-        }
-    }, [location]);
 
     function onAddItemToCartACB(item: ItemData) {
         console.log("onAddItemToCartACB", item);
@@ -84,14 +76,14 @@ export default observer(function Search(props: { model: Model }) {
     const [itemsInCart, setItemsInCart] = useState<Array<string>>([]);
     useEffect(() => {
         if (!props.model.userState.shoppingCart) {
-        return;
+            return;
         }
-        setItemsInCart(props.model.userState.shoppingCart.map((item: any) => item.id));
+        setItemsInCart(props.model.userState.shoppingCart.map((item: ItemData) => item.id));
     }, [props?.model?.userState?.shoppingCart?.length])
 
     useEffect(() => {
         updateItems();
-    }, [latestSearchResultTime])
+    }, [latestSearchResultTime, tab])
 
     function onSearchACB() {
         if (searchQuery === "") {

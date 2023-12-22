@@ -4,14 +4,14 @@ import {
     Tab,
     Tabs,
     Grid,
+    InputAdornment,
+    Skeleton,
+    Typography,
     Pagination,
     Alert,
     Fade,
     TextField,
-    InputAdornment,
-    Skeleton,
     CircularProgress,
-    Typography,
 } from '@mui/material';
 import { RemoveCircleOutline, Person, Audiotrack, AutoStories, CheckCircleOutline, Search } from '@mui/icons-material';
 import ItemCard from './ItemCardView';
@@ -78,8 +78,6 @@ export default function CardsView(props: {
 
     const [page, setCurrentPage] = React.useState<number>(1);
 
-    console.log("page", page);
-
     // compute slice of the given items to display
     let sliceStart = (page - 1) * itemsPerPage;
     if (sliceStart >= items?.length) {
@@ -107,7 +105,7 @@ export default function CardsView(props: {
     const [removeAlertOpen, setRemoveAlertOpen] = React.useState<boolean>(false);
 
     function renderItemCB(item: any, index: number) {
-        index = index + (page - 1) * itemsPerPage;
+        index = item.index || index;
         async function onCardClickedACB(item: any) {
             setCardDialogOpen(true);
             setCardSelected(item);
@@ -128,12 +126,15 @@ export default function CardsView(props: {
         }
         // delay for animation
         return (
-            <Grid key={item.id} item xs={spacing} xl={2}>
-                <Box
-                    sx={{
-                        justifyContent: 'center',
-                    }}
-                >
+            <Grid item key={item.id}
+                xs={spacing*2}
+                sm={spacing*2} md={spacing} xl={spacing}
+                justifyContent='center'
+                alignItems='center'>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                }}>
                     {
                         !props.awaitingSearch ?
                         <ItemCard
@@ -154,7 +155,7 @@ export default function CardsView(props: {
                                 borderRadius: '20px',
                             }} />
                     }
-                </Box>
+                </div>
             </Grid>
         );
     }
@@ -170,13 +171,11 @@ export default function CardsView(props: {
         }
     }
 
-    console.log("got itemSlice", itemSlice)
-
     return (
         <div style={{
             display: 'flex',
             flexDirection: 'column',
-            marginTop: '50px',
+            marginTop: '10px',
             marginBottom: '20px',
         }}>
             <div style={{
@@ -246,28 +245,24 @@ export default function CardsView(props: {
             {
                 (itemSlice && itemSlice?.length > 0) || props.awaitingSearch ?
                 <>
-                    <Pagination count={maxPages}
-                        page={page}
-                        siblingCount={2}
-                        onChange={(event, value) => setCurrentPage(value)}
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: '20px',
-                        }}
-                    />
                     {
                         itemSlice ?
-                        <Grid container spacing={spacing} columns={columns}
-                            justifyContent='center'
-                            alignItems='center'
-                            sx={{
-                                margin: 'auto',
-                                marginLeft: '25px'
-                            }}>
-                            {itemSlice.map(renderItemCB)}
-                        </Grid>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}>
+                            <Grid container spacing={spacing} columns={columns}
+                                justifyContent="center"
+                                alignItems="center"
+                                sx={{
+                                    marginTop: 'auto',
+                                    paddingLeft: '1%',
+                                    paddingRight: '1%',
+                                }}
+                                >
+                                {itemSlice.map(renderItemCB)}
+                            </Grid>
+                        </div>
                         : <LoaderView />
                     }
                     <Pagination count={maxPages}

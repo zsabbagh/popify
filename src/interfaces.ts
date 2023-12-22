@@ -7,8 +7,8 @@ export interface ItemData {
   uri: string;
   image: string;
   popularity?: number;
-  album?: string;
-  artists?: Array<string>;
+  album?: ItemData;
+  artists?: Array<ItemData>;
   index?: number;
   genres?: Array<string>;
 }
