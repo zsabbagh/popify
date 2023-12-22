@@ -130,6 +130,7 @@ function TopbarView(props: {
           {props.user ? (
             <>
               <Button
+              style={{marginLeft: "10px"}}
                 ref={anchorRef}
                 id="composition-button"
                 aria-controls={open ? 'composition-menu' : undefined}
