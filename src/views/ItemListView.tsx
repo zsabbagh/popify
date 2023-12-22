@@ -8,6 +8,7 @@ import {
     ListItemText,
     Box,
     Typography,
+    Skeleton,
 } from "@mui/material";
 import { ItemData, SpotifyTrack } from "../interfaces";
 import { blue, teal } from "@mui/material/colors";
@@ -19,6 +20,7 @@ interface Props {
     onRemoveItem?: (index: number) => void;
     nameOfList?: string;
     emptyText?: string;
+    attemptingUpdate?: boolean;
 }
 
 export default function ItemListView(props: Props) {
@@ -50,23 +52,58 @@ export default function ItemListView(props: Props) {
                 borderRadius: '50px',
                 marginTop: '10px'
             }} key={id}>
-                <ListItemAvatar>
-                    <Avatar variant="square" alt={`Avatar ${id}`} src={image} />
-                </ListItemAvatar>
-                <ListItemText primary={name} secondary={altText} />
                 {
-                    props.onRemoveItem ?
-                        <Tooltip title={`Remove${props.nameOfList ? ' from ' + props.nameOfList : ''}`} placement="bottom">
-                            <IconButton
-                                onClick={() => props.onRemoveItem ? props.onRemoveItem(index) : undefined}
-                                sx={{
-                                    color: teal[200],
-                                    marginLeft: 'auto',
-                                }}>
-                                <RemoveCircleOutline />
-                            </IconButton>
-                        </Tooltip> :
-                        <></>
+                    props.attemptingUpdate ?
+                        <>
+                            <Skeleton animation='wave' sx={{
+                                height: '100%',
+                                width: 40,
+                            }} />
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                marginLeft: '10px',
+                                width: '100%',
+                                marginRight: 'auto',
+                            }}>
+                                <Skeleton animation='wave' sx={{
+                                    marginLeft: '10px',
+                                    height: '80%',
+                                    width: '80%',
+                                    marginRight: 'auto',
+                                }} />
+                                <Skeleton animation='wave' sx={{
+                                    marginLeft: '10px',
+                                    height: '20%',
+                                    width: '10%',
+                                    marginRight: 'auto',
+                                }} />
+                            </div>
+                        </>
+                            :
+                        <>
+                            <ListItemAvatar sx={{
+                                height: 40,
+                                width: 40,
+                            }}>
+                                <Avatar variant="square" alt={`Avatar ${id}`} src={image} />
+                            </ListItemAvatar>
+                            <ListItemText primary={name} secondary={altText} />
+                            {
+                                props.onRemoveItem ?
+                                    <Tooltip title={`Remove${props.nameOfList ? ' from ' + props.nameOfList : ''}`} placement="bottom">
+                                        <IconButton
+                                            onClick={() => props.onRemoveItem ? props.onRemoveItem(index) : undefined}
+                                            sx={{
+                                                color: teal[200],
+                                                marginLeft: 'auto',
+                                            }}>
+                                            <RemoveCircleOutline />
+                                        </IconButton>
+                                    </Tooltip> :
+                                    <></>
+                            }
+                        </>
                 }
             </ListItem>
         );

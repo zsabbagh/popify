@@ -110,7 +110,11 @@ function CheckoutView(props: {
         justifyContent: "center",
         alignItems: "center",
        }}>
-            <ItemListView title="Recommendations" items={props.recommendations} emptyText='No items in recommendations.' />
+            <ItemListView
+              title="Recommendations"
+              items={props.recommendations}
+              emptyText='No items in recommendations.'
+              attemptingUpdate={props.attemptingGen} />
             {props.recommendations !== null && props.recommendations.length > 0 ?
             <Tooltip title="Exports the generated playlist to Spotify." placement="bottom">
               <Button variant='outlined' sx={{ width: 'fit-content', padding: 'auto' }} onClick={() => setExportDialogOpen(true)}>
