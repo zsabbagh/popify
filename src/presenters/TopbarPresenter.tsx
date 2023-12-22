@@ -4,7 +4,6 @@ import { Model } from '../interfaces';
 import loginUrl from '../utils/spotifyAuthorization';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { set } from 'date-fns';
 
 interface Props {
   model: Model;
@@ -42,9 +41,19 @@ export default observer(function Topbar(props: Props) {
     props.model.removeItemFromCart(index);
   }
 
+  const [isPortrait, setIsPortrait] = React.useState(window.innerWidth < 600);
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 600) {
+      setIsPortrait(false);
+    } else {
+      setIsPortrait(true);
+    }
+  });
 
   return (
     <TopbarView
+      isPortrait={isPortrait}
       pages={props.pages}
       onCartRemoveItem={updateShoppingCart}
       onCartCheckout={onCartCheckout}
