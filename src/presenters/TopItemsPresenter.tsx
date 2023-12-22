@@ -10,7 +10,6 @@ import { UserTopItems, SpotifyArtist, SpotifyTrack } from '../interfaces';
 import { Suspense } from 'react';
 import { getItemInformation, itemMatchesQuery } from '../utils/tools';
 
-
 export default observer(function Statistics(props: { model: Model }) {
   // this assumes that a UserModel is given...
   const navigate = useNavigate();
@@ -110,7 +109,7 @@ export default observer(function Statistics(props: { model: Model }) {
         onAddItemToCart={onAddItemToCartACB}
         onRemoveItemFromCart={onRemoveItemFromCartACB}
         onTabChange={onTabChangeACB}
-        items={getItemList()}
+        items={items}
         onSearchChange={(query: string) => setSearchQuery(query)}
       />
     </>
