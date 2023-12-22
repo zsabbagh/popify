@@ -12,16 +12,10 @@ As such, the email associated with the Spotify account is needed.
 
 ## Short description of your project
 
-The app builds on the Spotify API and gives statistical 
-insights into one’s most popular artists and genres. 
-Should be able to choose how many of the Top items are 
-presented. Similarly, the app should be able to present 
-such statistics for specific playlists. More specifically, 
-it should summarize all artists, genres, etc. This is 
-useful for large playlists. Search recommendations based 
-on relevant sliders and artist/genre seeds, or given a 
-specific playlist. Furthermore, it will be able to generate 
-quizzes given an artist, album, genre, or playlist.
+
+The app builds on the Spotify API and gives insights into one's most popular artists and genres. 
+It also enables playlist generation by enabling users to add up to five items (e.g. artists, albums, tracks, or genres) to a shopping cart, then from the selected items generating a recommended playlist.
+Since recommendations is possible in Spotify, the difference here is that it enables more granular and quick selection to generate recommendations from.
 
 ## What is done
 
