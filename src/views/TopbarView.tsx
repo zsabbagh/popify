@@ -21,8 +21,10 @@ import { Form, Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import ShoppingCart from './ShoppingCartView';
 import { ItemData, User } from '../interfaces';
+import MenuDrawerView from './MenuDrawerView';
 
 function TopbarView(props: {
+  isPortrait: boolean;
   pages: string[];
   shoppingCart: ItemData[] | undefined;
   onCartRemoveItem: (index: number) => void;
@@ -66,19 +68,29 @@ function TopbarView(props: {
     props.onLoginLogout();
   };
 
+  const isPortrait = props.isPortrait;
+  const flexIfNotPortrait = isPortrait ? 'none' : 'flex';
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <MenuDrawerView visible={isPortrait} drawerOpen={false} pages={props.pages} />
           <Link to="/">
-            <Box sx={{ display: 'flex', flexDirection: 'row', bottom: '0' }}>
-              <img src="/logo.svg" alt="logo" style={{ height: '50px', width: 'auto' }} />
+
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row', bottom: '0' }}>
+                <img src="/logo.svg" alt="logo" style={{ height: '50px', width: 'auto' }}/>
+              </Box>
               <Typography
                 variant="h6"
                 noWrap
                 sx={{
+                  display: flexIfNotPortrait,
                   mr: 2,
-                  display: { xs: 'none', md: 'flex' },
                   fontFamily: 'monospace',
                   fontWeight: 700,
                   letterSpacing: '.3rem',
@@ -91,9 +103,9 @@ function TopbarView(props: {
               >
                 Popify
               </Typography>
-            </Box>
+            </div>
           </Link>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: flexIfNotPortrait }}>
             {props.pages.map((page) => (
               <Link
                 key={page}
