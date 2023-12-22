@@ -50,7 +50,6 @@ function fetchUser(accessToken: string) {
       if (res.ok) {
         return res.json();
       } else if (res.status === 401) {
-        localStorage.removeItem('spotifyAuthToken');
         throw new Error('Auth token expired');
       } else {
         throw new Error('An error has occured');
