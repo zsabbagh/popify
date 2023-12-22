@@ -72,7 +72,7 @@ function TopbarView(props: {
   const flexIfNotPortrait = isPortrait ? 'none' : 'flex';
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <MenuDrawerView visible={isPortrait} drawerOpen={false} pages={props.pages} />
