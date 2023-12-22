@@ -41,7 +41,7 @@ export default function TimeRangeView(props: {
                 {
                     props.timeRanges.map((type: string) => {
                         let label=setLabel(type);
-                        return <FormControlLabel value={type} control={<Radio size="small" />} label={label} />
+                        return <FormControlLabel key={type} value={type} control={<Radio size="small" />} label={label} />
                     })
                 }
             </RadioGroup>
