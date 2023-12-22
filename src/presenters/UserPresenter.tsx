@@ -4,38 +4,44 @@ import { useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import LoaderView from '../views/LoaderView';
 import UserView from '../views/UserView';
-import {
-  createPlaylist,
-  addTracksToPlaylist,
-} from '../utils/spotifyFetcher';
+import { createPlaylist, addTracksToPlaylist } from '../utils/spotifyFetcher';
+import ItemDialog from '../views/ItemDialogView';
 
 export default observer(function UserPresenter(props: { model: Model }) {
   const { id } = useParams();
   const [user, setUser] = useState<User | undefined>(undefined);
   const [userPlaylists, setUserPlaylists] = useState<SpotifyTrack[][]>([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState<SpotifyTrack[]>([]);
-
+  const [selectedPlaylist, setSelectedPlaylist] = useState<SpotifyTrack[] | null>(null);
+  const [openCard, setOpenCard] = useState<boolean>(false);
 
   useEffect(() => {
-    const getUser = async() => {
+    const getUser = async () => {
       const result = await props.model.getUser(id);
       setUser(result);
-    }
+    };
 
-    const getUserPlaylists = async() => {
-      const result = await props.model.getPlaylists(id || "");
+    const getUserPlaylists = async () => {
+      const result = await props.model.getPlaylists(id || '');
       setUserPlaylists(result);
-    }
+    };
 
     getUserPlaylists();
-    getUser()
-  },[])
+    getUser();
+  }, []);
 
   const accessToken = props.model.userState.userAuthToken!;
 
-  const onSelectPlaylist = (playlist: SpotifyTrack[]) => {
-    setSelectedPlaylist(playlist);
-  }
+  const onSelectPlaylist = (playlistIndex: number) => {
+    setSelectedPlaylist(userPlaylists[playlistIndex]);
+    setOpenCard(true);
+  };
+  const onClose = () => {
+    setOpenCard(false);
+
+    setTimeout(() => {
+      setSelectedPlaylist(null);
+    }, 500);
+  };
 
   const onExportACB = (newPlaylist: boolean, playlistIdentifier: string) => {
     if (!selectedPlaylist) return;
@@ -61,12 +67,20 @@ export default observer(function UserPresenter(props: { model: Model }) {
     }
   };
 
-
-
-
-  if(!user){
-    return <LoaderView />
+  if (!user) {
+    return <LoaderView />;
   }
 
-  return <UserView user={user} playlists={userPlaylists}></UserView>;
+  return (
+    <>
+      <UserView
+        onClose={onClose}
+        openCard={openCard}
+        selectedPlaylist={selectedPlaylist}
+        onSelectPlaylist={onSelectPlaylist}
+        user={user}
+        playlists={userPlaylists}
+      ></UserView>
+    </>
+  );
 });
