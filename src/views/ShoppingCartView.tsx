@@ -72,7 +72,6 @@ export default function ShoppingCartView(props: {
   const colorOfProgress = cartIsFull ? green[400] : blue[400];
 
   function onCheckoutClickACB() {
-
     setOpen(false);
   }
 

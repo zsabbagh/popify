@@ -17,24 +17,6 @@ The app builds on the Spotify API and gives insights into one's most popular art
 It also enables playlist generation by enabling users to add up to five items (e.g. artists, albums, tracks, or genres) to a shopping cart, then from the selected items generating a recommended playlist.
 Since recommendations is possible in Spotify, the difference here is that it enables more granular and quick selection to generate recommendations from.
 
-## What is done
-
-    - Spotify authentication
-    - Fetch user from API
-    - Topbar
-    - Working router
-    - Deployed
-    - Statistics presenter/view
-    - Persist user authentication through refresh
-    - Fetch top items from Spotify API
-
-## What is planned to be done
-
-    - Recommendation page: recommendations based on the users listens
-    - Statistics page: improve it and build upon it
-    - Quiz pages: quiz creation etc
-    - Firebase integration
-
 ## Project file structure
 
 ```

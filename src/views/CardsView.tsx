@@ -295,14 +295,15 @@ export default function CardsView(props: {
                     }
                 </> :
                 <div>
-                    <Typography variant="h3" sx={{
+                    <Typography variant="h6" sx={{
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginTop: '50px',
                         marginBottom: '20px',
+                        color: 'grey',
                     }}>
-                        No items to display
+                        MAKE A SEARCH TO SHOW ITEMS
                     </Typography>
                 </div>
             }
