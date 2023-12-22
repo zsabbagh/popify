@@ -9,7 +9,7 @@ export default function ShoppingCartView(props: {
   items: Array<ItemData>,
   maxSize?: number,
   onRemoveItem: (index: number) => void,
-  onCheckout: () => void,
+  onCheckout:  () => void,
 }) {
 
   const maxSize = props.maxSize || 5;
@@ -71,6 +71,9 @@ export default function ShoppingCartView(props: {
   const cartIsFull = props.items?.length >= maxSize;
   const colorOfProgress = cartIsFull ? green[400] : blue[400];
 
+  function onCheckoutClickACB() {
+    setOpen(false);
+  }
 
   return (
     <div style={{
@@ -128,7 +131,7 @@ export default function ShoppingCartView(props: {
             }
           </List>
         </div>
-        <Button onClick={props.onCheckout} variant="contained" color="primary" sx={{
+        <Button onClick={props.onCheckout} onClickCapture={onCheckoutClickACB} variant="contained" color="primary" sx={{
           marginTop: '10px',
         }}>
           Checkout
