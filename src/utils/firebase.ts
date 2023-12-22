@@ -80,7 +80,6 @@ export const getCartFirebase = async (user?: User) => {
 
     if (docSnap.exists()) {
       return JSON.parse(docSnap.data().cart) as ItemData[];
-      //("Document data:", JSON.stringify(docSnap.data()));
     } else {
       return;
     }
