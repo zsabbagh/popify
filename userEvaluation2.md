@@ -56,6 +56,18 @@ Issue 1-3:
     page, where the selections have been made in
     previous steps, which makes it more user friendly. 
 
+10:
+
+    It has been made sure that all presented data is 
+    suitable for generating recommendations, unless
+    other is stated to the user. 
+
+12:
+
+    The issue have been addressed, but not fully solved.
+    The page is viewable on a smaller screen, but not
+    optimized.
+
 13:
 
     On the first version of recommendation page, the user 
@@ -67,7 +79,8 @@ Issue 1-3:
 17:
         
     The buttons for "Get recommendations" and "Add songs
-    to playlist" were more strategically located. 
+    to playlist" were more strategically located. The view
+    for checkout has been redesigned. 
 
 19:
 
