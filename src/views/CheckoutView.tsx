@@ -1,7 +1,10 @@
 import {
+  Alert,
   Avatar,
+  Box,
   Button,
   Checkbox,
+  Fade,
   Grid,
   IconButton,
   List,
@@ -12,11 +15,26 @@ import {
   Typography,
 } from '@mui/material';
 import { ItemData, SpotifyAlbum, SpotifyArtist, SpotifyItem, SpotifyTrack } from '../interfaces';
-import ExportDialog from './ExportDialogView';
-import { teal } from '@mui/material/colors';
-import { RemoveCircleOutline } from '@mui/icons-material';
+import ExportDialogView from './ExportDialogView';
+import { blueGrey, teal } from '@mui/material/colors';
+import { CheckCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import LoaderView from './LoaderView';
 import { Link, useNavigate } from 'react-router-dom';
+import ItemListView from './ItemListView';
+import { getItemInformation } from '../utils/tools';
+import { useState } from 'react';
+
+const alertStyling = {
+    position: 'fixed',
+    fontSize: 'auto',
+    bottom: '10%',
+    left: '50%',
+    marginLeft: '-200px',
+    borderRadius: '40px',
+    right: '50%',
+    marginRight: '-200px',
+    width: '400px',
+}
 
 function CheckoutView(props: {
   recommendations: SpotifyTrack[] | null;
@@ -25,110 +43,114 @@ function CheckoutView(props: {
   userPlaylists: { name: string; id: string }[];
   onExport: (newPlaylist: boolean, playlistIdentifier: string) => void;
   onRemoveItem: (index: number) => void;
+  successfulExport?: boolean;
+  successfulGen?: boolean;
+  failedExport?: boolean;
+  failedGen?: boolean;
+  attemptingExport?: boolean;
+  attemptingGen?: boolean;
 }) {
 
   const navigate = useNavigate();
-  function itemACB(item: ItemData, index: number) {
-    const id = item.id;
-    const name = item.name;
-    const image = item.image || '';
 
-    return (
-      <ListItem sx={{ height: 60, width: '100%', maxWidth: "400px" }} key={id}>
-        <ListItemAvatar>
-          <Avatar variant="square" alt={`Avatar ${id}`} src={image} />
-        </ListItemAvatar>
-        <ListItemText primary={name} secondary={item.type} />
-        <Tooltip title="Remove from Cart" placement="bottom">
-          <IconButton
-            onClick={() => props.onRemoveItem(index)}
-            sx={{
-              color: teal[200],
-              marginLeft: 'auto',
-            }}
-          >
-            <RemoveCircleOutline />
-          </IconButton>
-        </Tooltip>
-      </ListItem>
-    );
-  }
-
-  function recommendationACB(track: SpotifyTrack) {
-    return (
-      <ListItem sx={{ height: 60, width: '100%', maxWidth: "400px" }} key={track.id}>
-        <ListItemAvatar>
-          <Avatar variant="square" alt={`Avatar ${track.id}`} src={track.album.images[0]?.url || ''} />
-        </ListItemAvatar>
-        <ListItemText primary={track.name} secondary={track.artists[0]?.name || ''} />
-      </ListItem>
-    );
-  }
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   return (
     <>
-      <div style={{display: "flex", flexDirection: "row"}}>
-        <Grid style={{flex: "1"}} item xs={6}>
-          <Typography sx={{ mt: 2, mb: 0 }} variant="h6" component="div" textAlign="center">
-            Cart
-          </Typography>
-          <List
-            sx={{
-              width: '100%',
-              bgcolor: 'background.paper',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            {props.cartItems?.map(itemACB)}
-            {props.cartItems?.length > 0 ? 
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="recommendations-button">
-              <Button sx={{ width: '100%' }} variant="contained" onClick={props.onGetRecommendations}>
-                Get Recommendations!
+    <ExportDialogView
+      open={exportDialogOpen}
+      onClose={() => setExportDialogOpen(false)}
+      onExport={props.onExport}
+      playlists={props.userPlaylists}
+      />
+      <div style={{
+        display: "flex",
+        flexDirection: "row",
+        marginBottom: '20px',
+       }}>
+       <Box sx={{
+        display: "flex",
+        width: "50%",
+        flexDirection: "column",
+        alignItems: "center",
+       }}>
+            <ItemListView title="Cart" items={props.cartItems} onRemoveItem={props.onRemoveItem} nameOfList="cart" />
+            {props.cartItems?.length > 0 ?
+            <Tooltip title="Generates and stores a playlist in your account based on the cart items." placement="bottom">
+              <Button disabled={props.attemptingGen} variant='outlined' sx={{ width: 'fit-content', padding: 'auto' }} onClick={props.onGetRecommendations}>
+                Generate Playlist
               </Button>
-            </ListItem>
+            </Tooltip>
             : 
             <>
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="empty-cart-text">
-              <Typography sx={{ mt: 2, mb: 0 }} variant="body1" component="div" textAlign="center">
-                Add items to your cart to generate recommendations!
-              </Typography>
-            </ListItem>
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="top-items-redirect">
-              <Button sx={{ width: '100%' }} variant="contained" onClick={() => {navigate("/top")}}>
+            <Typography sx={{ mt: 2, mb: 0, color: blueGrey[500] }} variant="body1" component="div" textAlign="center">
+              Add items to your cart to generate a playlist.
+            </Typography>
+            <Box sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: '20px',
+            }}>
+              <Button variant='outlined' sx={{ margin: '10px', width: '200px', padding: 'auto' }} onClick={() => navigate('/top')}>
                 Show my top items
               </Button>
-            </ListItem>
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }} key="search-redirect">
-              <Button sx={{ width: '100%' }} variant="contained" onClick={() => {navigate("/search")}}>
-                Search for any music
+              <Button variant='outlined' sx={{ margin: '10px', width: '200px', padding: 'auto' }} onClick={() => navigate('/search')}>
+                Search music
               </Button>
-            </ListItem>
+            </Box>
             </>
             }
-          </List>
-        </Grid>
+       </Box>
 
-        <Grid style={{flex: "1"}} item xs={12}>
-          <Typography sx={{ mt: 4, mb: 0 }} variant="h6" component="div" textAlign="center">
-            Recommendations
-          </Typography>
-          <List
-            sx={{
-              width: '100%',
-              bgcolor: 'background.paper',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            {props.recommendations ? <> {props.recommendations?.map(recommendationACB)}</> : <LoaderView />}
-            <ListItem sx={{ height: 60, width: '25%', mt: 3 }}>
-              <ExportDialog playlists={props.userPlaylists} onExport={props.onExport} />
-            </ListItem>
-          </List>
-        </Grid>
+       <Box sx={{
+        display: "flex",
+        width: "50%",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+       }}>
+            <ItemListView title="Recommendations" items={props.recommendations} emptyText='No items in recommendations.' />
+            {props.recommendations !== null && props.recommendations.length > 0 ?
+            <Tooltip title="Exports the generated playlist to Spotify." placement="bottom">
+              <Button variant='outlined' sx={{ width: 'fit-content', padding: 'auto' }} onClick={() => setExportDialogOpen(true)}>
+              Export Playlist
+              </Button>
+            </Tooltip> : <></>
+            }
+       </Box>
+        {
+            <Fade in={props?.successfulGen} unmountOnExit={true}>
+                <Alert severity='success' sx={alertStyling}
+                    icon={<CheckCircleOutline />}>
+                    Playlist generated!
+                </Alert>
+            </Fade>
+        }
+        {
+            <Fade in={props?.failedGen} unmountOnExit={true}>
+                <Alert severity='error' sx={alertStyling}
+                    icon={<RemoveCircleOutline />}>
+                    Playlist generation failed.
+                </Alert>
+            </Fade>
+        }
+        {
+            <Fade in={props?.successfulExport} unmountOnExit={true}>
+                <Alert severity='success' sx={alertStyling}
+                    icon={<CheckCircleOutline />}>
+                    Playlist exported!
+                </Alert>
+            </Fade>
+        }
+        {
+            <Fade in={props?.failedExport} unmountOnExit={true}>
+                <Alert severity='error' sx={alertStyling}
+                    icon={<RemoveCircleOutline />}>
+                    Playlist export failed.
+                </Alert>
+            </Fade>
+        }
       </div>
     </>
   );
