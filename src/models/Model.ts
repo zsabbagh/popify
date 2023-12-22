@@ -63,8 +63,6 @@ export default {
     this.pushCartFirebase();
   },
   async pushCartFirebase() {
-    console.log('pushing to firebase', this.userState.shoppingCart);
-
     firebaseApi.pushCartFirebase(this.userState.shoppingCart, this.userState.user);
   },
   async getCartFirebase() {
@@ -122,7 +120,14 @@ export default {
       this.setUserTopItems(timeRange!, topItems);
       this.userState.topItems!.latestUpdate = timestamp;
     } catch (error: any) {
+<<<<<<< HEAD
         this.onError(error);
+=======
+      localStorage.removeItem('spotifyAuthToken');
+      this.logoutUser();
+      console.error('Error fetching top items', error);
+      this.userState.errorMessage = error?.message;
+>>>>>>> main
     }
   },
   async loginUser(token?: string) {
@@ -138,7 +143,17 @@ export default {
       this.userState.user = user;
       firebaseApi.getOrRegisterUser(this.userState.user);
     } catch (error: any) {
+<<<<<<< HEAD
       this.onError(error);
+=======
+      console.error('Error loggin into spotify', error);
+      if (error.status === 401) {
+        //Token expired        
+        localStorage.removeItem('spotifyAuthToken');
+        this.logoutUser();
+      }
+      this.userState.errorMessage = error.message;
+>>>>>>> main
     }
     this.userState.topItems = {
       latestUpdate: 0,
@@ -164,6 +179,7 @@ export default {
     localStorage.removeItem('spotifyAuthToken');
     this.userState.user = undefined;
     this.userState.userAuthToken = undefined;
+    window.location.reload();
   },
   items: [],
   async addItem(id: string, type: string) {
@@ -181,8 +197,17 @@ export default {
         }
         this.items.push(item);
       } catch (error: any) {
+<<<<<<< HEAD
         this.onError(error);
         //TODO handle
+=======
+        if (error.status === 401) {
+          //Token expired        
+          localStorage.removeItem('spotifyAuthToken');
+          this.logoutUser();
+        }
+        this.userState.errorMessage = error.message;
+>>>>>>> main
       }
     }
   },
@@ -215,7 +240,6 @@ export default {
   },
   async getMyRecentPlaylist() {
     const response = await firebaseApi.getPlaylists(this.userState.user?.id || '');
-    console.log(response);
     
     if (response.length > 0) {
       return response[0];
