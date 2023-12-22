@@ -43,13 +43,22 @@ export default observer(function Checkout(props: { model: Model }) {
   const [recommendations, setRecommendations] = useState<SpotifyTrack[] | null>([]);
   const [userPlaylists, setUserPlaylists] = useState<{ name: string; id: string }[]>([]);
 
+  const [attemptingExport, setAttemptingExport] = useState(false);
+  const [attemptingGen, setAttemptingGen] = useState(false);
+  const [successfulExport, setSuccessfulExport] = useState(false);
+  const [successfulGen, setSuccessfulGen] = useState(false);
+  const [failedExport, setFailedExport] = useState(false);
+  const [failedGen, setFailedGen] = useState(false);
+
   const onExportACB = (newPlaylist: boolean, playlistIdentifier: string) => {
     if (!recommendations) return;
+    setAttemptingExport(true);
     console.log('exporting', newPlaylist, playlistIdentifier);
     if (newPlaylist) {
       // create new playlist
       let id = userState?.user?.id;
       if (!id) {
+        setAttemptingExport(false);
         return;
       }
       createPlaylist(accessToken, id, playlistIdentifier).then((playlistId) => {
@@ -58,6 +67,17 @@ export default observer(function Checkout(props: { model: Model }) {
           playlistId,
           recommendations.map((item) => item.uri)
         );
+        setSuccessfulExport(true);
+        setTimeout(() => {
+          setSuccessfulExport(false);
+          setAttemptingExport(false);
+        }, 3000);
+      }).catch((err) => {
+        setAttemptingExport(false);
+        setFailedExport(true);
+        setTimeout(() => {
+          setFailedExport(false);
+        }, 3000);
       });
     } else {
       // add to existing playlist
@@ -71,16 +91,35 @@ export default observer(function Checkout(props: { model: Model }) {
 
   const numRecommendations = 20; // TODO: make this a slider
 
+  useEffect(() => {
+    setAttemptingGen(false);
+  }, [successfulGen, failedGen]);
+
+  useEffect(() => {
+    setAttemptingExport(false);
+  }, [successfulExport, failedGen]);
+
   function getRecommendationsACB() {
     if (!userState?.shoppingCart) return;
+    setAttemptingGen(true);
     const obj = getSeedsFromCart(userState.shoppingCart);
     console.log(obj);
     fetchRecommendations(accessToken, numRecommendations, obj.artists, obj.tracks, obj.genres).then(
       (items) => {
         setRecommendations(items);
         props.model.putPlaylist(items);
+        setSuccessfulGen(true);
+        setTimeout(() => {
+          setSuccessfulGen(false);
+        }, 3000);
       }
-    );
+    ).catch((err) => {
+      setAttemptingGen(false);
+      setFailedGen(true);
+      setTimeout(() => {
+        setFailedGen(false);
+      }, 3000);
+    });
   }
 
   function getUserPlaylists() {
@@ -108,6 +147,12 @@ export default observer(function Checkout(props: { model: Model }) {
       onGetRecommendations={getRecommendationsACB}
       onExport={onExportACB}
       userPlaylists={userPlaylists}
+      successfulExport={successfulExport}
+      successfulGen={successfulGen}
+      failedExport={failedExport}
+      failedGen={failedGen}
+      attemptingExport={attemptingExport}
+      attemptingGen={attemptingGen}
     />
   );
 });
