@@ -65,6 +65,20 @@ src
     └── UserView.tsx ........... user view
 ```
 
+
+/src/config.ts needs to have the following configuration:
+export const spotifyClientId = 'spotifyIdHere';
+export const firebaseConfig = {
+  apiKey: 'REDACTED',
+  authDomain: 'REDACTED',
+  projectId: 'REDACTED',
+  storageBucket: 'REDACTED',
+  messagingSenderId: 'REDACTED,
+  appId: 'REDACTED',
+  measurementId: 'REDACTED',
+};
+
+
 ## Available Scripts
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
