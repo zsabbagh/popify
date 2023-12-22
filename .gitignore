@@ -1,6 +1,5 @@
 node_modules
 build
 src/**/config*
-**/*Config*
 firebaseConfig.ts
 dist
