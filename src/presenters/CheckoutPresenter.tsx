@@ -75,18 +75,28 @@ export default observer(function Checkout(props: { model: Model }) {
     if (!userState?.shoppingCart) return;
     const obj = getSeedsFromCart(userState.shoppingCart);
     console.log(obj);
-    fetchRecommendations(accessToken, numRecommendations, obj.artists, obj.tracks, obj.genres).then(
-      (items) => {
-        setRecommendations(items);
-        props.model.putPlaylist(items);
-      }
-    );
+    try {
+      fetchRecommendations(accessToken, numRecommendations, obj.artists, obj.tracks, obj.genres).then(
+        (items) => {
+          setRecommendations(items);
+          props.model.putPlaylist(items);
+        }
+      );
+    }
+    catch (error: any) {
+      props.model.onError(error);
+    }
   }
 
   function getUserPlaylists() {
-    fetchCurrentUserPlaylists(accessToken).then((playlists) => {
-      setUserPlaylists(playlists);
-    });
+    try {
+      fetchCurrentUserPlaylists(accessToken).then((playlists) => {
+        setUserPlaylists(playlists);
+      });
+    }
+    catch (error: any) {
+      props.model.onError(error);
+    }
   }
 
   // get seed artists
