@@ -39,7 +39,6 @@ export default observer(function UserPresenter(props: { model: Model }) {
 
   const onExportACB = (newPlaylist: boolean, playlistIdentifier: string) => {
     if (!selectedPlaylist) return;
-    console.log('exporting', newPlaylist, playlistIdentifier);
     if (newPlaylist) {
       // create new playlist
       if (!id) {

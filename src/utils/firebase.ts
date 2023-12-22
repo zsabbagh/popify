@@ -159,11 +159,9 @@ export const getRating = async (uri: string, user: User) => {
     if (!querySnapshot.empty) {
       const response = querySnapshot.docs[0];
       const data = response.data();
-      console.log('data', data);
 
       return data['rating'];
     } else {
-      console.log('empty');
 
       return 0;
     }

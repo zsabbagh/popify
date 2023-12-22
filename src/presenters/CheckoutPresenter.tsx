@@ -30,7 +30,6 @@ export default observer(function Checkout(props: { model: Model }) {
 
     const getRecentPlaylist = async () => {
       const response = await props.model.getMyRecentPlaylist();
-      console.log(response);
       
       if (response) {
         setRecommendations(response);
@@ -53,7 +52,6 @@ export default observer(function Checkout(props: { model: Model }) {
   const onExportACB = (newPlaylist: boolean, playlistIdentifier: string) => {
     if (!recommendations) return;
     setAttemptingExport(true);
-    console.log('exporting', newPlaylist, playlistIdentifier);
     if (newPlaylist) {
       // create new playlist
       let id = userState?.user?.id;
@@ -103,7 +101,6 @@ export default observer(function Checkout(props: { model: Model }) {
     if (!userState?.shoppingCart) return;
     setAttemptingGen(true);
     const obj = getSeedsFromCart(userState.shoppingCart);
-    console.log(obj);
     fetchRecommendations(accessToken, numRecommendations, obj.artists, obj.tracks, obj.genres).then(
       (items) => {
         setRecommendations(items);

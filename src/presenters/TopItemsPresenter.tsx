@@ -81,7 +81,6 @@ export default observer(function Statistics(props: { model: Model }) {
   }
 
   async function onTabChangeACB(newType: string) {
-    console.log('location changed from, ', location, ' to ', newType);
     setTab(newType);
   }
 

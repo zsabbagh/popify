@@ -55,8 +55,6 @@ export default {
     this.pushCartFirebase();
   },
   async pushCartFirebase() {
-    console.log('pushing to firebase', this.userState.shoppingCart);
-
     firebaseApi.pushCartFirebase(this.userState.shoppingCart, this.userState.user);
   },
   async getCartFirebase() {
@@ -221,7 +219,6 @@ export default {
   },
   async getMyRecentPlaylist() {
     const response = await firebaseApi.getPlaylists(this.userState.user?.id || '');
-    console.log(response);
     
     if (response.length > 0) {
       return response[0];
