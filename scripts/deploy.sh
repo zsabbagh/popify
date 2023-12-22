@@ -10,7 +10,7 @@ npm run build
 
 echo ">>>>>>>>>>>>>> Deploying  <<<<<<<<<<<<<<<<<<<"
 
-aws s3 sync ./build/ s3://$BUCKET --delete --profile $PROFILE
+aws s3 sync ./dist/ s3://$BUCKET --delete --profile $PROFILE
 
 echo ">>>>>>>>>>>>>> Invalidating CloudFront  <<<<<<<<<<<<<<<<<<<"
 aws cloudfront create-invalidation --profile $PROFILE --distribution-id $DIST_ID --paths "/*"
