@@ -1,20 +1,41 @@
-import { Avatar, Button, Dialog, DialogActions, DialogContent, Paper } from '@mui/material';
+import { Alert, Avatar, Button, Dialog, DialogActions, DialogContent, Fade, Paper } from '@mui/material';
 import { SpotifyTrack, User } from '../interfaces';
 import ItemDetails from './ItemDetailsView';
 import ItemListView from './ItemListView';
+import ExportDialogView from './ExportDialogView';
+import { useState } from 'react';
+import { CheckCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 
 interface Props {
   playlists: SpotifyTrack[][];
   selectedPlaylist: SpotifyTrack[] | null;
+  spotifyPlaylists: { name: string; id: string }[];
   user: User;
   onSelectPlaylist: Function;
   openCard: boolean;
   onClose: Function;
+  onExport: (newPlaylist: boolean, playlistIdentifier: string) => void;
+  successfulExport: boolean;
+  failedExport: boolean;
+  attemptingExport: boolean;
 }
 
 export default function UserView(props: Props) {
   const user = props.user;
   const playlists = props.playlists.slice(0, 5);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+
+  const alertStyling = {
+    position: 'fixed',
+    fontSize: 'auto',
+    bottom: '10%',
+    left: '50%',
+    marginLeft: '-200px',
+    borderRadius: '40px',
+    right: '50%',
+    marginRight: '-200px',
+    width: '400px',
+  };
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -42,8 +63,10 @@ export default function UserView(props: Props) {
         }}
         elevation={2}
       >
-        {playlists.map((playlist) => (
+        {playlists.length === 0 ? <h2>No playlists yet!</h2> : <></>}
+        {playlists.map((playlist, index) => (
           <Paper
+            key={index}
             onClick={() => {
               props.onSelectPlaylist(playlists.indexOf(playlist));
             }}
@@ -94,11 +117,49 @@ export default function UserView(props: Props) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => props.onClose()}>Export</Button>
-
+          <Button
+            onClick={() => {
+              props.onClose();
+              setTimeout(() => {
+                setExportDialogOpen(true);
+              }, 200);
+            }}
+          >
+            Export
+          </Button>
           <Button onClick={() => props.onClose()}>Cancel</Button>
         </DialogActions>
       </Dialog>
+
+      <ExportDialogView
+        open={exportDialogOpen}
+        onClose={() => setExportDialogOpen(false)}
+        onExport={props.onExport}
+        playlists={props.spotifyPlaylists}
+      />
+
+      {
+        <Fade in={props?.successfulExport} unmountOnExit={true}>
+          <Alert severity="success" sx={alertStyling} icon={<CheckCircleOutline />}>
+            Playlist exported!
+          </Alert>
+        </Fade>
+      }
+      {
+        <Fade in={props?.failedExport} unmountOnExit={true}>
+          <Alert severity="error" sx={alertStyling} icon={<RemoveCircleOutline />}>
+            Playlist export failed.
+          </Alert>
+        </Fade>
+      }
+
+      {
+        <Fade in={props?.attemptingExport} unmountOnExit={true}>
+          <Alert severity="info" sx={alertStyling} icon={<RemoveCircleOutline />}>
+            Export request sent
+          </Alert>
+        </Fade>
+      }
     </div>
   );
 }
