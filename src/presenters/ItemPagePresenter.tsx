@@ -42,8 +42,6 @@ export default observer(function ItemPresenter(props: Props) {
         }
     }
 
-    console.log("got type: " + type + " and id: " + id);
-
     async function updateComments() {
         try {
             const response = await props.model.getComments(spotifyUri);

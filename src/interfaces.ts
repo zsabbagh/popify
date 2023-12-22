@@ -120,6 +120,7 @@ export interface Model {
   putPlaylist(playlist: SpotifyTrack[]): Promise<playlistObject>;
   getPlaylists(userId: string): Promise<SpotifyTrack[][]>;
   getMyRecentPlaylist(): Promise<SpotifyTrack[] | null>
+  onError(error: any): void;
   items: ItemData[];
   pages: string[];
 

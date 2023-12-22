@@ -66,7 +66,7 @@ export const pushCartFirebase = async (cart?: ItemData[], user?: User) => {
    await setDoc(doc(collection(db, 'cart'), user.id), {cart: JSON.stringify(cart)});
   
   } catch (error) {
-    console.log("error", error);
+    console.log("Firebase error when pushing to cart", error);
     //TODO handle
   }
 };

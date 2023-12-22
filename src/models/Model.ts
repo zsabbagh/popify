@@ -18,6 +18,14 @@ export default {
     topItems: undefined,
     errorMessage: null,
   },
+  onError(response: any) {
+    this.userState.errorMessage = response.cause?.statusText || "unknown";
+    if (response.cause.status === 401) {
+      //Token expired
+      this.logoutUser();
+    }
+    console.log('Error: ', response.statusText, response.url);
+  },
   hasItemInCart(item: ItemData | undefined) {
     if (!item || !this.userState.shoppingCart) {
       return false;
@@ -114,8 +122,7 @@ export default {
       this.setUserTopItems(timeRange!, topItems);
       this.userState.topItems!.latestUpdate = timestamp;
     } catch (error: any) {
-      console.error('Error fetching top items', error);
-      this.userState.errorMessage = error?.message;
+        this.onError(error);
     }
   },
   async loginUser(token?: string) {
@@ -131,12 +138,7 @@ export default {
       this.userState.user = user;
       firebaseApi.getOrRegisterUser(this.userState.user);
     } catch (error: any) {
-      console.error('Error loggin into spotify', error);
-      if (error.status === 401) {
-        //Token expired
-        this.logoutUser();
-      }
-      this.userState.errorMessage = error.message;
+      this.onError(error);
     }
     this.userState.topItems = {
       latestUpdate: 0,
@@ -178,7 +180,8 @@ export default {
           throw new Error('Invalid item');
         }
         this.items.push(item);
-      } catch (error) {
+      } catch (error: any) {
+        this.onError(error);
         //TODO handle
       }
     }

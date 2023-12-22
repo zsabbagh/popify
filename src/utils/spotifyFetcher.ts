@@ -2,13 +2,9 @@ import { ItemData, SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '../interfac
 
 const itemTypes = [ 'artist', 'album', 'track' ];
 
-function handleErrors(response: Response) {
+function checkForErrors(response: Response) {
   if (response.ok) {
     return response;
-  }
-  else if (response.status === 401) {
-    localStorage.removeItem('spotifyAuthToken');
-    throw new Error("Expired token", {cause: response});
   }
   console.log("Error: ", response.statusText, response.url)
   throw new Error(response.statusText, {cause: response});
@@ -18,7 +14,7 @@ function handleErrors(response: Response) {
 function fetchUsername(accessToken: string) {
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch('https://api.spotify.com/v1/me', { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json())
     .then((data) => {
       //('User', data);
@@ -40,7 +36,7 @@ function fetchItem(accessToken: string, id: string, type: string = "artist"): Pr
   }
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(`https://api.spotify.com/v1/${type}s/${id}`, { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json())
     .then((data) => {
       return data;
@@ -51,7 +47,7 @@ function fetchItem(accessToken: string, id: string, type: string = "artist"): Pr
 function fetchUser(accessToken: string) {
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch('https://api.spotify.com/v1/me', { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json())
     .then((data) => {
       return {
@@ -74,7 +70,7 @@ function fetchTopItems(
   const endpoint = `https://api.spotify.com/v1/me/top/${type}?time_range=${timeRange}&limit=${limit}`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json());
 }
 
@@ -99,7 +95,7 @@ function fetchRecommendations(
 
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json())
     .then((data) => data.tracks);
 }
@@ -117,7 +113,7 @@ function createPlaylist(accessToken: string, userId: string, playlistName: strin
       name: playlistName,
     }),
   })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json())
     .then((data) => data.id);
 }
@@ -135,7 +131,7 @@ function addTracksToPlaylist(accessToken: string, playlistId: string, trackUris:
       uris: trackUris,
     }),
   })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json());
 }
 
@@ -143,7 +139,7 @@ function fetchCurrentUserPlaylists(accessToken: string) {
   const endpoint = `https://api.spotify.com/v1/me/playlists`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json())
     .then((data) => data.items);
 }
@@ -160,7 +156,7 @@ function search(
   const endpoint = `https://api.spotify.com/v1/search?q=${query}&type=album,track,artist&limit=${limit}`;
   const headers = { Authorization: `Bearer ${accessToken}` };
   return fetch(endpoint, { headers })
-    .then(handleErrors)
+    .then(checkForErrors)
     .then((res) => res.json());
 }
 
