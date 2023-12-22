@@ -11,11 +11,16 @@ import {
   Avatar,
   Button,
   Tooltip,
+  Popper,
+  Grow,
+  ClickAwayListener,
+  Paper,
+  MenuList,
 } from '@mui/material';
 import { Form, Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import ShoppingCart from './ShoppingCartView';
-import { ItemData } from '../interfaces';
+import { ItemData, User } from '../interfaces';
 
 function TopbarView(props: {
   pages: string[];
@@ -26,9 +31,38 @@ function TopbarView(props: {
   loggedIn: boolean;
   loginUrl: string;
   onLoginLogout: () => void;
+  user?: User;
 }) {
 
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+  const images = props.user?.images;
+  const handleClose = (event: Event | React.SyntheticEvent) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const prevOpen = React.useRef(open);
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+        // Check if anchorRef.current is not null before calling focus()
+        if (anchorRef.current) {
+            anchorRef.current.focus();
+        }
+    }
+
+    prevOpen.current = open;
+}, [open]);
+
+
   const handleLoginLogout = () => {
+    setOpen(false);
     props.onLoginLogout();
   };
 
@@ -38,7 +72,7 @@ function TopbarView(props: {
         <Toolbar disableGutters>
           <Link to="/">
             <Box sx={{ display: 'flex', flexDirection: 'row', bottom: '0' }}>
-              <img src="/logo.svg" alt="logo" style={{ height: '50px', width: 'auto' }}/>
+              <img src="/logo.svg" alt="logo" style={{ height: '50px', width: 'auto' }} />
               <Typography
                 variant="h6"
                 noWrap
@@ -69,19 +103,62 @@ function TopbarView(props: {
               </Link>
             ))}
           </Box>
-          {
-            props.loggedIn ? (
-              console.log("shopping cart in topbarView", props.shoppingCart),
-              <ShoppingCart 
+          {props.loggedIn ? (
+            (console.log('shopping cart in topbarView', props.shoppingCart),
+            (
+              <ShoppingCart
                 items={props.shoppingCart || []}
                 onRemoveItem={props.onCartRemoveItem}
                 onCheckout={props.onCartCheckout}
               />
-            ) : <></>
-          }
-          <Button key="login" onClick={handleLoginLogout} sx={{ my: 2, color: 'white', display: 'block' }}>
-            {props.loggedIn ? 'Logout' : 'Login'}
-          </Button>
+            ))
+          ) : (
+            <></>
+          )}
+          {props.user ? (
+            <>
+              <Button
+                ref={anchorRef}
+                id="composition-button"
+                aria-controls={open ? 'composition-menu' : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleToggle}
+              >
+                <Avatar style={{height: "50px", width: "50px"}} src={images![images!.length - 1].url}></Avatar>
+              </Button>
+            </>
+          ) : (
+            <Button key="login" onClick={handleLoginLogout} sx={{ my: 2, color: 'white', display: 'block' }}>
+              Login
+            </Button>
+          )}
+          <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            role={undefined}
+            placement="bottom-start"
+            transition
+            disablePortal
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom',
+                }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={handleClose}>
+                    <MenuList autoFocusItem={open} id="composition-menu" aria-labelledby="composition-button">
+                      <Link style={{color: "black"}} to={`/user/${props.user?.id}`}><MenuItem>Profile</MenuItem></Link>
+                      <MenuItem onClick={handleLoginLogout}>Logout</MenuItem>
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
         </Toolbar>
       </Container>
     </AppBar>

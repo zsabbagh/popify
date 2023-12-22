@@ -53,6 +53,7 @@ export default observer(function Topbar(props: Props) {
       loggedIn={!!props.model.userState.user}
       loginUrl={loginUrl}
       onLoginLogout={handleLoginLogout}
+      user={props.model.userState.user}
     />
   );
 });
