@@ -115,16 +115,15 @@ function TopbarView(props: {
               </Link>
             ))}
           </Box>
-          {props.loggedIn ? (
-            (console.log('shopping cart in topbarView', props.shoppingCart),
+          {props.loggedIn ? 
             (
               <ShoppingCart
                 items={props.shoppingCart || []}
                 onRemoveItem={props.onCartRemoveItem}
                 onCheckout={props.onCartCheckout}
               />
-            ))
-          ) : (
+            )
+           : (
             <></>
           )}
           {props.user ? (

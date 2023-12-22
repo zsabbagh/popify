@@ -21,7 +21,6 @@ export default observer(function Topbar(props: Props) {
     if (!!props.model.userState.user) {
         props.model.logoutUser();
     } else {
-      console.log("path", window.location.pathname);
       
       localStorage.setItem('lastKnownPathBeforeLogin', window.location.pathname);
       window.location.href = loginUrl;
@@ -37,7 +36,6 @@ export default observer(function Topbar(props: Props) {
   }
 
   function updateShoppingCart(index: number) {
-    console.log("removing item from cart", index)
     props.model.removeItemFromCart(index);
   }
 
