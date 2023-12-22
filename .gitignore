@@ -3,3 +3,4 @@ build
 src/**/config*
 **/*Config*
 firebaseConfig.ts
+dist

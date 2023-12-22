@@ -55,8 +55,6 @@ export default {
     this.pushCartFirebase();
   },
   async pushCartFirebase() {
-    console.log('pushing to firebase', this.userState.shoppingCart);
-
     firebaseApi.pushCartFirebase(this.userState.shoppingCart, this.userState.user);
   },
   async getCartFirebase() {
@@ -114,6 +112,8 @@ export default {
       this.setUserTopItems(timeRange!, topItems);
       this.userState.topItems!.latestUpdate = timestamp;
     } catch (error: any) {
+      localStorage.removeItem('spotifyAuthToken');
+      this.logoutUser();
       console.error('Error fetching top items', error);
       this.userState.errorMessage = error?.message;
     }
@@ -133,7 +133,8 @@ export default {
     } catch (error: any) {
       console.error('Error loggin into spotify', error);
       if (error.status === 401) {
-        //Token expired
+        //Token expired        
+        localStorage.removeItem('spotifyAuthToken');
         this.logoutUser();
       }
       this.userState.errorMessage = error.message;
@@ -162,6 +163,7 @@ export default {
     localStorage.removeItem('spotifyAuthToken');
     this.userState.user = undefined;
     this.userState.userAuthToken = undefined;
+    window.location.reload();
   },
   items: [],
   async addItem(id: string, type: string) {
@@ -178,8 +180,13 @@ export default {
           throw new Error('Invalid item');
         }
         this.items.push(item);
-      } catch (error) {
-        //TODO handle
+      } catch (error: any) {
+        if (error.status === 401) {
+          //Token expired        
+          localStorage.removeItem('spotifyAuthToken');
+          this.logoutUser();
+        }
+        this.userState.errorMessage = error.message;
       }
     }
   },
@@ -212,7 +219,6 @@ export default {
   },
   async getMyRecentPlaylist() {
     const response = await firebaseApi.getPlaylists(this.userState.user?.id || '');
-    console.log(response);
     
     if (response.length > 0) {
       return response[0];

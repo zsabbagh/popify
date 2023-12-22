@@ -64,12 +64,10 @@ export default observer(function Search(props: { model: Model }) {
     }, []);
 
     function onAddItemToCartACB(item: ItemData) {
-        console.log("onAddItemToCartACB", item);
         props.model.addItemToCart(item);
     }
 
     function onRemoveItemFromCartACB(id: string) {
-        console.log("onRemoveItemFromCartACB", id);
         props.model.removeItemFromCart(id);
     }
 
@@ -90,7 +88,6 @@ export default observer(function Search(props: { model: Model }) {
             return;
         }
         setLatestInputChange(Date.now());
-        console.log("searching for ", query, " at ", Date.now());
         search(props.model.userState.userAuthToken || "", searchQuery)
             .then(handleSearchResults);
     }
