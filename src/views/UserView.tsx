@@ -44,7 +44,7 @@ export default function UserView(props: Props) {
       >
         <Avatar
           style={{ borderRadius: '50%', width: '250px', height: '250px' }}
-          src={user.images[user.images.length - 1].url}
+          src={user.images[user.images.length - 1]?.url || ""}
         ></Avatar>
       </div>
       <h1>{user.display_name}</h1>

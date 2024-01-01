@@ -221,7 +221,7 @@ export const postComment = async (uri: string, user: User, content: string, titl
       uri: uri,
       user_id: user.id,
       user_name: user.display_name,
-      user_image: user.images[0].url,
+      user_image: user.images[0]?.url || "",
       timestamp: Timestamp.now(),
     };
     await setDoc(doc(collection(db, 'comment')), commentObject);

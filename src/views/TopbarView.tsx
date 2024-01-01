@@ -135,7 +135,7 @@ function TopbarView(props: {
                 aria-haspopup="true"
                 onClick={handleToggle}
               >
-                <Avatar style={{height: "50px", width: "50px"}} src={images![images!.length - 1].url}></Avatar>
+                <Avatar style={{height: "50px", width: "50px"}} src={images![(images?.length || 0) - 1]?.url || ""}></Avatar>
               </Button>
             </>
           ) : (

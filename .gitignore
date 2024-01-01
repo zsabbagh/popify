@@ -3,3 +3,4 @@ build
 src/**/config*
 firebaseConfig.ts
 dist
+.DS_Store
