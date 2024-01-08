@@ -41,11 +41,11 @@ export default observer(function Router(props: Props) {
               <Index model={props.model} /> 
               : <TopItems model={props.model} />} 
             />
-            <Route path="/top" element={<TopItems model={props.model} />} />
+            <Route path="/yours" element={<TopItems model={props.model} />} />
             <Route path="/quiz" element={<>Quizzes here</>} />
             <Route path="/checkout" element={<Checkout model={props.model} />} />
             <Route path="/spotifyResponse" element={<SpotifyResponseHandler model={props.model} />} />
-            <Route path="/search" element={<Search model={props.model}></Search>} />
+            <Route path="/global" element={<Search model={props.model}></Search>} />
             <Route path="/user/:id" element={<UserPresenter model={props.model} />} />
             <Route path="/artist/:id" element={<ItemPresenter model={props.model} type="artist" />} />
             <Route path="/track/:id" element={<ItemPresenter model={props.model} type="track" />} />

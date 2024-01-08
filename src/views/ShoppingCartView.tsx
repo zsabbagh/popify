@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CircularProgress, Button, Drawer, List, ListItem, ListItemText, IconButton, Badge, Typography, Box, Tooltip } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PlaylistAddCheckOutlinedIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
 import { RemoveCircleOutline } from '@mui/icons-material';
 import { ItemData } from '../interfaces';
 import { blue, blueGrey, green, orange, red, teal, yellow } from '@mui/material/colors';
@@ -96,7 +97,7 @@ export default function ShoppingCartView(props: {
             justifyContent="center">
             <IconButton disabled={!props.items} onClick={() => setOpen(true)} color="inherit">
               <Badge badgeContent={props.items.length} color={ cartIsFull ? 'success' : 'info' }>
-                <ShoppingCartIcon />
+                <PlaylistAddCheckOutlinedIcon />
               </Badge>
             </IconButton>
           </Box>
@@ -134,7 +135,7 @@ export default function ShoppingCartView(props: {
         <Button onClick={props.onCheckout} onClickCapture={onCheckoutClickACB} variant="contained" color="primary" sx={{
           marginTop: '10px',
         }}>
-          Checkout
+          Create playlist
         </Button>
       </Drawer>
     </div>

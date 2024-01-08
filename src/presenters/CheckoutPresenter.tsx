@@ -131,9 +131,14 @@ export default observer(function Checkout(props: { model: Model }) {
     getUserPlaylists();
   }
 
+  function removeItemFromRecommendationsACB(index: number) {
+    if (!recommendations) {return;}
+    const rec = recommendations.filter((x, i) => i !== index);
+    setRecommendations(rec);
+  }
+
   useEffect(onLoadACB, []);
   // useEffect(getRecommendationsACB, [seedArtists, seedTracks]); // update recommendations when seed artists or tracks change, too many requests
-
   return (
     <CheckoutView
       onRemoveItem={(index: number) => {
@@ -142,6 +147,9 @@ export default observer(function Checkout(props: { model: Model }) {
       cartItems={userState?.shoppingCart || []}
       recommendations={recommendations}
       onGetRecommendations={getRecommendationsACB}
+      onRemoveRecommendation={(index: number) => {
+        removeItemFromRecommendationsACB(index);
+      }}
       onExport={onExportACB}
       userPlaylists={userPlaylists}
       successfulExport={successfulExport}

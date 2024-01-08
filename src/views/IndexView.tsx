@@ -25,7 +25,7 @@ export default function IndexView(props: { userIsAuthenticated: boolean }) {
                         }}>
                                 <Typography variant="h1" sx={{ marginBottom: '20px' }}>Welcome to Popify!</Typography>
                                 <p style={{ fontSize: '1.5rem' }}>
-                                    Shop music.
+                                    Get recommendations.
                                     Generate playlists.
                                 </p>
                                 <Button variant="outlined"

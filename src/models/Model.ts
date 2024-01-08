@@ -10,7 +10,7 @@ import { UserTopItems, ItemData } from '../interfaces';
 import { getItemInformation } from '../utils/tools';
 
 export default {
-  pages: ['Search', 'Top'],
+  pages: ['Global', 'Yours'],
   userState: {
     userAuthToken: undefined,
     shoppingCart: undefined,

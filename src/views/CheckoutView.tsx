@@ -43,6 +43,7 @@ function CheckoutView(props: {
   userPlaylists: { name: string; id: string }[];
   onExport: (newPlaylist: boolean, playlistIdentifier: string) => void;
   onRemoveItem: (index: number) => void;
+  onRemoveRecommendation: (index: number) => void;
   successfulExport?: boolean;
   successfulGen?: boolean;
   failedExport?: boolean;
@@ -77,10 +78,10 @@ function CheckoutView(props: {
             alignItems: 'center',
           }}
         >
-          <ItemListView title="Cart" items={props.cartItems} onRemoveItem={props.onRemoveItem} nameOfList="cart" />
+          <ItemListView title="Generate list from" items={props.cartItems} onRemoveItem={props.onRemoveItem} nameOfList="cart" />
           {props.cartItems?.length > 0 ? (
             <Tooltip
-              title="Generates and stores a playlist in your account based on the cart items."
+              title="Generate recommendations from your chosen items"
               placement="bottom"
             >
               <Button
@@ -89,7 +90,7 @@ function CheckoutView(props: {
                 sx={{ width: 'fit-content', padding: 'auto' }}
                 onClick={props.onGetRecommendations}
               >
-                Generate Playlist
+                Generate new songs
               </Button>
             </Tooltip>
           ) : (
@@ -141,6 +142,7 @@ function CheckoutView(props: {
           <ItemListView
             title="Recommendations"
             items={props.recommendations}
+            onRemoveItem={props.onRemoveRecommendation}
             emptyText="No items in recommendations."
             attemptingUpdate={props.attemptingGen}
           />
@@ -151,7 +153,7 @@ function CheckoutView(props: {
                 sx={{ width: 'fit-content', padding: 'auto' }}
                 onClick={() => setExportDialogOpen(true)}
               >
-                Export Playlist
+                Add playlist to Spotify
               </Button>
             </Tooltip>
           ) : (

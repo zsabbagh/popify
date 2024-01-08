@@ -94,18 +94,18 @@ function TopbarView(props: {
                   fontFamily: 'monospace',
                   fontWeight: 700,
                   letterSpacing: '.3rem',
-                  color: 'inherit',
+                  color: 'white',
                   textDecoration: 'none',
                   position: 'relative',
                   marginTop: '7px',
                   marginLeft: '10px',
                 }}
               >
-                Popify
+                POPIFY
               </Typography>
             </div>
           </Link>
-          <Box sx={{ flexGrow: 1, display: flexIfNotPortrait }}>
+          <Box sx={{ flexGrow: 1, display: flexIfNotPortrait, marginRight: '10px' }}>
             {props.pages.map((page) => (
               <Link
                 key={page}
