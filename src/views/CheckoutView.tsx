@@ -68,6 +68,7 @@ function CheckoutView(props: {
           display: 'flex',
           flexDirection: 'row',
           marginBottom: '20px',
+            alignItems: 'start',
         }}
       >
         <Box
