@@ -36,7 +36,7 @@ export default function RatingView(props: {
         }}
         elevation={2}
       >
-        <h3>{`Rate yourself!`}</h3>
+        <h3>{`Create a rating`}</h3>
         <Rating value={props.userRating} onChange={(event, value) => props.onRatingChange(value)} />
 
       </Paper>

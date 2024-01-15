@@ -28,13 +28,13 @@ export default function ExportDialog(props: {
   return (
     <React.Fragment>
       <Dialog open={props.open} onClose={props.onClose}>
-        <DialogTitle>Add songs to playlist</DialogTitle>
+        <DialogTitle>Save your playlist in Spotify</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Select a playlist to add your recommended songs to, or create a new one!.
+            Select an existing Spotify playlist, or create a new one
           </DialogContentText>
           <FormControl>
-            <FormLabel id="demo-radio-buttons-group-label">Playlist choice</FormLabel>
+            <FormLabel id="demo-radio-buttons-group-label"></FormLabel>
             <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
                 value={newPlaylist ? "new" : "existing"}
@@ -75,7 +75,7 @@ export default function ExportDialog(props: {
                 </>
               ) : (
                 <DialogContentText>
-                    You don't have any playlists yet! Create one in Spotify and try again.
+                    You don't have any playlists yet! Create a new playlist.
                 </DialogContentText>
               )
             )

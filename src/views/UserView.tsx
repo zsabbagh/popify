@@ -50,7 +50,7 @@ export default function UserView(props: Props) {
       <h1>{user.display_name}</h1>
 
       <br></br>
-      <h2>User's playlists!</h2>
+      <h2>Your playlists</h2>
       <Paper
         style={{
           margin: '20px auto',
@@ -63,7 +63,7 @@ export default function UserView(props: Props) {
         }}
         elevation={2}
       >
-        {playlists.length === 0 ? <h2>No playlists yet!</h2> : <></>}
+        {playlists.length === 0 ? <h2>No playlists yet</h2> : <></>}
         {playlists.map((playlist, index) => (
           <Paper
             key={index}

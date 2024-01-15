@@ -281,7 +281,7 @@ export default function CardsView(props: {
                         <Fade in={addAlertOpen} unmountOnExit={true}>
                             <Alert severity="success" sx={alertStyling}
                                 icon={<CheckCircleOutline />}>
-                                {successfulAdd} added to cart!
+                                {successfulAdd} added to generator
                             </Alert>
                         </Fade>
                     }
@@ -289,7 +289,7 @@ export default function CardsView(props: {
                         <Fade in={removeAlertOpen} unmountOnExit={true}>
                             <Alert severity="warning" sx={alertStyling}
                                 icon={<RemoveCircleOutline />}>
-                                {successfulRemove} removed from cart!
+                                {successfulRemove} removed from generator
                             </Alert>
                         </Fade>
                     }

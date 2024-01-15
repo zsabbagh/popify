@@ -33,8 +33,8 @@ export default function ItemCard(props: {
   }
 
   const disableAddToCart = !props.itemIsInCart && props.cartIsFull;
-  const tooltipAddToCart = disableAddToCart ? 'Cart is full' : (
-    props.itemIsInCart ? 'Remove from Cart' : 'Add to Cart'
+  const tooltipAddToCart = disableAddToCart ? 'Generator is full' : (
+    props.itemIsInCart ? 'Remove from Generator' : 'Add to Generator'
   );
 
   return (

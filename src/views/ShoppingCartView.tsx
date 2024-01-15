@@ -83,7 +83,7 @@ export default function ShoppingCartView(props: {
       justifyContent: 'center',
       alignItems: 'center',
     }}>
-      <Tooltip title="Shopping Cart" placement="bottom">
+      <Tooltip title="Playlist Generator" placement="bottom">
         <Box position="relative" display="inline-flex">
           <CircularProgress variant="determinate" value={progress} sx={{ height: 'auto', color: colorOfProgress }} />
           <Box

@@ -141,7 +141,7 @@ function CheckoutView(props: {
           }}
         >
           <ItemListView
-            title="Recommendations"
+            title="Recommendations, based on your selection"
             items={props.recommendations}
             onRemoveItem={props.onRemoveRecommendation}
             emptyText="No items in recommendations."
